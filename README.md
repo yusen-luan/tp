@@ -15,7 +15,7 @@
 * Quick search with keyboard shortcuts
 * Schedule consultations and add student notes
 
-## Target Users
+## Target Users:
 
 TAs who manage multiple modules and prefer keyboard-driven interfaces for quick access to student information during teaching sessions.
 
