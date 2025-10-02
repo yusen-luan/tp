@@ -310,34 +310,101 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `*`      | TA                                | group students up if the module requires group work           | keep track of all groupings                                              |
 | `*`      | TA                                | randomly pair/group students for each tutorial session        | all students get to pair up with everyone else                           |
 
-*{More to be added}*
+
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is the `TeachMate` and the **Actor** is the `user`, unless specified otherwise)
 
-**Use case: Delete a person**
+**Use case: UC1 - Add a new student's details**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
-
+1.  User requests to add a new student.
+2.  TeachMate requests for details of the student.
+3.  User enters the requested details.
+4.  User saves the details.
+5.  TeachMate adds the new student and displays the new student's details.
     Use case ends.
 
 **Extensions**
 
-* 2a. The list is empty.
+* 3a. TeachMate detects an error in the entered details.
+      3a1. TeachMate requests for the correct details.
+      3a2. User enters new detail.
+      Steps 3a1-3a2 are repeated until the data entered are correct.
+      Use case resumes from step 4.
 
-  Use case ends.
+**Use case: UC2 - Assign student to tutorial questions to present**
 
-* 3a. The given index is invalid.
+**MSS**
 
-    * 3a1. AddressBook shows an error message.
+1.  User requests to search for the student.
+2.  TeachMate requests for name or ID of the student.
+3.  User enters the requested details.
+4.  TeachMate displays the matching students.
+5.  User selects the student from the matches.
+6.  User fills up the tutorial & question number.
+7.  TeachMate assigns the question to student and displays the assigned status.
+    Use case ends.
 
-      Use case resumes at step 2.
+**Extensions**
+
+* 3a. TeachMate cannot find any matching student based on the entered details.
+      3a1. TeachMate displays 'No Student Found'.
+      3a2. User enters new detail.
+      Steps 3a1-3a2 are repeated until the detail entered have matches.
+      Use case resumes from step 4.
+
+**Use case: UC3 - Group students in the tutorial class**
+
+**MSS**
+
+1.  User requests to group students up
+2.  TeachMate requests to select the students and group ID
+3.  User enters the group ID and selects the students
+4.  TeachMate displays the selected students under the new group 
+
+**Extensions**
+
+* 3a. User does not select any students.
+      3a1. TeachMate displays 'No students selected'.
+      3a2. User selects at least one student.
+      Use case resumes from step 4.
+
+**Use case: UC4 - Add consultations to my calendar**
+
+**MSS**
+
+1.  User requests to add a consultation to the calendar.
+2.  TeachMate requests for date, time, student, and description.
+3.  User enters the requested details.
+4.  TeachMate adds the consultation and displays the scheduled entry.
+    Use case ends.
+
+**Extensions**
+
+* 3a. Entered date/time is invalid.
+      3a1. TeachMate displays 'Invalid date/time'.
+      3a2. User enters a valid date/time.
+      Use case resumes from step 4.
+
+**Use case: UC5 - Mark a student's attendance for a class**
+
+**MSS**
+
+1.  User requests to mark a student's attendance.
+2.  TeachMate requests for the class/session and the student.
+3.  User provides the class/session and selects the student.
+4.  TeachMate marks the student's attendance and displays the updated status.
+    Use case ends.
+
+**Extensions**
+
+* 3a. Student is not enrolled in the specified class/session.
+      3a1. TeachMate displays 'Student not in class'.
+      3a2. User selects a valid student in the class/session.
+      Use case resumes from step 4.
 
 *{More to be added}*
 
