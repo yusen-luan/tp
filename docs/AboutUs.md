@@ -20,6 +20,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 [[portfolio](team/johndoe.md)]
 
 * Role: Integration
+* Responsibilites: Manage code integration and resolve conflicts  
 
 ### Jane Doe
 
