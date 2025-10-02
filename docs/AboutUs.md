@@ -22,15 +22,15 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 * Role: Integration
 * Responsibilites: Manage code integration and resolve conflicts  
 
-### Jane Doe
+### Kasim Zayan
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/zayk1.png" width="200px">
 
-[[github](http://github.com/johndoe)]
+[[github](http://github.com/ZayK1)]
 [[portfolio](team/johndoe.md)]
 
-* Role: Team Lead
-* Responsibilities: UI
+* Role: Deliverables and deadlines
+* Responsibilities: Ensure project deliverables are done on time and in the right format.
 
 ### Johnny Doe
 
