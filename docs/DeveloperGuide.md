@@ -292,22 +292,22 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *`  | TA                                | add a new student’s details                                   | have their basic information readily available (name, ID, email, module) |
 | `* * *`  | TA                                | view student contact details                                  | check in with my student’s progress                                      |
 | `* * *`  | TA                                | view student grades                                           | track my students’ academic progress                                     |
-| `* *`    | TA                                | view student assignment submissions                           | -                                                                        |
-| `* *`    | TA with many modules              | view all my modules that I teach                              | -                                                                        |
+| `* *`    | TA                                | view student assignment submissions                           | track their assignment progress                                          |
+| `* *`    | TA with many modules              | view all my modules that I teach                              | easily track all modules from one glance                                 |
 | `* * *`  | TA                                | mark a student’s attendance                                   | award marks according to their attendance                                |
-| `* *`    | TA with many classes              | view my timetable schedule                                    | -                                                                        |
+| `* *`    | TA with many classes              | view my timetable schedule                                    | view my schedule from one location                                       |
 | `* *`    | TA willing to give consultations  | add consultations to my calendar                              | keep track of my timetable                                               |
 | `* *`    | TA                                | delete consultations                                          | allocate time for other students                                         |
 | `* *`    | TA                                | add custom tags to students (e.g., "struggling", "excellent") | quickly identify students who need special attention                     |
 | `* * *`  | busy TA for multiple modules      | search for a student by typing partial names                  | quickly find their information during consultations                      |
-| `* *`    | TA                                | add special notes/remarks for each student                    | -                                                                        |
+| `* *`    | TA                                | add special notes/remarks for each student                    | keep tabs on certain students through remarks                            |
 | `* *`    | TA with many things to do         | add tasks that are related to my classes                      | keep track of what to do outside of class                                |
-| `* *`    | TA                                | randomly select students for class participation              | ensure fair distribution of participation opportunities                  |
+| `*`      | TA                                | randomly select students for class participation              | ensure fair distribution of participation opportunities                  |
 | `* *`    | TA                                | flag out students with special needs                          | pay more attention to them                                               |
-| `* *`    | TA                                | unmark a student’s attendance if they leave mid-lesson        | -                                                                        |
-| `* *`    | TA                                | assign students to tutorial questions to present              | ensure all students have a fair chance to present their answers          |
+| `* *`    | TA                                | unmark a student’s attendance if they leave mid-lesson        | easily edit their attendance                                             |
+| `*`      | TA                                | assign students to tutorial questions to present              | ensure all students have a fair chance to present their answers          |
 | `*`      | TA that gets asked many questions | add reminders to follow up with students after class          | ensure their questions get answered (even if out of syllabus)            |
-| `*`      | TA                                | group students up if the module requires group work           | -                                                                        |
+| `*`      | TA                                | group students up if the module requires group work           | keep track of all groupings                                              |
 | `*`      | TA                                | randomly pair/group students for each tutorial session        | all students get to pair up with everyone else                           |
 
 *{More to be added}*
