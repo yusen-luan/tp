@@ -296,41 +296,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *`    | user                                       | hide private contact details | minimize chance of someone else seeing them by accident                |
 | `*`      | user with many persons in the address book | sort persons by name         | locate a person easily                                                 |
 
-**Use case: UC4 - Add consultations to my calendar**
 
-**MSS**
-
-1.  User requests to add a consultation to the calendar.
-2.  TeachMate requests for date, time, student, and description.
-3.  User enters the requested details.
-4.  TeachMate adds the consultation and displays the scheduled entry.
-    Use case ends.
-
-**Extensions**
-
-* 3a. Entered date/time is invalid.
-      3a1. TeachMate displays 'Invalid date/time'.
-      3a2. User enters a valid date/time.
-      Use case resumes from step 4.
-
-**Use case: UC5 - Mark a student's attendance for a class**
-
-**MSS**
-
-1.  User requests to mark a student's attendance.
-2.  TeachMate requests for the class/session and the student.
-3.  User provides the class/session and selects the student.
-4.  TeachMate marks the student's attendance and displays the updated status.
-    Use case ends.
-
-**Extensions**
-
-* 3a. Student is not enrolled in the specified class/session.
-      3a1. TeachMate displays 'Student not in class'.
-      3a2. User selects a valid student in the class/session.
-      Use case resumes from step 4.
-
-*{More to be added}*
 
 ### Use cases
 
@@ -390,6 +356,40 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 3a. User does not select any students.
       3a1. TeachMate displays 'No students selected'.
       3a2. User selects at least one student.
+      Use case resumes from step 4.
+
+**Use case: UC4 - Add consultations to my calendar**
+
+**MSS**
+
+1.  User requests to add a consultation to the calendar.
+2.  TeachMate requests for date, time, student, and description.
+3.  User enters the requested details.
+4.  TeachMate adds the consultation and displays the scheduled entry.
+    Use case ends.
+
+**Extensions**
+
+* 3a. Entered date/time is invalid.
+      3a1. TeachMate displays 'Invalid date/time'.
+      3a2. User enters a valid date/time.
+      Use case resumes from step 4.
+
+**Use case: UC5 - Mark a student's attendance for a class**
+
+**MSS**
+
+1.  User requests to mark a student's attendance.
+2.  TeachMate requests for the class/session and the student.
+3.  User provides the class/session and selects the student.
+4.  TeachMate marks the student's attendance and displays the updated status.
+    Use case ends.
+
+**Extensions**
+
+* 3a. Student is not enrolled in the specified class/session.
+      3a1. TeachMate displays 'Student not in class'.
+      3a2. User selects a valid student in the class/session.
       Use case resumes from step 4.
 
 *{More to be added}*
