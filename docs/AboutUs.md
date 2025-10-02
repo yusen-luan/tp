@@ -11,15 +11,16 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ## Project team
 
-### John Doe
+### Shao Zhi
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/shaozhi21.png" width="200px">
 
 [[homepage](http://www.comp.nus.edu.sg/~damithch)]
-[[github](https://github.com/johndoe)]
+[[github](https://github.com/ShaoZhi21)]
 [[portfolio](team/johndoe.md)]
 
-* Role: Project Advisor
+* Role: Integration
+* Responsibilites: Manage code integration and resolve conflicts  
 
 ### Jane Doe
 
