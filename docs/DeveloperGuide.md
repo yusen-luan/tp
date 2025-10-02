@@ -329,16 +329,30 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Non-Functional Requirements
 
-1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
-3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
-
-*{More to be added}*
+1. Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
+2. Should be able to hold up to 1000 students without a noticeable sluggishness in performance for typical usage.
+3. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
+4. The system should be intuitive enough for new TAs with basic command-line familiarity to perform core operations (add, view, list students) within 15 minutes of first use.
+5. The system should not lose data during normal operations. All changes should be persisted to storage within 1 second of command execution.
+6. Student IDs must remain unique across the system. The application should validate all NUS-specific formats (student IDs, module codes) to prevent invalid data entry.
+7. All commands should execute and provide feedback within 2 seconds under normal load conditions.
+8. Should support TAs managing up to 10 different modules simultaneously without performance degradation.
+9. Error messages should be clear, specific, and actionable, guiding users to correct their input without needing to reference documentation.
+10. Code should follow standard software engineering practices to allow for incremental feature additions and modifications.
 
 ### Glossary
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
-* **Private contact detail**: A contact detail that is not meant to be shared with others
+* **TA**: Teaching Assistant - A university staff member or senior student who assists professors in conducting tutorials, grading assignments, and providing academic support to students
+* **Module**: A course or subject offered by NUS, identified by a unique module code (e.g., CS2103T)
+* **Module Code**: NUS standard format for course identification, consisting of 2-3 uppercase letters followed by 4 digits and an optional suffix letter (e.g., CS2103T, MA1521)
+* **Student ID**: A unique identifier assigned to each NUS student, following the format AXXXXXXXY where X represents digits (0-9) and Y represents an uppercase letter (e.g., A0123456X)
+* **Index**: A positive integer representing the position of a student in the currently displayed list, used for quick command-line reference
+* **Tag**: A custom label (e.g., "struggling", "excellent", "international") assigned to students to quickly identify those requiring special attention or categorization
+* **Consultation**: A scheduled one-on-one or small group meeting between a TA and student(s) for academic assistance
+* **Command**: A text-based instruction entered by the user to perform operations in TeachMate, following the format `COMMAND_WORD [parameters]`
+* **Prefix**: A short identifier (e.g., n/, s/, e/, m/, t/) used before parameter values in commands to specify which field the value corresponds to
+* **Duplicate Student**: A student entry that shares the same Student ID with an existing student in the system, regardless of other fields
 
 --------------------------------------------------------------------------------------------------------------------
 
