@@ -1,15 +1,29 @@
+[![CI Status](https://github.com/AY2526S1-CS2103T-F11-3/tp/workflows/Java%20CI/badge.svg)](https://github.com/AY2526S1-CS2103T-F11-3/tp/actions)
 [![codecov](https://codecov.io/github/AY2526S1-CS2103T-F11-3/tp/graph/badge.svg?token=VOSQW04EXB)](https://codecov.io/github/AY2526S1-CS2103T-F11-3/tp)
-
 
 ![Ui](docs/images/Ui.png)
 
-* This is **a sample project for Software Engineering (SE) CS2103 students**.<br>
-  Example usages:
-  * as a starting point of a course project (as opposed to writing everything from scratch)
-  * as a case study
-* The project simulates an ongoing software project for a desktop application (called _AddressBook_) used for managing contact details.
-  * It is **written in OOP fashion**. It provides a **reasonably well-written** code base **bigger** (around 6 KLoC) than what students usually write in beginner-level SE modules, without being overwhelmingly big.
-  * It comes with a **reasonable level of user and developer documentation**.
-* It is named `AddressBook Level 3` (`AB3` for short) because it was initially created as a part of a series of `AddressBook` projects (`Level 1`, `Level 2`, `Level 3` ...).
-* For the detailed documentation of this project, see the **[Address Book Product Website](https://se-education.org/addressbook-level3)**.
-* This project is a **part of the se-education.org** initiative. If you would like to contribute code to this project, see [se-education.org](https://se-education.org/#contributing-to-se-edu) for more info.
+# TeachMate
+
+**TeachMate** is a desktop application for **Computer Science Teaching Assistants** to manage students across multiple modules efficiently. Optimized for fast, keyboard-driven workflows during tutorials and consultations.
+
+## Key Features
+
+* Manage student contacts with NUS-specific formats (student IDs, module codes)
+* Filter and organize students by module
+* Track attendance and add custom tags
+* Quick search with keyboard shortcuts
+* Schedule consultations and add student notes
+
+## Target Users:
+
+TAs who manage multiple modules and prefer keyboard-driven interfaces for quick access to student information during teaching sessions.
+
+## Documentation
+
+* [User Guide](docs/UserGuide.md)
+* [Developer Guide](docs/DeveloperGuide.md)
+
+## Acknowledgements
+
+This project is based on the AddressBook-Level3 project created by the [SE-EDU initiative](https://se-education.org).
