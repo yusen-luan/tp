@@ -7,33 +7,32 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  * Represents a Student's ID in the address book.
  * Guarantees: immutable; is valid as declared in {@link #isValidStudentId(String)}
  */
-
 public class StudentId {
     public static final String MESSAGE_CONSTRAINTS =
             "Student ID should be in the format AXXXXXXXY (e.g., A0123456X)";
 
-    /* The Student ID must 
+    /*
+     * The Student ID must:
      * 1. Start with the letter 'A'
-     * 2.Followed by exactly 7 digits
+     * 2. Followed by exactly 7 digits
      * 3. End with exactly 1 uppercase letter
      */
+    public static final String VALIDATION_REGEX = "A\\d{7}[A-Z]";
 
-     public static final String VALIDATION_REGEX = "A\\d{7}[A-Z]";
+    public final String value;
 
-     public final String value;
-
-     /**
-      * Constructs a {@code StudentId}.
-      * 
-      * @param studentId A valid student ID.
-      */
-      public StudentId(String studentId) {
+    /**
+     * Constructs a {@code StudentId}.
+     *
+     * @param studentId A valid student ID.
+     */
+    public StudentId(String studentId) {
         requireNonNull(studentId);
         checkArgument(isValidStudentId(studentId), MESSAGE_CONSTRAINTS);
         value = studentId;
-      }
+    }
 
-      /**
+    /**
      * Returns true if a given string is a valid student ID.
      */
     public static boolean isValidStudentId(String test) {
@@ -51,6 +50,7 @@ public class StudentId {
             return true;
         }
 
+        // instanceof handles nulls
         if (!(other instanceof StudentId)) {
             return false;
         }
