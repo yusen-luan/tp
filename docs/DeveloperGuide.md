@@ -363,7 +363,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 1.  User requests to group students up
 2.  TeachMate requests to select the students and group ID
 3.  User enters the group ID and selects the students
-4.  TeachMate displays the selected students under the new group 
+4.  TeachMate displays the selected students under the new group
 
 **Extensions**
 

@@ -21,7 +21,6 @@ public class Person {
     private final Name name;
     private final StudentId studentId;
     private final Email email;
-    
 
     // Data fields
     private final ModuleCode moduleCode;

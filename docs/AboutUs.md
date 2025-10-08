@@ -20,7 +20,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 [[portfolio](team/johndoe.md)]
 
 * Role: Integration
-* Responsibilites: Manage code integration and resolve conflicts  
+* Responsibilites: Manage code integration and resolve conflicts
 
 ### Kasim Zayan
 
@@ -59,4 +59,4 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 [[portfolio](team/johndoe.md)]
 
 * Role: Developer
-* Responsibilities: Testing 
+* Responsibilities: Testing
