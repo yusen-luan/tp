@@ -9,8 +9,8 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
-import seedu.address.model.person.StudentId;
 import seedu.address.model.module.ModuleCode;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.Tag;
 
 /**

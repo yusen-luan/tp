@@ -12,9 +12,9 @@ import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
+import seedu.address.model.module.ModuleCode;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
-import seedu.address.model.module.ModuleCode;
 import seedu.address.model.tag.Tag;
 
 /**
