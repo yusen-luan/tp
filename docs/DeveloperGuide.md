@@ -274,71 +274,166 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Target user profile**:
 
-* has a need to manage a significant number of contacts
-* prefer desktop apps over other types
-* can type fast
-* prefers typing to mouse interactions
-* is reasonably comfortable using CLI apps
+* needs to manage students across multiple modules
+* responsible for tracking consultations and monitoring academic progress
+* prefers quick keyboard-driven workflows during tutorials and consultations
+* is reasonably comfortable using CLI-based desktop applications
+* values efficiency and organization when handling large amounts of student data
 
-**Value proposition**: manage contacts faster than a typical mouse/GUI driven app
+**Value proposition**: manage student information and academic progress faster and more efficiently than a typical mouse/GUI-driven app.
 
 
 ### User stories
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                 | So that I can…​                                                        |
-|----------|--------------------------------------------|------------------------------|------------------------------------------------------------------------|
-| `* * *`  | new user                                   | see usage instructions       | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person             |                                                                        |
-| `* * *`  | user                                       | delete a person              | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name        | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details | minimize chance of someone else seeing them by accident                |
-| `*`      | user with many persons in the address book | sort persons by name         | locate a person easily                                                 |
+| Priority | As a …                            | I want to …                                                   | So that I can …                                                          |
+|----------|-----------------------------------|---------------------------------------------------------------|--------------------------------------------------------------------------|
+| `* * *`  | TA                                | add a new student’s details                                   | have their basic information readily available (name, ID, email, module) |
+| `* * *`  | TA                                | view student contact details                                  | check in with my student’s progress                                      |
+| `* * *`  | TA                                | view student grades                                           | track my students’ academic progress                                     |
+| `* *`    | TA                                | view student assignment submissions                           | track their assignment progress                                          |
+| `* *`    | TA with many modules              | view all my modules that I teach                              | easily track all modules from one glance                                 |
+| `* * *`  | TA                                | mark a student’s attendance                                   | award marks according to their attendance                                |
+| `* *`    | TA with many classes              | view my timetable schedule                                    | view my schedule from one location                                       |
+| `* *`    | TA willing to give consultations  | add consultations to my calendar                              | keep track of my timetable                                               |
+| `* *`    | TA                                | delete consultations                                          | allocate time for other students                                         |
+| `* *`    | TA                                | add custom tags to students (e.g., "struggling", "excellent") | quickly identify students who need special attention                     |
+| `* * *`  | busy TA for multiple modules      | search for a student by typing partial names                  | quickly find their information during consultations                      |
+| `* *`    | TA                                | add special notes/remarks for each student                    | keep tabs on certain students through remarks                            |
+| `* *`    | TA with many things to do         | add tasks that are related to my classes                      | keep track of what to do outside of class                                |
+| `*`      | TA                                | randomly select students for class participation              | ensure fair distribution of participation opportunities                  |
+| `* *`    | TA                                | flag out students with special needs                          | pay more attention to them                                               |
+| `* *`    | TA                                | unmark a student’s attendance if they leave mid-lesson        | easily edit their attendance                                             |
+| `*`      | TA                                | assign students to tutorial questions to present              | ensure all students have a fair chance to present their answers          |
+| `*`      | TA that gets asked many questions | add reminders to follow up with students after class          | ensure their questions get answered (even if out of syllabus)            |
+| `*`      | TA                                | group students up if the module requires group work           | keep track of all groupings                                              |
+| `*`      | TA                                | randomly pair/group students for each tutorial session        | all students get to pair up with everyone else                           |
 
-*{More to be added}*
+
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is the `TeachMate` and the **Actor** is the `user`, unless specified otherwise)
 
-**Use case: Delete a person**
+**Use case: UC1 - Add a new student's details**
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
-
+1.  User requests to add a new student.
+2.  TeachMate requests for details of the student.
+3.  User enters the requested details.
+4.  User saves the details.
+5.  TeachMate adds the new student and displays the new student's details.
     Use case ends.
 
 **Extensions**
 
-* 2a. The list is empty.
+* 3a. TeachMate detects an error in the entered details.
+      3a1. TeachMate requests for the correct details.
+      3a2. User enters new detail.
+      Steps 3a1-3a2 are repeated until the data entered are correct.
+      Use case resumes from step 4.
 
-  Use case ends.
+**Use case: UC2 - Assign student to tutorial questions to present**
 
-* 3a. The given index is invalid.
+**MSS**
 
-    * 3a1. AddressBook shows an error message.
+1.  User requests to search for the student.
+2.  TeachMate requests for name or ID of the student.
+3.  User enters the requested details.
+4.  TeachMate displays the matching students.
+5.  User selects the student from the matches.
+6.  User fills up the tutorial & question number.
+7.  TeachMate assigns the question to student and displays the assigned status.
+    Use case ends.
 
-      Use case resumes at step 2.
+**Extensions**
+
+* 3a. TeachMate cannot find any matching student based on the entered details.
+      3a1. TeachMate displays 'No Student Found'.
+      3a2. User enters new detail.
+      Steps 3a1-3a2 are repeated until the detail entered have matches.
+      Use case resumes from step 4.
+
+**Use case: UC3 - Group students in the tutorial class**
+
+**MSS**
+
+1.  User requests to group students up
+2.  TeachMate requests to select the students and group ID
+3.  User enters the group ID and selects the students
+4.  TeachMate displays the selected students under the new group 
+
+**Extensions**
+
+* 3a. User does not select any students.
+      3a1. TeachMate displays 'No students selected'.
+      3a2. User selects at least one student.
+      Use case resumes from step 4.
+
+**Use case: UC4 - Add consultations to my calendar**
+
+**MSS**
+
+1.  User requests to add a consultation to the calendar.
+2.  TeachMate requests for date, time, student, and description.
+3.  User enters the requested details.
+4.  TeachMate adds the consultation and displays the scheduled entry.
+    Use case ends.
+
+**Extensions**
+
+* 3a. Entered date/time is invalid.
+      3a1. TeachMate displays 'Invalid date/time'.
+      3a2. User enters a valid date/time.
+      Use case resumes from step 4.
+
+**Use case: UC5 - Mark a student's attendance for a class**
+
+**MSS**
+
+1.  User requests to mark a student's attendance.
+2.  TeachMate requests for the class/session and the student.
+3.  User provides the class/session and selects the student.
+4.  TeachMate marks the student's attendance and displays the updated status.
+    Use case ends.
+
+**Extensions**
+
+* 3a. Student is not enrolled in the specified class/session.
+      3a1. TeachMate displays 'Student not in class'.
+      3a2. User selects a valid student in the class/session.
+      Use case resumes from step 4.
 
 *{More to be added}*
 
 ### Non-Functional Requirements
 
-1.  Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2.  Should be able to hold up to 1000 persons without a noticeable sluggishness in performance for typical usage.
-3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
-
-*{More to be added}*
+1. Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
+2. Should be able to hold up to 1000 students without a noticeable sluggishness in performance for typical usage.
+3. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
+4. The system should be intuitive enough for new TAs with basic command-line familiarity to perform core operations (add, view, list students) within 15 minutes of first use.
+5. The system should not lose data during normal operations. All changes should be persisted to storage within 1 second of command execution.
+6. Student IDs must remain unique across the system. The application should validate all NUS-specific formats (student IDs, module codes) to prevent invalid data entry.
+7. All commands should execute and provide feedback within 2 seconds under normal load conditions.
+8. Should support TAs managing up to 10 different modules simultaneously without performance degradation.
+9. Error messages should be clear, specific, and actionable, guiding users to correct their input without needing to reference documentation.
+10. Code should follow standard software engineering practices to allow for incremental feature additions and modifications.
 
 ### Glossary
 
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
-* **Private contact detail**: A contact detail that is not meant to be shared with others
+* **TA**: Teaching Assistant - A university staff member or senior student who assists professors in conducting tutorials, grading assignments, and providing academic support to students
+* **Module**: A course or subject offered by NUS, identified by a unique module code (e.g., CS2103T)
+* **Module Code**: NUS standard format for course identification, consisting of 2-3 uppercase letters followed by 4 digits and an optional suffix letter (e.g., CS2103T, MA1521)
+* **Student ID**: A unique identifier assigned to each NUS student, following the format AXXXXXXXY where X represents digits (0-9) and Y represents an uppercase letter (e.g., A0123456X)
+* **Index**: A positive integer representing the position of a student in the currently displayed list, used for quick command-line reference
+* **Tag**: A custom label (e.g., "struggling", "excellent", "international") assigned to students to quickly identify those requiring special attention or categorization
+* **Consultation**: A scheduled one-on-one or small group meeting between a TA and student(s) for academic assistance
+* **Command**: A text-based instruction entered by the user to perform operations in TeachMate, following the format `COMMAND_WORD [parameters]`
+* **Prefix**: A short identifier (e.g., n/, s/, e/, m/, t/) used before parameter values in commands to specify which field the value corresponds to
+* **Duplicate Student**: A student entry that shares the same Student ID with an existing student in the system, regardless of other fields
 
 --------------------------------------------------------------------------------------------------------------------
 
