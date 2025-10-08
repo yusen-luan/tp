@@ -31,7 +31,7 @@ public class Person {
      * Every field must be present and not null.
      */
     public Person(Name name, StudentId studentId, Email email, ModuleCode moduleCode, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, address, tags);
+        requireAllNonNull(name, studentId, email, moduleCode, tags);
         this.name = name;
         this.studentId = studentId;
         this.email = email;
