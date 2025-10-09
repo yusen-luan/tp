@@ -73,7 +73,19 @@ public class DeleteCommand extends Command {
         }
 
         DeleteCommand otherDeleteCommand = (DeleteCommand) other;
-        return targetIndex.equals(otherDeleteCommand.targetIndex);
+
+        // Check if both use index-based deletion
+        if (targetIndex != null && otherDeleteCommand.targetIndex != null) {
+            return targetIndex.equals(otherDeleteCommand.targetIndex);
+        }
+
+        // Check if both use student ID-based deletion
+        if (targetStudentId != null && otherDeleteCommand.targetStudentId != null) {
+            return targetStudentId.equals(otherDeleteCommand.targetStudentId);
+        }
+
+        // One uses index, the other uses student ID
+        return false;
     }
 
     @Override
