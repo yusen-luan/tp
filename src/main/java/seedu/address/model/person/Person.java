@@ -55,6 +55,14 @@ public class Person {
         return address;
     }
 
+    public StudentId getStudentId() {
+        return studentId;
+    }
+
+    public ModuleCode getModuleCode() {
+        return moduleCode;
+    }
+
     /**
      * Returns an immutable tag set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
