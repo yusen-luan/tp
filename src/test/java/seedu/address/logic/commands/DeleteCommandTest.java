@@ -18,6 +18,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for
@@ -102,11 +103,48 @@ public class DeleteCommandTest {
     }
 
     @Test
+    public void equals_studentIdConstructor() {
+        StudentId studentId1 = new StudentId("A0123456X");
+        StudentId studentId2 = new StudentId("A0234567Y");
+        DeleteCommand deleteByStudentId1 = new DeleteCommand(studentId1);
+        DeleteCommand deleteByStudentId2 = new DeleteCommand(studentId2);
+
+        // same object -> returns true
+        assertTrue(deleteByStudentId1.equals(deleteByStudentId1));
+
+        // same values -> returns true
+        DeleteCommand deleteByStudentId1Copy = new DeleteCommand(studentId1);
+        assertTrue(deleteByStudentId1.equals(deleteByStudentId1Copy));
+
+        // different types -> returns false
+        assertFalse(deleteByStudentId1.equals(1));
+
+        // null -> returns false
+        assertFalse(deleteByStudentId1.equals(null));
+
+        // different student ID -> returns false
+        assertFalse(deleteByStudentId1.equals(deleteByStudentId2));
+
+        // different constructor (index vs studentId) -> returns false
+        DeleteCommand deleteByIndex = new DeleteCommand(INDEX_FIRST_PERSON);
+        assertFalse(deleteByStudentId1.equals(deleteByIndex));
+    }
+
+    @Test
     public void toStringMethod() {
         Index targetIndex = Index.fromOneBased(1);
         DeleteCommand deleteCommand = new DeleteCommand(targetIndex);
         String expected = DeleteCommand.class.getCanonicalName() + "{targetIndex=" + targetIndex
                 + ", targetStudentId=null}";
+        assertEquals(expected, deleteCommand.toString());
+    }
+
+    @Test
+    public void toStringMethod_studentIdConstructor() {
+        StudentId studentId = new StudentId("A0123456X");
+        DeleteCommand deleteCommand = new DeleteCommand(studentId);
+        String expected = DeleteCommand.class.getCanonicalName() + "{targetIndex=null"
+                + ", targetStudentId=" + studentId + "}";
         assertEquals(expected, deleteCommand.toString());
     }
 
