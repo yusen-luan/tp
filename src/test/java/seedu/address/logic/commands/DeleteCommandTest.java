@@ -128,7 +128,7 @@ public class DeleteCommandTest {
         // different constructor (index vs studentId) -> returns false
         DeleteCommand deleteByIndex = new DeleteCommand(INDEX_FIRST_PERSON);
         assertFalse(deleteByStudentId1.equals(deleteByIndex));
-        
+
         // different constructor (studentId vs index) in reverse order -> returns false
         assertFalse(deleteByIndex.equals(deleteByStudentId1));
     }
