@@ -10,6 +10,7 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 
 /**
  * Deletes a person identified using it's displayed index from the address book.
@@ -26,9 +27,22 @@ public class DeleteCommand extends Command {
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
 
     private final Index targetIndex;
+    private final StudentId targetStudentId;
 
+    /**
+     * Creates a DeleteCommand to delete the person at the specified {@code Index}.
+     */
     public DeleteCommand(Index targetIndex) {
         this.targetIndex = targetIndex;
+        this.targetStudentId = null;
+    }
+
+    /**
+     * Creates a DeleteCommand to delete the person with the specified {@code StudentId}.
+     */
+    public DeleteCommand(StudentId targetStudentId) {
+        this.targetIndex = null;
+        this.targetStudentId = targetStudentId;
     }
 
     @Override
@@ -64,6 +78,7 @@ public class DeleteCommand extends Command {
     public String toString() {
         return new ToStringBuilder(this)
                 .add("targetIndex", targetIndex)
+                .add("targetStudentId", targetStudentId)
                 .toString();
     }
 }
