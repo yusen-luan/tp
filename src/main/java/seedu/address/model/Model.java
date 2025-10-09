@@ -84,4 +84,11 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
+
+    /**
+     * Finds and returns a person with the specified student ID.
+     * @param studentId The student ID to search for.
+     * @return The person with the matching student ID, or null if not found.
+     */
+    Person findPersonByStudentId(seedu.address.model.person.StudentId studentId);
 }
