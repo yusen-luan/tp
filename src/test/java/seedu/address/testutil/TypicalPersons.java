@@ -42,6 +42,11 @@ public class TypicalPersons {
     public static final Person GEORGE = new PersonBuilder().withName("George Best").withPhone("9482442")
             .withEmail("anna@example.com").withAddress("4th street").build();
 
+    // With student fields
+    public static final Person ZACK_STUDENT = new PersonBuilder().withName("Zack Lee").withPhone("91234567")
+            .withEmail("zack@example.com").withAddress("kent ridge").withStudentId("A0123456X")
+            .withModuleCode("CS2103T").build();
+
     // Manually added
     public static final Person HOON = new PersonBuilder().withName("Hoon Meier").withPhone("8482424")
             .withEmail("stefan@example.com").withAddress("little india").build();
