@@ -85,17 +85,17 @@ public class ViewCommand extends Command {
         }
 
         ViewCommand otherViewCommand = (ViewCommand) other;
-        
+
         // Both use index
         if (targetIndex != null && otherViewCommand.targetIndex != null) {
             return targetIndex.equals(otherViewCommand.targetIndex);
         }
-        
+
         // Both use student ID
         if (studentId != null && otherViewCommand.studentId != null) {
             return studentId.equals(otherViewCommand.studentId);
         }
-        
+
         return false;
     }
 
