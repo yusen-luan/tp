@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENT_ID;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 
 /**
  * Deletes a person identified using it's displayed index from the address book.
@@ -19,16 +21,30 @@ public class DeleteCommand extends Command {
     public static final String COMMAND_WORD = "delete";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Deletes the person identified by the index number used in the displayed person list.\n"
-            + "Parameters: INDEX (must be a positive integer)\n"
-            + "Example: " + COMMAND_WORD + " 1";
+            + ": Deletes the person identified by the index number or student ID.\n"
+            + "Parameters: INDEX (must be a positive integer) or " + PREFIX_STUDENT_ID + "STUDENT_ID\n"
+            + "Example: " + COMMAND_WORD + " 1 or " + COMMAND_WORD + " " + PREFIX_STUDENT_ID + "A0123456X";
 
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
+    public static final String MESSAGE_PERSON_NOT_FOUND = "No person found with the specified student ID.";
 
     private final Index targetIndex;
+    private final StudentId targetStudentId;
 
+    /**
+     * Creates a DeleteCommand to delete the person at the specified {@code Index}.
+     */
     public DeleteCommand(Index targetIndex) {
         this.targetIndex = targetIndex;
+        this.targetStudentId = null;
+    }
+
+    /**
+     * Creates a DeleteCommand to delete the person with the specified {@code StudentId}.
+     */
+    public DeleteCommand(StudentId targetStudentId) {
+        this.targetIndex = null;
+        this.targetStudentId = targetStudentId;
     }
 
     @Override
@@ -57,13 +73,26 @@ public class DeleteCommand extends Command {
         }
 
         DeleteCommand otherDeleteCommand = (DeleteCommand) other;
-        return targetIndex.equals(otherDeleteCommand.targetIndex);
+
+        // Check if both use index-based deletion
+        if (targetIndex != null && otherDeleteCommand.targetIndex != null) {
+            return targetIndex.equals(otherDeleteCommand.targetIndex);
+        }
+
+        // Check if both use student ID-based deletion
+        if (targetStudentId != null && otherDeleteCommand.targetStudentId != null) {
+            return targetStudentId.equals(otherDeleteCommand.targetStudentId);
+        }
+
+        // One uses index, the other uses student ID
+        return false;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("targetIndex", targetIndex)
+                .add("targetStudentId", targetStudentId)
                 .toString();
     }
 }
