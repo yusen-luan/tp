@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.module.ModuleCode;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -20,7 +21,8 @@ public class Person {
     private final Name name;
     private final Phone phone;
     private final Email email;
-
+    private final StudentId studentId;
+    private final ModuleCode moduleCode;
     // Data fields
     private final Address address;
     private final Set<Tag> tags = new HashSet<>();
