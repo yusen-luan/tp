@@ -14,6 +14,9 @@ public interface Model {
     /** {@code Predicate} that always evaluate to true */
     Predicate<Person> PREDICATE_SHOW_ALL_PERSONS = unused -> true;
 
+    // Placeholder predicate for module filtering, to be edited for v1.3 milestone
+    Predicate<Person> PREDICATE_FILTER_BY_MODULE = person -> true;
+
     /**
      * Replaces user prefs data with the data in {@code userPrefs}.
      */
