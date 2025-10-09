@@ -3,7 +3,6 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -31,11 +30,11 @@ public class ListCommand extends Command {
     private final Optional<ModuleCode> moduleCode;
 
     // If moduleCode is empty, list all persons. If moduleCode is present, list persons in that module.
-    public ListCommand () {
+    public ListCommand() {
         this.moduleCode = Optional.empty();
     }
 
-    public ListCommand (ModuleCode moduleCode) {
+    public ListCommand(ModuleCode moduleCode) {
         this.moduleCode = Optional.of(moduleCode);
     }
 
