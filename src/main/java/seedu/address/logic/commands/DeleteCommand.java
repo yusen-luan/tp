@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENT_ID;
 
 import java.util.List;
+import java.util.Optional;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
@@ -50,13 +51,25 @@ public class DeleteCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-        List<Person> lastShownList = model.getFilteredPersonList();
 
-        if (targetIndex.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        Person personToDelete;
+
+        if (targetStudentId != null) {
+            // Delete by student ID
+            Optional<Person> personOptional = model.getPersonByStudentId(targetStudentId);
+            if (personOptional.isEmpty()) {
+                throw new CommandException(MESSAGE_PERSON_NOT_FOUND);
+            }
+            personToDelete = personOptional.get();
+        } else {
+            // Delete by index
+            List<Person> lastShownList = model.getFilteredPersonList();
+            if (targetIndex.getZeroBased() >= lastShownList.size()) {
+                throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+            }
+            personToDelete = lastShownList.get(targetIndex.getZeroBased());
         }
 
-        Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
         model.deletePerson(personToDelete);
         return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
     }
