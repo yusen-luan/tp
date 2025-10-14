@@ -5,42 +5,49 @@
     "phone" : "94351253",
     "email" : "alice@example.com",
     "address" : "123, Jurong West Ave 6, #08-111",
+    "studentId" : "A0123456X",
     "tags" : [ "friends" ]
   }, {
     "name" : "Benson Meier",
     "phone" : "98765432",
     "email" : "johnd@example.com",
     "address" : "311, Clementi Ave 2, #02-25",
+    "studentId" : "A0234567Y",
     "tags" : [ "owesMoney", "friends" ]
   }, {
     "name" : "Carl Kurz",
     "phone" : "95352563",
     "email" : "heinz@example.com",
     "address" : "wall street",
+    "studentId" : "A0345678Z",
     "tags" : [ ]
   }, {
     "name" : "Daniel Meier",
     "phone" : "87652533",
     "email" : "cornelia@example.com",
     "address" : "10th street",
+    "studentId" : "A0456789A",
     "tags" : [ "friends" ]
   }, {
     "name" : "Elle Meyer",
     "phone" : "9482224",
     "email" : "werner@example.com",
     "address" : "michegan ave",
+    "studentId" : "A0567890B",
     "tags" : [ ]
   }, {
     "name" : "Fiona Kunz",
     "phone" : "9482427",
     "email" : "lydia@example.com",
     "address" : "little tokyo",
+    "studentId" : "A0678901C",
     "tags" : [ ]
   }, {
     "name" : "George Best",
     "phone" : "9482442",
     "email" : "anna@example.com",
     "address" : "4th street",
+    "studentId" : "A0789012D",
     "tags" : [ ]
   } ]
 }
