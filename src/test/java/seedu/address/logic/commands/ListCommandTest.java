@@ -24,7 +24,7 @@ import seedu.address.testutil.PersonBuilder;
  */
 public class ListCommandTest {
 
-    private final Person STUDENT1 = new PersonBuilder()
+    private static final Person STUDENT1 = new PersonBuilder()
             .withName("Alice Tan")
             .withPhone("81234567")
             .withEmail("alice.tan@example.com")
@@ -34,7 +34,7 @@ public class ListCommandTest {
             .withModuleCode("CS2103T") // target module
             .build();
 
-    private final Person STUDENT2 = new PersonBuilder()
+    private static final Person STUDENT2 = new PersonBuilder()
             .withName("Bob Lim")
             .withPhone("81234568")
             .withEmail("bob.lim@example.com")
@@ -44,7 +44,7 @@ public class ListCommandTest {
             .withModuleCode("CS2100") // different module
             .build();
 
-    private final Person STUDENT3 = new PersonBuilder()
+    private static final Person STUDENT3 = new PersonBuilder()
             .withName("Chen Ding Dong")
             .withPhone("81234568")
             .withEmail("bob.lim@example.com")

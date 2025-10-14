@@ -6,8 +6,6 @@ import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import javax.lang.model.element.ModuleElement;
-
 import seedu.address.model.Model;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.person.Person;

@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.ListCommand;
-import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.module.ModuleCode;
 
 public class ListCommandParserTest {
@@ -24,14 +23,10 @@ public class ListCommandParserTest {
         // Implement test for no arguments
         assertParseSuccess(parser, "", new ListCommand());
         assertParseSuccess(parser, "   ", new ListCommand());
-        System.out.println(ModuleCode.isValidModuleCode("CS21"));       // should be false
-        System.out.println(ModuleCode.isValidModuleCode("CS2103T"));    // should be true
-        System.out.println(ModuleCode.isValidModuleCode("1234567"));    // should be false
-
     }
 
     @Test
-    public void parse_validModuleCode_success() throws ParseException{
+    public void parse_validModuleCode_success() {
         // Implement test for valid module code
         assertParseSuccess(parser, " m/CS2103T", new ListCommand(new ModuleCode("CS2103T")));
         assertParseSuccess(parser, " m/cs2103t", new ListCommand(new ModuleCode("CS2103T")));
@@ -39,7 +34,7 @@ public class ListCommandParserTest {
     }
 
     @Test
-    public void parse_invalidModuleCode_failure() throws ParseException {
+    public void parse_invalidModuleCode_failure() {
         // Implement test for invalid module code
         assertParseFailure(parser, " m/CS21", ModuleCode.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, " m/1234567", ModuleCode.MESSAGE_CONSTRAINTS);
