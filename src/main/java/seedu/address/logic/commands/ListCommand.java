@@ -43,8 +43,42 @@ public class ListCommand extends Command {
         requireNonNull(model);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
 
-        //Added predicate here for module filtering, add logic for handling two types of listing for v1.3
+        if (moduleCode.isEmpty()) {
+            model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+            return new CommandResult(MESSAGE_SUCCESS);
+        }
+
+        ModuleCode target = moduleCode.get();
+        // predicate to filter persons by module code
         Predicate<Person> modulePredicate = person -> person.getModuleCode().equals(moduleCode.get());
-        return new CommandResult(MESSAGE_SUCCESS);
+
+        model.updateFilteredPersonList(modulePredicate);
+
+        if (model.getFilteredPersonList().isEmpty()) {
+            return new CommandResult(String.format(MESSAGE_NO_STUDENTS_FOUND, target));
+        } else {
+            return new CommandResult(String.format(MESSAGE_SUCCESS_MODULE, target));
+        }
+
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+
+        if (!(other instanceof ListCommand)) {
+            return false;
+        }
+
+        ListCommand otherCommand = (ListCommand) other;
+        return moduleCode.equals(otherCommand.moduleCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return moduleCode.hashCode();
+    }
+
 }
