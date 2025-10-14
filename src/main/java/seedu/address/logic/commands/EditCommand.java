@@ -162,6 +162,8 @@ public class EditCommand extends Command {
             setEmail(toCopy.email);
             setAddress(toCopy.address);
             setTags(toCopy.tags);
+            setStudentId(toCopy.studentId);
+            setModuleCode(toCopy.moduleCode);
         }
 
         /**
