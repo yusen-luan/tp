@@ -41,7 +41,6 @@ public class ListCommand extends Command {
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
-        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
 
         if (moduleCode.isEmpty()) {
             model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
@@ -50,7 +49,8 @@ public class ListCommand extends Command {
 
         ModuleCode target = moduleCode.get();
         // predicate to filter persons by module code
-        Predicate<Person> modulePredicate = person -> person.getModuleCode().equals(moduleCode.get());
+        Predicate<Person> modulePredicate = person -> person.getModuleCode() != null
+                && person.getModuleCode().equals(moduleCode.get());
 
         model.updateFilteredPersonList(modulePredicate);
 
