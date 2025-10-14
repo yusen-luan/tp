@@ -53,11 +53,12 @@ public class ViewCommandTest {
                 .withPhone("91234567")
                 .withEmail("test@example.com")
                 .withAddress("test address")
-                .withStudentId("A0123456X")
+                .withStudentId("A9876543Z")
+                .withModuleCode("CS2103T")
                 .build();
         model.addPerson(studentToView);
 
-        StudentId studentId = new StudentId("A0123456X");
+        StudentId studentId = new StudentId("A9876543Z");
         ViewCommand viewCommand = new ViewCommand(studentId);
 
         String expectedMessage = String.format(ViewCommand.MESSAGE_VIEW_STUDENT_SUCCESS, studentToView.getName());
@@ -80,7 +81,7 @@ public class ViewCommandTest {
     public void equals() {
         ViewCommand viewFirstCommand = new ViewCommand(INDEX_FIRST_PERSON);
         ViewCommand viewSecondCommand = new ViewCommand(INDEX_SECOND_PERSON);
-        StudentId studentId = new StudentId("A0123456X");
+        StudentId studentId = new StudentId("A9876543Z");
         ViewCommand viewStudentIdCommand = new ViewCommand(studentId);
 
         // same object -> returns true
@@ -91,7 +92,7 @@ public class ViewCommandTest {
         assertTrue(viewFirstCommand.equals(viewFirstCommandCopy));
 
         // same values (student ID) -> returns true
-        ViewCommand viewStudentIdCommandCopy = new ViewCommand(new StudentId("A0123456X"));
+        ViewCommand viewStudentIdCommandCopy = new ViewCommand(new StudentId("A9876543Z"));
         assertTrue(viewStudentIdCommand.equals(viewStudentIdCommandCopy));
 
         // different types -> returns false
@@ -114,7 +115,7 @@ public class ViewCommandTest {
         String expected = ViewCommand.class.getCanonicalName() + "{targetIndex=" + targetIndex + "}";
         assertEquals(expected, viewCommand.toString());
 
-        StudentId studentId = new StudentId("A0123456X");
+        StudentId studentId = new StudentId("A9876543Z");
         ViewCommand viewStudentIdCommand = new ViewCommand(studentId);
         String expectedStudentId = ViewCommand.class.getCanonicalName() + "{studentId=" + studentId + "}";
         assertEquals(expectedStudentId, viewStudentIdCommand.toString());

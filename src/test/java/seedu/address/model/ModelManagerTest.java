@@ -158,19 +158,26 @@ public class ModelManagerTest {
                 .withPhone("91234567")
                 .withEmail("test@example.com")
                 .withAddress("test address")
-                .withStudentId("A0123456X")
+                .withStudentId("A9876543Z")
+                .withModuleCode("CS2103T")
                 .build();
         modelManager.addPerson(student);
 
-        StudentId studentId = new StudentId("A0123456X");
+        StudentId studentId = new StudentId("A9876543Z");
         assertEquals(student, modelManager.findPersonByStudentId(studentId));
     }
 
     @Test
     public void findPersonByStudentId_personWithoutStudentId_returnsNull() {
-        modelManager.addPerson(ALICE); // ALICE has no student ID
+        // Create a person without studentId
+        Person personWithoutStudentId = new PersonBuilder().withName("No Student ID Person")
+                .withPhone("91234567")
+                .withEmail("nostudentid@example.com")
+                .withAddress("test address")
+                .build();
+        modelManager.addPerson(personWithoutStudentId);
 
-        StudentId studentId = new StudentId("A0123456X");
+        StudentId studentId = new StudentId("A9999999Z");
         assertEquals(null, modelManager.findPersonByStudentId(studentId));
     }
 }
