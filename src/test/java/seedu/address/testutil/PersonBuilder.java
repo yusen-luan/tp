@@ -107,10 +107,26 @@ public class PersonBuilder {
     }
 
     /**
+     * Sets the {@code StudentId} of the {@code Person} that we are building to null.
+     */
+    public PersonBuilder withStudentId() {
+        this.studentId = null;
+        return this;
+    }
+
+    /**
      * Sets the {@code ModuleCode} of the {@code Person} that we are building.
      */
     public PersonBuilder withModuleCode(String moduleCode) {
         this.moduleCode = new ModuleCode(moduleCode);
+        return this;
+    }
+
+    /**
+     * Sets the {@code ModuleCode} of the {@code Person} that we are building to null.
+     */
+    public PersonBuilder withModuleCode() {
+        this.moduleCode = null;
         return this;
     }
 

@@ -38,10 +38,13 @@ public class EditPersonDescriptorBuilder {
         descriptor.setPhone(person.getPhone());
         descriptor.setEmail(person.getEmail());
         descriptor.setAddress(person.getAddress());
-        descriptor.setStudentId(person.getStudentId());
-        descriptor.setModuleCode(person.getModuleCode());
+        if (person.getStudentId() != null) {
+            descriptor.setStudentId(person.getStudentId());
+        }
+        if (person.getModuleCode() != null) {
+            descriptor.setModuleCode(person.getModuleCode());
+        }
         descriptor.setTags(person.getTags());
-        descriptor.setStudentId(person.getStudentId());
     }
 
     /**
