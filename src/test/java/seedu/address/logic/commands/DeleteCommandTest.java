@@ -151,6 +151,47 @@ public class DeleteCommandTest {
         assertEquals(expected, deleteCommand.toString());
     }
 
+    @Test
+    public void execute_validStudentIdUnfilteredList_success() {
+        Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        StudentId targetStudentId = personToDelete.getStudentId();
+        DeleteCommand deleteCommand = new DeleteCommand(targetStudentId);
+
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
+                Messages.format(personToDelete));
+
+        ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.deletePerson(personToDelete);
+
+        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_invalidStudentIdUnfilteredList_throwsCommandException() {
+        StudentId invalidStudentId = new StudentId("A9999999Z");
+        DeleteCommand deleteCommand = new DeleteCommand(invalidStudentId);
+
+        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_PERSON_NOT_FOUND);
+    }
+
+    @Test
+    public void execute_validStudentIdFilteredList_success() {
+        showPersonAtIndex(model, INDEX_FIRST_PERSON);
+
+        Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        StudentId targetStudentId = personToDelete.getStudentId();
+        DeleteCommand deleteCommand = new DeleteCommand(targetStudentId);
+
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
+                Messages.format(personToDelete));
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.deletePerson(personToDelete);
+        showNoPerson(expectedModel);
+
+        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+    }
+
     /**
      * Updates {@code model}'s filtered list to show no one.
      */

@@ -1,11 +1,13 @@
 package seedu.address.model;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 
 /**
  * The API of the Model component.
@@ -59,6 +61,12 @@ public interface Model {
      * Returns true if a person with the same identity as {@code person} exists in the address book.
      */
     boolean hasPerson(Person person);
+
+    /**
+     * Returns the person with the specified student ID, if present.
+     * Returns an empty Optional if no person with the given student ID exists.
+     */
+    Optional<Person> getPersonByStudentId(StudentId studentId);
 
     /**
      * Deletes the given person.

@@ -3,10 +3,12 @@ package seedu.address.model;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
+import java.util.Optional;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.person.UniquePersonList;
 
 /**
@@ -65,6 +67,17 @@ public class AddressBook implements ReadOnlyAddressBook {
     public boolean hasPerson(Person person) {
         requireNonNull(person);
         return persons.contains(person);
+    }
+
+    /**
+     * Returns the person with the specified student ID, if present.
+     * Returns an empty Optional if no person with the given student ID exists.
+     */
+    public Optional<Person> getPersonByStudentId(StudentId studentId) {
+        requireNonNull(studentId);
+        return persons.asUnmodifiableObservableList().stream()
+                .filter(person -> person.getStudentId().equals(studentId))
+                .findFirst();
     }
 
     /**

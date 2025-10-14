@@ -22,6 +22,7 @@ public class PersonBuilder {
     public static final String DEFAULT_PHONE = "85355255";
     public static final String DEFAULT_EMAIL = "amy@gmail.com";
     public static final String DEFAULT_ADDRESS = "123, Jurong West Ave 6, #08-111";
+    public static final String DEFAULT_STUDENT_ID = "A0000000X";
 
     private Name name;
     private Phone phone;
@@ -106,10 +107,26 @@ public class PersonBuilder {
     }
 
     /**
+     * Sets the {@code StudentId} of the {@code Person} that we are building to null.
+     */
+    public PersonBuilder withStudentId() {
+        this.studentId = null;
+        return this;
+    }
+
+    /**
      * Sets the {@code ModuleCode} of the {@code Person} that we are building.
      */
     public PersonBuilder withModuleCode(String moduleCode) {
         this.moduleCode = new ModuleCode(moduleCode);
+        return this;
+    }
+
+    /**
+     * Sets the {@code ModuleCode} of the {@code Person} that we are building to null.
+     */
+    public PersonBuilder withModuleCode() {
+        this.moduleCode = null;
         return this;
     }
 

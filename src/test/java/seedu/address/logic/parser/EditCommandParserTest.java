@@ -166,7 +166,7 @@ public class EditCommandParserTest {
 
         // studentId
         userInput = targetIndex.getOneBased() + STUDENT_ID_DESC_AMY;
-        descriptor = new EditPersonDescriptorBuilder().withStudentId("A0123456X").build();
+        descriptor = new EditPersonDescriptorBuilder().withStudentId("A1234567X").build();
         expectedCommand = new EditCommand(targetIndex, descriptor);
         assertParseSuccess(parser, userInput, expectedCommand);
 
