@@ -14,10 +14,12 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.module.ModuleCode;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.Tag;
 
 public class ParserUtilTest {
@@ -26,6 +28,8 @@ public class ParserUtilTest {
     private static final String INVALID_ADDRESS = " ";
     private static final String INVALID_EMAIL = "example.com";
     private static final String INVALID_TAG = "#friend";
+    private static final String INVALID_STUDENT_ID = "A123456X"; // Missing one digit
+    private static final String INVALID_MODULE_CODE = "CS21"; // Too short, invalid format
 
     private static final String VALID_NAME = "Rachel Walker";
     private static final String VALID_PHONE = "123456";
@@ -33,6 +37,8 @@ public class ParserUtilTest {
     private static final String VALID_EMAIL = "rachel@example.com";
     private static final String VALID_TAG_1 = "friend";
     private static final String VALID_TAG_2 = "neighbour";
+    private static final String VALID_STUDENT_ID = "A0123456X";
+    private static final String VALID_MODULE_CODE = "CS2103T";
 
     private static final String WHITESPACE = " \t\r\n";
 
@@ -192,5 +198,51 @@ public class ParserUtilTest {
         Set<Tag> expectedTagSet = new HashSet<Tag>(Arrays.asList(new Tag(VALID_TAG_1), new Tag(VALID_TAG_2)));
 
         assertEquals(expectedTagSet, actualTagSet);
+    }
+
+    @Test
+    public void parseStudentId_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseStudentId((String) null));
+    }
+
+    @Test
+    public void parseStudentId_invalidValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseStudentId(INVALID_STUDENT_ID));
+    }
+
+    @Test
+    public void parseStudentId_validValueWithoutWhitespace_returnsStudentId() throws Exception {
+        StudentId expectedStudentId = new StudentId(VALID_STUDENT_ID);
+        assertEquals(expectedStudentId, ParserUtil.parseStudentId(VALID_STUDENT_ID));
+    }
+
+    @Test
+    public void parseStudentId_validValueWithWhitespace_returnsTrimmedStudentId() throws Exception {
+        String studentIdWithWhitespace = WHITESPACE + VALID_STUDENT_ID + WHITESPACE;
+        StudentId expectedStudentId = new StudentId(VALID_STUDENT_ID);
+        assertEquals(expectedStudentId, ParserUtil.parseStudentId(studentIdWithWhitespace));
+    }
+
+    @Test
+    public void parseModuleCode_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseModuleCode((String) null));
+    }
+
+    @Test
+    public void parseModuleCode_invalidValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseModuleCode(INVALID_MODULE_CODE));
+    }
+
+    @Test
+    public void parseModuleCode_validValueWithoutWhitespace_returnsModuleCode() throws Exception {
+        ModuleCode expectedModuleCode = new ModuleCode(VALID_MODULE_CODE);
+        assertEquals(expectedModuleCode, ParserUtil.parseModuleCode(VALID_MODULE_CODE));
+    }
+
+    @Test
+    public void parseModuleCode_validValueWithWhitespace_returnsTrimmedModuleCode() throws Exception {
+        String moduleCodeWithWhitespace = WHITESPACE + VALID_MODULE_CODE + WHITESPACE;
+        ModuleCode expectedModuleCode = new ModuleCode(VALID_MODULE_CODE);
+        assertEquals(expectedModuleCode, ParserUtil.parseModuleCode(moduleCodeWithWhitespace));
     }
 }

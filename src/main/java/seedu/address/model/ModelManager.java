@@ -119,6 +119,16 @@ public class ModelManager implements Model {
         addressBook.setPerson(target, editedPerson);
     }
 
+    @Override
+    public Person findPersonByStudentId(seedu.address.model.person.StudentId studentId) {
+        requireNonNull(studentId);
+        return addressBook.getPersonList().stream()
+                .filter(person -> person.getStudentId() != null
+                        && person.getStudentId().equals(studentId))
+                .findFirst()
+                .orElse(null);
+    }
+
     //=========== Filtered Person List Accessors =============================================================
 
     /**

@@ -3,6 +3,7 @@ package seedu.address.testutil;
 import java.util.HashSet;
 import java.util.Set;
 
+import seedu.address.model.module.ModuleCode;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -29,6 +30,7 @@ public class PersonBuilder {
     private Address address;
     private Set<Tag> tags;
     private StudentId studentId;
+    private ModuleCode moduleCode;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -39,7 +41,8 @@ public class PersonBuilder {
         email = new Email(DEFAULT_EMAIL);
         address = new Address(DEFAULT_ADDRESS);
         tags = new HashSet<>();
-        studentId = new StudentId(DEFAULT_STUDENT_ID);
+        studentId = null;
+        moduleCode = null;
     }
 
     /**
@@ -52,6 +55,7 @@ public class PersonBuilder {
         address = personToCopy.getAddress();
         tags = new HashSet<>(personToCopy.getTags());
         studentId = personToCopy.getStudentId();
+        moduleCode = personToCopy.getModuleCode();
     }
 
     /**
@@ -102,8 +106,23 @@ public class PersonBuilder {
         return this;
     }
 
+    /**
+     * Sets the {@code ModuleCode} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withModuleCode(String moduleCode) {
+        this.moduleCode = new ModuleCode(moduleCode);
+        return this;
+    }
+
+    /**
+     * Builds a {@code Person} from the current builder state.
+     * If both student-related fields are unset, the constructor without those fields is used.
+     */
     public Person build() {
-        return new Person(name, phone, email, address, tags, studentId);
+        if (studentId == null && moduleCode == null) {
+            return new Person(name, phone, email, address, tags);
+        }
+        return new Person(name, phone, email, address, tags, studentId, moduleCode);
     }
 
 }

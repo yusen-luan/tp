@@ -16,7 +16,10 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.testutil.AddressBookBuilder;
+import seedu.address.testutil.PersonBuilder;
 
 public class ModelManagerTest {
 
@@ -128,5 +131,53 @@ public class ModelManagerTest {
         UserPrefs differentUserPrefs = new UserPrefs();
         differentUserPrefs.setAddressBookFilePath(Paths.get("differentFilePath"));
         assertFalse(modelManager.equals(new ModelManager(addressBook, differentUserPrefs)));
+    }
+
+    @Test
+    public void findPersonByStudentId_nullStudentId_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.findPersonByStudentId(null));
+    }
+
+    @Test
+    public void findPersonByStudentId_studentIdNotInAddressBook_returnsNull() {
+        Person student = new PersonBuilder().withName("Test Student")
+                .withPhone("91234567")
+                .withEmail("test@example.com")
+                .withAddress("test address")
+                .withStudentId("A0123456X")
+                .build();
+        modelManager.addPerson(student);
+
+        StudentId nonExistentId = new StudentId("A9999999Z");
+        assertEquals(null, modelManager.findPersonByStudentId(nonExistentId));
+    }
+
+    @Test
+    public void findPersonByStudentId_studentIdInAddressBook_returnsPerson() {
+        Person student = new PersonBuilder().withName("Test Student")
+                .withPhone("91234567")
+                .withEmail("test@example.com")
+                .withAddress("test address")
+                .withStudentId("A9876543Z")
+                .withModuleCode("CS2103T")
+                .build();
+        modelManager.addPerson(student);
+
+        StudentId studentId = new StudentId("A9876543Z");
+        assertEquals(student, modelManager.findPersonByStudentId(studentId));
+    }
+
+    @Test
+    public void findPersonByStudentId_personWithoutStudentId_returnsNull() {
+        // Create a person without studentId
+        Person personWithoutStudentId = new PersonBuilder().withName("No Student ID Person")
+                .withPhone("91234567")
+                .withEmail("nostudentid@example.com")
+                .withAddress("test address")
+                .build();
+        modelManager.addPerson(personWithoutStudentId);
+
+        StudentId studentId = new StudentId("A9999999Z");
+        assertEquals(null, modelManager.findPersonByStudentId(studentId));
     }
 }

@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.module.ModuleCode;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -21,7 +22,7 @@ public class Person {
     private final Phone phone;
     private final Email email;
     private final StudentId studentId;
-
+    private final ModuleCode moduleCode;
     // Data fields
     private final Address address;
     private final Set<Tag> tags = new HashSet<>();
@@ -29,14 +30,30 @@ public class Person {
     /**
      * Every field must be present and not null.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, StudentId studentId) {
-        requireAllNonNull(name, phone, email, address, tags, studentId);
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+        StudentId studentId, ModuleCode moduleCode) {
+        requireAllNonNull(name, phone, email, address, tags);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.tags.addAll(tags);
         this.studentId = studentId;
+        this.moduleCode = moduleCode;
+    }
+
+    /**
+     * Alternate constructor for non students
+     */
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
+        requireAllNonNull(name, phone, email, address, tags);
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.tags.addAll(tags);
+        this.studentId = null;
+        this.moduleCode = null;
     }
 
     public Name getName() {
@@ -57,6 +74,10 @@ public class Person {
 
     public StudentId getStudentId() {
         return studentId;
+    }
+
+    public ModuleCode getModuleCode() {
+        return moduleCode;
     }
 
     /**
@@ -101,13 +122,14 @@ public class Person {
                 && email.equals(otherPerson.email)
                 && address.equals(otherPerson.address)
                 && tags.equals(otherPerson.tags)
-                && studentId.equals(otherPerson.studentId);
+                && Objects.equals(studentId, otherPerson.studentId)
+                && Objects.equals(moduleCode, otherPerson.moduleCode);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags, studentId);
+        return Objects.hash(name, phone, email, address, tags, studentId, moduleCode);
     }
 
     @Override
@@ -119,6 +141,7 @@ public class Person {
                 .add("address", address)
                 .add("tags", tags)
                 .add("studentId", studentId)
+                .add("moduleCode", moduleCode)
                 .toString();
     }
 
