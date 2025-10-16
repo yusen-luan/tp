@@ -70,7 +70,7 @@ public class ViewCommand extends Command {
             }
         }
 
-        return new CommandResult(String.format(MESSAGE_VIEW_STUDENT_SUCCESS, personToView.getName()));
+        return new CommandResult(String.format(MESSAGE_VIEW_STUDENT_SUCCESS, Messages.format(personToView)));
     }
 
     @Override
