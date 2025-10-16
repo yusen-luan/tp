@@ -30,7 +30,7 @@ public class PersonBuilder {
     private Address address;
     private Set<Tag> tags;
     private StudentId studentId;
-    private ModuleCode moduleCode;
+    private Set<ModuleCode> moduleCodes;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -42,7 +42,7 @@ public class PersonBuilder {
         address = new Address(DEFAULT_ADDRESS);
         tags = new HashSet<>();
         studentId = null;
-        moduleCode = null;
+        moduleCodes = new HashSet<>();
     }
 
     /**
@@ -55,7 +55,7 @@ public class PersonBuilder {
         address = personToCopy.getAddress();
         tags = new HashSet<>(personToCopy.getTags());
         studentId = personToCopy.getStudentId();
-        moduleCode = personToCopy.getModuleCode();
+        moduleCodes = new HashSet<>(personToCopy.getModuleCodes());
     }
 
     /**
@@ -115,18 +115,28 @@ public class PersonBuilder {
     }
 
     /**
-     * Sets the {@code ModuleCode} of the {@code Person} that we are building.
+     * Sets the {@code ModuleCodes} of the {@code Person} that we are building.
      */
-    public PersonBuilder withModuleCode(String moduleCode) {
-        this.moduleCode = new ModuleCode(moduleCode);
+    public PersonBuilder withModuleCodes(String... moduleCodes) {
+        this.moduleCodes = SampleDataUtil.getModuleCodeSet(moduleCodes);
         return this;
     }
 
     /**
-     * Sets the {@code ModuleCode} of the {@code Person} that we are building to null.
+     * Sets the {@code ModuleCode} of the {@code Person} that we are building.
+     * For backward compatibility with single module code tests.
+     */
+    public PersonBuilder withModuleCode(String moduleCode) {
+        this.moduleCodes = SampleDataUtil.getModuleCodeSet(moduleCode);
+        return this;
+    }
+
+    /**
+     * Sets the {@code ModuleCodes} of the {@code Person} that we are building to empty.
+     * For backward compatibility with tests that set moduleCode to null.
      */
     public PersonBuilder withModuleCode() {
-        this.moduleCode = null;
+        this.moduleCodes = new HashSet<>();
         return this;
     }
 
@@ -135,10 +145,10 @@ public class PersonBuilder {
      * If both student-related fields are unset, the constructor without those fields is used.
      */
     public Person build() {
-        if (studentId == null && moduleCode == null) {
+        if (studentId == null && moduleCodes.isEmpty()) {
             return new Person(name, phone, email, address, tags);
         }
-        return new Person(name, phone, email, address, tags, studentId, moduleCode);
+        return new Person(name, phone, email, address, tags, studentId, moduleCodes);
     }
 
 }

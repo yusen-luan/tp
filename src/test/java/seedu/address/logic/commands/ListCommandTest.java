@@ -90,8 +90,8 @@ public class ListCommandTest {
         ListCommand listCommand = new ListCommand(validModuleCode);
 
         //expected list command output
-        Predicate<Person> modulePredicate = person -> person.getModuleCode() != null
-                                            && person.getModuleCode().equals(validModuleCode);
+        Predicate<Person> modulePredicate = person -> person.getModuleCodes().stream()
+                .anyMatch(mc -> mc.equals(validModuleCode));
 
         expectedModel.updateFilteredPersonList(modulePredicate);
         String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS_MODULE, validModuleCode);
@@ -113,8 +113,8 @@ public class ListCommandTest {
         ModuleCode noStudentModuleCode = new ModuleCode("CS9999");
         ListCommand listCommand = new ListCommand(noStudentModuleCode);
 
-        Predicate<Person> modulePredicate = person -> person.getModuleCode() != null
-                && person.getModuleCode().equals(noStudentModuleCode);
+        Predicate<Person> modulePredicate = person -> person.getModuleCodes().stream()
+                .anyMatch(mc -> mc.equals(noStudentModuleCode));
 
         expectedModel.updateFilteredPersonList(modulePredicate);
 

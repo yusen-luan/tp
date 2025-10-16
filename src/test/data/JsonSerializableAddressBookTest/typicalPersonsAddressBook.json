@@ -7,7 +7,7 @@
     "address" : "123, Jurong West Ave 6, #08-111",
     "tags" : [ "friends" ],
     "studentId" : "A0123456X",
-    "moduleCode" : "CS2103T"
+    "moduleCodes" : [ "CS2103T" ]
   }, {
     "name" : "Benson Meier",
     "phone" : "98765432",
@@ -15,7 +15,7 @@
     "address" : "311, Clementi Ave 2, #02-25",
     "tags" : [ "owesMoney", "friends" ],
     "studentId" : "A0234567Y",
-    "moduleCode" : "CS2103T"
+    "moduleCodes" : [ "CS2103T" ]
   }, {
     "name" : "Carl Kurz",
     "phone" : "95352563",
@@ -23,7 +23,7 @@
     "address" : "wall street",
     "tags" : [ ],
     "studentId" : "A0345678Z",
-    "moduleCode" : "CS2040"
+    "moduleCodes" : [ "CS2040" ]
   }, {
     "name" : "Daniel Meier",
     "phone" : "87652533",
@@ -31,7 +31,7 @@
     "address" : "10th street",
     "tags" : [ "friends" ],
     "studentId" : "A0456789A",
-    "moduleCode" : "CS3230"
+    "moduleCodes" : [ "CS3230" ]
   }, {
     "name" : "Elle Meyer",
     "phone" : "9482224",
@@ -39,7 +39,7 @@
     "address" : "michegan ave",
     "tags" : [ ],
     "studentId" : "A0567890B",
-    "moduleCode" : "CS2106"
+    "moduleCodes" : [ "CS2106" ]
   }, {
     "name" : "Fiona Kunz",
     "phone" : "9482427",
@@ -47,7 +47,7 @@
     "address" : "little tokyo",
     "tags" : [ ],
     "studentId" : "A0678901C",
-    "moduleCode" : "CS1010"
+    "moduleCodes" : [ "CS1010" ]
   }, {
     "name" : "George Best",
     "phone" : "9482442",
@@ -55,6 +55,6 @@
     "address" : "4th street",
     "tags" : [ ],
     "studentId" : "A0789012D",
-    "moduleCode" : "CS3244"
+    "moduleCodes" : [ "CS3244" ]
   } ]
 }

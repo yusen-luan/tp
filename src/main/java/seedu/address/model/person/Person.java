@@ -22,7 +22,7 @@ public class Person {
     private final Phone phone;
     private final Email email;
     private final StudentId studentId;
-    private final ModuleCode moduleCode;
+    private final Set<ModuleCode> moduleCodes = new HashSet<>();
     // Data fields
     private final Address address;
     private final Set<Tag> tags = new HashSet<>();
@@ -31,7 +31,7 @@ public class Person {
      * Every field must be present and not null.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
-        StudentId studentId, ModuleCode moduleCode) {
+                  StudentId studentId, Set<ModuleCode> moduleCodes) {
         requireAllNonNull(name, phone, email, address, tags);
         this.name = name;
         this.phone = phone;
@@ -39,7 +39,9 @@ public class Person {
         this.address = address;
         this.tags.addAll(tags);
         this.studentId = studentId;
-        this.moduleCode = moduleCode;
+        if (moduleCodes != null) {
+            this.moduleCodes.addAll(moduleCodes);
+        }
     }
 
     /**
@@ -53,7 +55,6 @@ public class Person {
         this.address = address;
         this.tags.addAll(tags);
         this.studentId = null;
-        this.moduleCode = null;
     }
 
     public Name getName() {
@@ -76,8 +77,12 @@ public class Person {
         return studentId;
     }
 
-    public ModuleCode getModuleCode() {
-        return moduleCode;
+    /**
+     * Returns an immutable module code set, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public Set<ModuleCode> getModuleCodes() {
+        return Collections.unmodifiableSet(moduleCodes);
     }
 
     /**
@@ -123,13 +128,13 @@ public class Person {
                 && address.equals(otherPerson.address)
                 && tags.equals(otherPerson.tags)
                 && Objects.equals(studentId, otherPerson.studentId)
-                && Objects.equals(moduleCode, otherPerson.moduleCode);
+                && moduleCodes.equals(otherPerson.moduleCodes);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags, studentId, moduleCode);
+        return Objects.hash(name, phone, email, address, tags, studentId, moduleCodes);
     }
 
     @Override
@@ -141,7 +146,7 @@ public class Person {
                 .add("address", address)
                 .add("tags", tags)
                 .add("studentId", studentId)
-                .add("moduleCode", moduleCode)
+                .add("moduleCodes", moduleCodes)
                 .toString();
     }
 

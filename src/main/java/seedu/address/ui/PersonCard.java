@@ -50,7 +50,15 @@ public class PersonCard extends UiPart<Region> {
         id.setText(displayedIndex + ". ");
         name.setText(person.getName().fullName);
         studentId.setText(person.getStudentId() != null ? person.getStudentId().value : "N/A");
-        moduleCode.setText(person.getModuleCode() != null ? person.getModuleCode().value : "N/A");
+        if (!person.getModuleCodes().isEmpty()) {
+            String moduleCodesText = person.getModuleCodes().stream()
+                    .map(mc -> mc.value)
+                    .reduce((a, b) -> a + ", " + b)
+                    .orElse("N/A");
+            moduleCode.setText(moduleCodesText);
+        } else {
+            moduleCode.setText("N/A");
+        }
         email.setText(person.getEmail().value);
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
