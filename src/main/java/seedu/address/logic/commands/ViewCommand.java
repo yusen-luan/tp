@@ -70,6 +70,9 @@ public class ViewCommand extends Command {
             }
         }
 
+        // Filter the list to show only the selected student
+        model.updateFilteredPersonList(person -> person.equals(personToView));
+
         return new CommandResult(String.format(MESSAGE_VIEW_STUDENT_SUCCESS, personToView.getName()));
     }
 

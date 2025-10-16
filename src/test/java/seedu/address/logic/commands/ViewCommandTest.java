@@ -35,6 +35,7 @@ public class ViewCommandTest {
         String expectedMessage = String.format(ViewCommand.MESSAGE_VIEW_STUDENT_SUCCESS, personToView.getName());
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.updateFilteredPersonList(person -> person.equals(personToView));
 
         assertCommandSuccess(viewCommand, model, expectedMessage, expectedModel);
     }
@@ -64,6 +65,7 @@ public class ViewCommandTest {
         String expectedMessage = String.format(ViewCommand.MESSAGE_VIEW_STUDENT_SUCCESS, studentToView.getName());
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.updateFilteredPersonList(person -> person.equals(studentToView));
 
         assertCommandSuccess(viewCommand, model, expectedMessage, expectedModel);
     }
