@@ -134,11 +134,12 @@ public class JsonAdaptedPersonTest {
     }
 
     @Test
-    public void toModelType_nullStudentId_throwsIllegalValueException() {
+    public void toModelType_nullStudentId_success() throws Exception {
+        // Null studentId is valid for regular persons (with phone/address)
         JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
                 null, VALID_MODULE_CODES, VALID_TAGS);
-        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, StudentId.class.getSimpleName());
-        assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
+        // Should not throw exception, creates a regular person
+        person.toModelType();
     }
 
     @Test
@@ -151,10 +152,11 @@ public class JsonAdaptedPersonTest {
     }
 
     @Test
-    public void toModelType_nullModuleCode_throwsIllegalValueException() {
+    public void toModelType_nullModuleCode_success() throws Exception {
+        // Null moduleCodes is valid for regular persons (with phone/address)
         JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS,
                 VALID_STUDENT_ID, null, VALID_TAGS);
-        String expectedMessage = String.format(MISSING_FIELD_MESSAGE_FORMAT, ModuleCode.class.getSimpleName());
-        assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
+        // Should not throw exception, creates a person with studentId but no moduleCodes
+        person.toModelType();
     }
 }
