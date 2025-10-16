@@ -31,8 +31,8 @@ class JsonAdaptedPerson {
     private final String email;
     private final String address;
     private final String studentId;
-    private final String moduleCode;
-    private final List<JsonAdaptedTag> tags = new ArrayList<>();
+    private final List<String> moduleCodes;
+    private final List<JsonAdaptedTag> tags;
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -40,17 +40,15 @@ class JsonAdaptedPerson {
     @JsonCreator
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("studentId") String studentId, @JsonProperty("moduleCode") String moduleCode,
+            @JsonProperty("studentId") String studentId, @JsonProperty("moduleCodes") List<String> moduleCodes,
             @JsonProperty("tags") List<JsonAdaptedTag> tags) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.studentId = studentId;
-        this.moduleCode = moduleCode;
-        if (tags != null) {
-            this.tags.addAll(tags);
-        }
+        this.moduleCodes = moduleCodes != null ? new ArrayList<>(moduleCodes) : null;
+        this.tags = tags != null ? new ArrayList<>(tags) : new ArrayList<>();
     }
 
     /**
@@ -62,10 +60,12 @@ class JsonAdaptedPerson {
         email = source.getEmail().value;
         address = source.getAddress().value;
         studentId = source.getStudentId() != null ? source.getStudentId().value : null;
-        moduleCode = source.getModuleCode() != null ? source.getModuleCode().value : null;
-        tags.addAll(source.getTags().stream()
+        moduleCodes = source.getModuleCodes().stream()
+                .map(mc -> mc.value)
+                .collect(Collectors.toList());
+        tags = source.getTags().stream()
                 .map(JsonAdaptedTag::new)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
     }
 
     /**
@@ -120,18 +120,22 @@ class JsonAdaptedPerson {
         }
         final StudentId modelStudentId = new StudentId(studentId);
 
-        if (moduleCode == null) {
+        if (moduleCodes == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
-            ModuleCode.class.getSimpleName()));
+                    ModuleCode.class.getSimpleName()));
         }
-        if (!ModuleCode.isValidModuleCode(moduleCode)) {
-            throw new IllegalValueException(ModuleCode.MESSAGE_CONSTRAINTS);
+
+        final Set<ModuleCode> modelModuleCodes = new HashSet<>();
+        for (String mcString : moduleCodes) {
+            if (!ModuleCode.isValidModuleCode(mcString)) {
+                throw new IllegalValueException(ModuleCode.MESSAGE_CONSTRAINTS);
+            }
+            modelModuleCodes.add(new ModuleCode(mcString));
         }
-        final ModuleCode modelModuleCode = new ModuleCode(moduleCode);
 
         final Set<Tag> modelTags = new HashSet<>(personTags);
         return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelStudentId,
-            modelModuleCode);
+                modelModuleCodes);
     }
 
 }

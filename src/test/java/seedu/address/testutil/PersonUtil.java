@@ -39,9 +39,9 @@ public class PersonUtil {
         if (person.getStudentId() != null) {
             sb.append(PREFIX_STUDENT_ID + person.getStudentId().value + " ");
         }
-        if (person.getModuleCode() != null) {
-            sb.append(PREFIX_MODULE_CODE + person.getModuleCode().value + " ");
-        }
+        person.getModuleCodes().forEach(
+            mc -> sb.append(PREFIX_MODULE_CODE + mc.value + " ")
+        );
         person.getTags().stream().forEach(
             s -> sb.append(PREFIX_TAG + s.tagName + " ")
         );
@@ -59,8 +59,8 @@ public class PersonUtil {
         descriptor.getAddress().ifPresent(address -> sb.append(PREFIX_ADDRESS).append(address.value).append(" "));
         descriptor.getStudentId().ifPresent(studentId -> sb.append(PREFIX_STUDENT_ID)
                 .append(studentId.value).append(" "));
-        descriptor.getModuleCode().ifPresent(moduleCode -> sb.append(PREFIX_MODULE_CODE)
-                .append(moduleCode.value).append(" "));
+        descriptor.getModuleCodes().ifPresent(moduleCodes -> moduleCodes.forEach(
+                mc -> sb.append(PREFIX_MODULE_CODE).append(mc.value).append(" ")));
         if (descriptor.getTags().isPresent()) {
             Set<Tag> tags = descriptor.getTags().get();
             if (tags.isEmpty()) {

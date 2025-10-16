@@ -6,13 +6,13 @@
     "address": "123, Jurong West Ave 6, #08-111",
     "tags": [ "friends" ],
     "studentId": "A0123456X",
-    "moduleCode": "CS2103T"
+    "moduleCodes": [ "CS2103T" ]
   }, {
     "name": "Alice Pauline",
     "phone": "94351253",
     "email": "pauline@example.com",
     "address": "4th street",
     "studentId": "A0234567Y",
-    "moduleCode": "CS2040"
+    "moduleCodes": [ "CS2040" ]
   } ]
 }

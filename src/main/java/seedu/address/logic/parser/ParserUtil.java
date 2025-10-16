@@ -128,6 +128,18 @@ public class ParserUtil {
     }
 
     /**
+     * Parses {@code Collection<String> moduleCodes} into a {@code Set<ModuleCode>}.
+     */
+    public static Set<ModuleCode> parseModuleCodes(Collection<String> moduleCodes) throws ParseException {
+        requireNonNull(moduleCodes);
+        final Set<ModuleCode> moduleCodeSet = new HashSet<>();
+        for (String moduleCodeName : moduleCodes) {
+            moduleCodeSet.add(parseModuleCode(moduleCodeName));
+        }
+        return moduleCodeSet;
+    }
+
+    /**
      * Parses a {@code String tag} into a {@code Tag}.
      * Leading and trailing whitespaces will be trimmed.
      *

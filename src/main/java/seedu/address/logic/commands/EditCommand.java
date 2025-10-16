@@ -106,11 +106,12 @@ public class EditCommand extends Command {
         Email updatedEmail = editPersonDescriptor.getEmail().orElse(personToEdit.getEmail());
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
         StudentId updatedStudentId = editPersonDescriptor.getStudentId().orElse(personToEdit.getStudentId());
-        ModuleCode updatedModuleCode = editPersonDescriptor.getModuleCode().orElse(personToEdit.getModuleCode());
+        Set<ModuleCode> updatedModuleCodes = editPersonDescriptor.getModuleCodes()
+                    .orElse(personToEdit.getModuleCodes());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
 
         return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
-                updatedStudentId, updatedModuleCode);
+                updatedStudentId, updatedModuleCodes);
     }
 
     @Override
@@ -147,7 +148,7 @@ public class EditCommand extends Command {
         private Email email;
         private Address address;
         private StudentId studentId;
-        private ModuleCode moduleCode;
+        private Set<ModuleCode> moduleCodes;
         private Set<Tag> tags;
 
         public EditPersonDescriptor() {}
@@ -163,14 +164,14 @@ public class EditCommand extends Command {
             setAddress(toCopy.address);
             setTags(toCopy.tags);
             setStudentId(toCopy.studentId);
-            setModuleCode(toCopy.moduleCode);
+            setModuleCodes(toCopy.moduleCodes);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, email, address, tags, studentId, moduleCode);
+            return CollectionUtil.isAnyNonNull(name, phone, email, address, tags, studentId, moduleCodes);
         }
 
         public void setName(Name name) {
@@ -213,12 +214,12 @@ public class EditCommand extends Command {
             return Optional.ofNullable(studentId);
         }
 
-        public void setModuleCode(ModuleCode moduleCode) {
-            this.moduleCode = moduleCode;
+        public void setModuleCodes(Set<ModuleCode> moduleCodes) {
+            this.moduleCodes = (moduleCodes != null) ? new HashSet<>(moduleCodes) : null;
         }
 
-        public Optional<ModuleCode> getModuleCode() {
-            return Optional.ofNullable(moduleCode);
+        public Optional<Set<ModuleCode>> getModuleCodes() {
+            return Optional.ofNullable(moduleCodes);
         }
 
         /**
@@ -255,7 +256,7 @@ public class EditCommand extends Command {
                     && Objects.equals(email, otherEditPersonDescriptor.email)
                     && Objects.equals(address, otherEditPersonDescriptor.address)
                     && Objects.equals(studentId, otherEditPersonDescriptor.studentId)
-                    && Objects.equals(moduleCode, otherEditPersonDescriptor.moduleCode)
+                    && Objects.equals(moduleCodes, otherEditPersonDescriptor.moduleCodes)
                     && Objects.equals(tags, otherEditPersonDescriptor.tags);
         }
 
@@ -267,7 +268,7 @@ public class EditCommand extends Command {
                     .add("email", email)
                     .add("address", address)
                     .add("student Id", studentId)
-                    .add("module code", moduleCode)
+                    .add("module codes", moduleCodes)
                     .add("tags", tags)
                     .toString();
         }

@@ -23,22 +23,22 @@ public class SampleDataUtil {
         return new Person[] {
             new Person(new Name("Alex Yeoh"), new Phone("87438807"), new Email("alexyeoh@example.com"),
                 new Address("Blk 30 Geylang Street 29, #06-40"),
-                getTagSet("friends"), new StudentId("A1000001X"), new ModuleCode("CS2103T")),
+                getTagSet("friends"), new StudentId("A1000001X"), getModuleCodeSet("CS2103T")),
             new Person(new Name("Bernice Yu"), new Phone("99272758"), new Email("berniceyu@example.com"),
                 new Address("Blk 30 Lorong 3 Serangoon Gardens, #07-18"),
-                getTagSet("colleagues", "friends"), new StudentId("A1000002Y"), new ModuleCode("CS2103T")),
+                getTagSet("colleagues", "friends"), new StudentId("A1000002Y"), getModuleCodeSet("CS2103T", "CS2101")),
             new Person(new Name("Charlotte Oliveiro"), new Phone("93210283"), new Email("charlotte@example.com"),
                 new Address("Blk 11 Ang Mo Kio Street 74, #11-04"),
-                getTagSet("neighbours"), new StudentId("A1000003Z"), new ModuleCode("CS2040")),
+                getTagSet("neighbours"), new StudentId("A1000003Z"), getModuleCodeSet("CS2040")),
             new Person(new Name("David Li"), new Phone("91031282"), new Email("lidavid@example.com"),
                 new Address("Blk 436 Serangoon Gardens Street 26, #16-43"),
-                getTagSet("family"), new StudentId("A1000004A"), new ModuleCode("CS2106")),
+                getTagSet("family"), new StudentId("A1000004A"), getModuleCodeSet("CS2106", "CS2103T")),
             new Person(new Name("Irfan Ibrahim"), new Phone("92492021"), new Email("irfan@example.com"),
                 new Address("Blk 47 Tampines Street 20, #17-35"),
-                getTagSet("classmates"), new StudentId("A1000005B"), new ModuleCode("CS1010")),
+                getTagSet("classmates"), new StudentId("A1000005B"), getModuleCodeSet("CS1010")),
             new Person(new Name("Roy Balakrishnan"), new Phone("92624417"), new Email("royb@example.com"),
                 new Address("Blk 45 Aljunied Street 85, #11-31"),
-                getTagSet("colleagues"), new StudentId("A1000006C"), new ModuleCode("CS3244"))
+                getTagSet("colleagues"), new StudentId("A1000006C"), getModuleCodeSet("CS3244"))
         };
     }
 
@@ -59,4 +59,12 @@ public class SampleDataUtil {
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Returns a module code set containing the list of strings given.
+     */
+    public static Set<ModuleCode> getModuleCodeSet(String... strings) {
+        return Arrays.stream(strings)
+                .map(ModuleCode::new)
+                .collect(Collectors.toSet());
+    }
 }

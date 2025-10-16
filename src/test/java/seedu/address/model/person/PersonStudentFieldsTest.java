@@ -14,7 +14,7 @@ public class PersonStudentFieldsTest {
     public void constructor_withoutStudentFields_setsNulls() {
         Person person = new PersonBuilder().build();
         assertNull(person.getStudentId());
-        assertNull(person.getModuleCode());
+        assertEquals(0, person.getModuleCodes().size());
     }
 
     @Test
@@ -23,11 +23,12 @@ public class PersonStudentFieldsTest {
         String mod = "CS2103T";
         Person person = new PersonBuilder()
                 .withStudentId(sid)
-                .withModuleCode(mod)
+                .withModuleCodes(mod)
                 .build();
 
         assertEquals(new StudentId(sid), person.getStudentId());
-        assertEquals(new ModuleCode(mod), person.getModuleCode());
+        assertEquals(1, person.getModuleCodes().size());
+        assertEquals(new ModuleCode(mod), person.getModuleCodes().iterator().next());
     }
 }
 

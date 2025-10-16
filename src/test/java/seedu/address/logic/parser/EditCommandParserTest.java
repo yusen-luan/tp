@@ -172,7 +172,7 @@ public class EditCommandParserTest {
 
         // moduleCode
         userInput = targetIndex.getOneBased() + MODULE_CODE_DESC_AMY;
-        descriptor = new EditPersonDescriptorBuilder().withModuleCode("CS2103T").build();
+        descriptor = new EditPersonDescriptorBuilder().withModuleCodes("CS2103T").build();
         expectedCommand = new EditCommand(targetIndex, descriptor);
         assertParseSuccess(parser, userInput, expectedCommand);
     }

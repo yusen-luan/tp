@@ -49,8 +49,8 @@ public class ListCommand extends Command {
 
         ModuleCode target = moduleCode.get();
         // predicate to filter persons by module code
-        Predicate<Person> modulePredicate = person -> person.getModuleCode() != null
-                && person.getModuleCode().equals(moduleCode.get());
+        Predicate<Person> modulePredicate = person -> person.getModuleCodes().stream()
+                .anyMatch(mc -> mc.equals(moduleCode.get()));
 
         model.updateFilteredPersonList(modulePredicate);
 
