@@ -29,19 +29,38 @@ public class PersonUtil {
 
     /**
      * Returns the part of command string for the given {@code person}'s details.
+     * For students (with studentId and no phone/address), generates student format command.
+     * For regular persons, generates regular format command.
      */
     public static String getPersonDetails(Person person) {
         StringBuilder sb = new StringBuilder();
         sb.append(PREFIX_NAME + person.getName().fullName + " ");
-        sb.append(PREFIX_PHONE + person.getPhone().value + " ");
-        sb.append(PREFIX_EMAIL + person.getEmail().value + " ");
-        sb.append(PREFIX_ADDRESS + person.getAddress().value + " ");
-        if (person.getStudentId() != null) {
+
+        // Check if this is a student (has studentId but no phone/address)
+        if (person.getStudentId() != null && person.getPhone() == null && person.getAddress() == null) {
+            // Student format: name, studentId, email, moduleCodes, tags
             sb.append(PREFIX_STUDENT_ID + person.getStudentId().value + " ");
+            sb.append(PREFIX_EMAIL + person.getEmail().value + " ");
+            person.getModuleCodes().forEach(
+                mc -> sb.append(PREFIX_MODULE_CODE + mc.value + " ")
+            );
+        } else {
+            // Regular person format: name, phone, email, address, studentId (optional), moduleCodes, tags
+            if (person.getPhone() != null) {
+                sb.append(PREFIX_PHONE + person.getPhone().value + " ");
+            }
+            sb.append(PREFIX_EMAIL + person.getEmail().value + " ");
+            if (person.getAddress() != null) {
+                sb.append(PREFIX_ADDRESS + person.getAddress().value + " ");
+            }
+            if (person.getStudentId() != null) {
+                sb.append(PREFIX_STUDENT_ID + person.getStudentId().value + " ");
+            }
+            person.getModuleCodes().forEach(
+                mc -> sb.append(PREFIX_MODULE_CODE + mc.value + " ")
+            );
         }
-        person.getModuleCodes().forEach(
-            mc -> sb.append(PREFIX_MODULE_CODE + mc.value + " ")
-        );
+
         person.getTags().stream().forEach(
             s -> sb.append(PREFIX_TAG + s.tagName + " ")
         );

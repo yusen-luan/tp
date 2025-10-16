@@ -37,7 +37,27 @@ public class EditCommandTest {
 
     @Test
     public void execute_allFieldsSpecifiedUnfilteredList_success() {
-        Person editedPerson = new PersonBuilder().withStudentId("A9999999Z").withModuleCode("CS9999").build();
+        Person firstPerson = model.getFilteredPersonList().get(0);
+        // Build editedPerson based on the same structure as firstPerson
+        PersonBuilder personBuilder = new PersonBuilder()
+                .withName("Edited Name")
+                .withEmail("edited@example.com");
+
+        // Check if firstPerson has studentId/moduleCodes - set these first
+        if (firstPerson.getStudentId() != null) {
+            personBuilder.withStudentId("A9999999Z");
+        }
+        if (firstPerson.getModuleCodes() != null && !firstPerson.getModuleCodes().isEmpty()) {
+            personBuilder.withModuleCode("CS9999");
+        }
+
+        // Check if firstPerson has phone/address - set these AFTER studentId to override nulls
+        if (firstPerson.getPhone() != null && firstPerson.getAddress() != null) {
+            personBuilder.withPhone("99999999").withAddress("Edited Address");
+        }
+
+        Person editedPerson = personBuilder.withTags("friends").build();
+
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(editedPerson).build();
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
 

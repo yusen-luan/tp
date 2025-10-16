@@ -36,13 +36,20 @@ public class Messages {
      */
     public static String format(Person person) {
         final StringBuilder builder = new StringBuilder();
-        builder.append(person.getName())
-                .append("; Phone: ")
-                .append(person.getPhone())
-                .append("; Email: ")
-                .append(person.getEmail())
-                .append("; Address: ")
-                .append(person.getAddress());
+        builder.append(person.getName());
+
+        // Only show phone if it exists (not a student)
+        if (person.getPhone() != null) {
+            builder.append("; Phone: ").append(person.getPhone());
+        }
+
+        builder.append("; Email: ").append(person.getEmail());
+
+        // Only show address if it exists (not a student)
+        if (person.getAddress() != null) {
+            builder.append("; Address: ").append(person.getAddress());
+        }
+
         if (person.getStudentId() != null) {
             builder.append("; Student ID: ").append(person.getStudentId());
         }

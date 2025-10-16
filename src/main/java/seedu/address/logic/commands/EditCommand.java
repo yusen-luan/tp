@@ -110,8 +110,15 @@ public class EditCommand extends Command {
                     .orElse(personToEdit.getModuleCodes());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
 
-        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
-                updatedStudentId, updatedModuleCodes);
+        // Check if this is a student (has studentId but no phone/address)
+        if (updatedStudentId != null && updatedPhone == null && updatedAddress == null) {
+            // Use student constructor
+            return new Person(updatedName, updatedStudentId, updatedEmail, updatedModuleCodes, updatedTags);
+        } else {
+            // Use regular person constructor
+            return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
+                    updatedStudentId, updatedModuleCodes);
+        }
     }
 
     @Override

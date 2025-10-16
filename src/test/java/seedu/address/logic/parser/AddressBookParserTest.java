@@ -36,7 +36,12 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_add() throws Exception {
-        Person person = new PersonBuilder().build();
+        // Create a student (without phone/address) for the new add command format
+        Person person = new PersonBuilder().withName("Test Student")
+                .withStudentId("A1234567X")
+                .withEmail("test@u.nus.edu")
+                .withModuleCode("CS2103T")
+                .build();
         AddCommand command = (AddCommand) parser.parseCommand(PersonUtil.getAddCommand(person));
         assertEquals(new AddCommand(person), command);
     }
