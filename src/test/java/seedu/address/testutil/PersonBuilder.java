@@ -100,9 +100,12 @@ public class PersonBuilder {
 
     /**
      * Sets the {@code StudentId} of the {@code Person} that we are building.
+     * Also clears phone and address to indicate this is a student.
      */
     public PersonBuilder withStudentId(String studentId) {
         this.studentId = new StudentId(studentId);
+        this.phone = null;
+        this.address = null;
         return this;
     }
 
@@ -142,13 +145,19 @@ public class PersonBuilder {
 
     /**
      * Builds a {@code Person} from the current builder state.
-     * If both student-related fields are unset, the constructor without those fields is used.
+     * Uses the appropriate constructor based on which fields are set.
      */
     public Person build() {
-        if (studentId == null && moduleCodes.isEmpty()) {
-            return new Person(name, phone, email, address, tags);
+        // If studentId is set but phone or address is null, build as a student (without phone/address)
+        if (studentId != null && (phone == null || address == null)) {
+            return new Person(name, studentId, email, moduleCodes, tags);
         }
-        return new Person(name, phone, email, address, tags, studentId, moduleCodes);
+        // If both phone and address are set, use the full constructor
+        if (phone != null && address != null) {
+            return new Person(name, phone, email, address, tags, studentId, moduleCodes);
+        }
+        // Default: build without studentId and moduleCodes
+        return new Person(name, phone, email, address, tags);
     }
 
 }

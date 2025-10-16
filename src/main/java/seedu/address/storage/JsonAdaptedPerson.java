@@ -56,9 +56,9 @@ class JsonAdaptedPerson {
      */
     public JsonAdaptedPerson(Person source) {
         name = source.getName().fullName;
-        phone = source.getPhone().value;
+        phone = source.getPhone() != null ? source.getPhone().value : null;
         email = source.getEmail().value;
-        address = source.getAddress().value;
+        address = source.getAddress() != null ? source.getAddress().value : null;
         studentId = source.getStudentId() != null ? source.getStudentId().value : null;
         moduleCodes = source.getModuleCodes().stream()
                 .map(mc -> mc.value)
@@ -87,14 +87,6 @@ class JsonAdaptedPerson {
         }
         final Name modelName = new Name(name);
 
-        if (phone == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Phone.class.getSimpleName()));
-        }
-        if (!Phone.isValidPhone(phone)) {
-            throw new IllegalValueException(Phone.MESSAGE_CONSTRAINTS);
-        }
-        final Phone modelPhone = new Phone(phone);
-
         if (email == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Email.class.getSimpleName()));
         }
@@ -102,6 +94,39 @@ class JsonAdaptedPerson {
             throw new IllegalValueException(Email.MESSAGE_CONSTRAINTS);
         }
         final Email modelEmail = new Email(email);
+
+        final Set<Tag> modelTags = new HashSet<>(personTags);
+
+        // Check if this is a student (has studentId and moduleCodes but NO phone/address)
+        if (studentId != null && moduleCodes != null && !moduleCodes.isEmpty()
+                && phone == null && address == null) {
+            // Validate student ID
+            if (!StudentId.isValidStudentId(studentId)) {
+                throw new IllegalValueException(StudentId.MESSAGE_CONSTRAINTS);
+            }
+            final StudentId modelStudentId = new StudentId(studentId);
+
+            // Parse module codes
+            final Set<ModuleCode> modelModuleCodes = new HashSet<>();
+            for (String mcString : moduleCodes) {
+                if (!ModuleCode.isValidModuleCode(mcString)) {
+                    throw new IllegalValueException(ModuleCode.MESSAGE_CONSTRAINTS);
+                }
+                modelModuleCodes.add(new ModuleCode(mcString));
+            }
+
+            // Use student constructor (without phone/address)
+            return new Person(modelName, modelStudentId, modelEmail, modelModuleCodes, modelTags);
+        }
+
+        // Otherwise, create a regular person (with phone and address)
+        if (phone == null) {
+            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Phone.class.getSimpleName()));
+        }
+        if (!Phone.isValidPhone(phone)) {
+            throw new IllegalValueException(Phone.MESSAGE_CONSTRAINTS);
+        }
+        final Phone modelPhone = new Phone(phone);
 
         if (address == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Address.class.getSimpleName()));
@@ -111,29 +136,28 @@ class JsonAdaptedPerson {
         }
         final Address modelAddress = new Address(address);
 
-        if (studentId == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
-            StudentId.class.getSimpleName()));
-        }
-        if (!StudentId.isValidStudentId(studentId)) {
-            throw new IllegalValueException(StudentId.MESSAGE_CONSTRAINTS);
-        }
-        final StudentId modelStudentId = new StudentId(studentId);
-
-        if (moduleCodes == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT,
-                    ModuleCode.class.getSimpleName()));
-        }
-
+        // Parse module codes if present
         final Set<ModuleCode> modelModuleCodes = new HashSet<>();
-        for (String mcString : moduleCodes) {
-            if (!ModuleCode.isValidModuleCode(mcString)) {
-                throw new IllegalValueException(ModuleCode.MESSAGE_CONSTRAINTS);
+        if (moduleCodes != null) {
+            for (String mcString : moduleCodes) {
+                if (!ModuleCode.isValidModuleCode(mcString)) {
+                    throw new IllegalValueException(ModuleCode.MESSAGE_CONSTRAINTS);
+                }
+                modelModuleCodes.add(new ModuleCode(mcString));
             }
-            modelModuleCodes.add(new ModuleCode(mcString));
         }
 
-        final Set<Tag> modelTags = new HashSet<>(personTags);
+        // Parse student ID if present
+        final StudentId modelStudentId;
+        if (studentId != null) {
+            if (!StudentId.isValidStudentId(studentId)) {
+                throw new IllegalValueException(StudentId.MESSAGE_CONSTRAINTS);
+            }
+            modelStudentId = new StudentId(studentId);
+        } else {
+            modelStudentId = null;
+        }
+
         return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelStudentId,
                 modelModuleCodes);
     }

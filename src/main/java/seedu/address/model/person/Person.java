@@ -57,6 +57,21 @@ public class Person {
         this.studentId = null;
     }
 
+    /**
+     * Constructor for Student (with StudentId and ModuleCodes, no phone/address)
+     */
+    public Person(Name name, StudentId studentId, Email email,
+                  Set<ModuleCode> moduleCodes, Set<Tag> tags) {
+        requireAllNonNull(name, studentId, email, moduleCodes, tags);
+        this.name = name;
+        this.studentId = studentId;
+        this.email = email;
+        this.phone = null; // Not used for students
+        this.address = null; // Not used for students
+        this.moduleCodes.addAll(moduleCodes);
+        this.tags.addAll(tags);
+    }
+
     public Name getName() {
         return name;
     }
@@ -123,9 +138,9 @@ public class Person {
 
         Person otherPerson = (Person) other;
         return name.equals(otherPerson.name)
-                && phone.equals(otherPerson.phone)
+                && Objects.equals(phone, otherPerson.phone)
                 && email.equals(otherPerson.email)
-                && address.equals(otherPerson.address)
+                && Objects.equals(address, otherPerson.address)
                 && tags.equals(otherPerson.tags)
                 && Objects.equals(studentId, otherPerson.studentId)
                 && moduleCodes.equals(otherPerson.moduleCodes);
