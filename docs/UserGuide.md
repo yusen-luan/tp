@@ -128,12 +128,32 @@ Format:
 * `view INDEX` - View student by list index
 * `view s/STUDENT_ID` - View student by student ID
 
+* Views the student at the specified `INDEX` or with the specified `STUDENT_ID`
 * The index refers to the index number shown in the displayed student list
 * The index **must be a positive integer** 1, 2, 3, …​
-* Student ID must match the format A followed by 7 digits and 1 uppercase letter
+* Student ID must match the format A followed by 7 digits and 1 uppercase letter (e.g., A0123456X)
+* The student must exist in TeachMate
+
+**What will be displayed:**
+* Full name
+* Student ID
+* Email address
+* All enrolled module codes
+* Tags (if any)
+
+**Success message:** `Viewing student: [name]`
+
+**Error messages:**
+* If the index is invalid: `The student index provided is invalid`
+* If the student ID is not found: `No student found with ID: [ID]`
+
+<box type="tip" seamless>
+
+**Tip:** After viewing a student, use the `list` command to see all students again.
+</box>
 
 Examples:
-* `view 1` - Views the 1st student in the current list
+* `view 1` - Views the 1st student in the current list and filters the display to show only that student
 * `view s/A0123456X` - Views the student with student ID A0123456X
 
 ### Editing a student : `edit`
