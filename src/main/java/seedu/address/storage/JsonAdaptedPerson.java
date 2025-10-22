@@ -18,6 +18,7 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.Tag;
+import seedu.address.model.attendance.AttendanceRecord;
 
 /**
  * Jackson-friendly version of {@link Person}.
@@ -33,6 +34,7 @@ class JsonAdaptedPerson {
     private final String studentId;
     private final List<String> moduleCodes;
     private final List<JsonAdaptedTag> tags;
+    private final List<JsonAdaptedAttendance> attendances;
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -41,7 +43,7 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
             @JsonProperty("studentId") String studentId, @JsonProperty("moduleCodes") List<String> moduleCodes,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags) {
+            @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("attendances") List<JsonAdaptedAttendance> attendances) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -49,6 +51,7 @@ class JsonAdaptedPerson {
         this.studentId = studentId;
         this.moduleCodes = moduleCodes != null ? new ArrayList<>(moduleCodes) : null;
         this.tags = tags != null ? new ArrayList<>(tags) : new ArrayList<>();
+        this.attendances = attendances != null ? new ArrayList<>(attendances) : new ArrayList<>();
     }
 
     /**
@@ -65,6 +68,9 @@ class JsonAdaptedPerson {
                 .collect(Collectors.toList());
         tags = source.getTags().stream()
                 .map(JsonAdaptedTag::new)
+                .collect(Collectors.toList());
+        attendances = source.getAttendanceRecord().getAllAttendances().entrySet().stream()
+                .map(entry -> new JsonAdaptedAttendance(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
 
@@ -115,8 +121,17 @@ class JsonAdaptedPerson {
                 modelModuleCodes.add(new ModuleCode(mcString));
             }
 
+            // Parse attendance data
+            AttendanceRecord modelAttendanceRecord = new AttendanceRecord();
+            for (JsonAdaptedAttendance attendance : attendances) {
+                modelAttendanceRecord = modelAttendanceRecord.markAttendance(
+                    attendance.toModelType().getWeek(),
+                    attendance.toModelType().getStatus()
+                );
+            }
+
             // Use student constructor (without phone/address)
-            return new Person(modelName, modelStudentId, modelEmail, modelModuleCodes, modelTags);
+            return new Person(modelName, modelStudentId, modelEmail, modelModuleCodes, modelTags, modelAttendanceRecord);
         }
 
         // Otherwise, create a regular person (with phone and address)
@@ -158,8 +173,17 @@ class JsonAdaptedPerson {
             modelStudentId = null;
         }
 
+        // Parse attendance data for regular person
+        AttendanceRecord modelAttendanceRecord = new AttendanceRecord();
+        for (JsonAdaptedAttendance attendance : attendances) {
+            modelAttendanceRecord = modelAttendanceRecord.markAttendance(
+                attendance.toModelType().getWeek(),
+                attendance.toModelType().getStatus()
+            );
+        }
+
         return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelStudentId,
-                modelModuleCodes);
+                modelModuleCodes, modelAttendanceRecord);
     }
 
 }

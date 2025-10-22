@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.attendance.AttendanceRecord;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.tag.Tag;
 
@@ -26,6 +27,7 @@ public class Person {
     // Data fields
     private final Address address;
     private final Set<Tag> tags = new HashSet<>();
+    private final AttendanceRecord attendanceRecord;
 
     /**
      * Every field must be present and not null.
@@ -42,6 +44,25 @@ public class Person {
         if (moduleCodes != null) {
             this.moduleCodes.addAll(moduleCodes);
         }
+        this.attendanceRecord = new AttendanceRecord();
+    }
+
+    /**
+     * Every field must be present and not null, with custom AttendanceRecord.
+     */
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+                  StudentId studentId, Set<ModuleCode> moduleCodes, AttendanceRecord attendanceRecord) {
+        requireAllNonNull(name, phone, email, address, tags);
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.tags.addAll(tags);
+        this.studentId = studentId;
+        if (moduleCodes != null) {
+            this.moduleCodes.addAll(moduleCodes);
+        }
+        this.attendanceRecord = attendanceRecord != null ? attendanceRecord : new AttendanceRecord();
     }
 
     /**
@@ -55,6 +76,7 @@ public class Person {
         this.address = address;
         this.tags.addAll(tags);
         this.studentId = null;
+        this.attendanceRecord = new AttendanceRecord();
     }
 
     /**
@@ -70,6 +92,23 @@ public class Person {
         this.address = null; // Not used for students
         this.moduleCodes.addAll(moduleCodes);
         this.tags.addAll(tags);
+        this.attendanceRecord = new AttendanceRecord();
+    }
+
+    /**
+     * Constructor for Student with custom AttendanceRecord
+     */
+    public Person(Name name, StudentId studentId, Email email,
+                  Set<ModuleCode> moduleCodes, Set<Tag> tags, AttendanceRecord attendanceRecord) {
+        requireAllNonNull(name, studentId, email, moduleCodes, tags);
+        this.name = name;
+        this.studentId = studentId;
+        this.email = email;
+        this.phone = null; // Not used for students
+        this.address = null; // Not used for students
+        this.moduleCodes.addAll(moduleCodes);
+        this.tags.addAll(tags);
+        this.attendanceRecord = attendanceRecord != null ? attendanceRecord : new AttendanceRecord();
     }
 
     public Name getName() {
@@ -109,6 +148,13 @@ public class Person {
     }
 
     /**
+     * Returns the attendance record for this person.
+     */
+    public AttendanceRecord getAttendanceRecord() {
+        return attendanceRecord;
+    }
+
+    /**
      * Returns true if both persons have the same name.
      * This defines a weaker notion of equality between two persons.
      */
@@ -143,13 +189,14 @@ public class Person {
                 && Objects.equals(address, otherPerson.address)
                 && tags.equals(otherPerson.tags)
                 && Objects.equals(studentId, otherPerson.studentId)
-                && moduleCodes.equals(otherPerson.moduleCodes);
+                && moduleCodes.equals(otherPerson.moduleCodes)
+                && attendanceRecord.equals(otherPerson.attendanceRecord);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags, studentId, moduleCodes);
+        return Objects.hash(name, phone, email, address, tags, studentId, moduleCodes, attendanceRecord);
     }
 
     @Override
@@ -162,6 +209,7 @@ public class Person {
                 .add("tags", tags)
                 .add("studentId", studentId)
                 .add("moduleCodes", moduleCodes)
+                .add("attendanceRecord", attendanceRecord)
                 .toString();
     }
 

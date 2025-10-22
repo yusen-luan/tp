@@ -52,9 +52,25 @@ public class AttendanceCommand extends Command {
             throw new CommandException(String.format(MESSAGE_STUDENT_NOT_FOUND, targetStudentId));
         }
 
-        // For now, just return success message - we'll add the actual attendance logic later
+        // Mark attendance for the student
+        AttendanceRecord updatedAttendanceRecord = studentToMarkAttendance.getAttendanceRecord()
+                .markAttendance(week, status);
+
+        // Create updated person with new attendance record
+        Person updatedStudent = new Person(
+                studentToMarkAttendance.getName(),
+                studentToMarkAttendance.getStudentId(),
+                studentToMarkAttendance.getEmail(),
+                studentToMarkAttendance.getModuleCodes(),
+                studentToMarkAttendance.getTags(),
+                updatedAttendanceRecord
+        );
+
+        // Update the student in the model
+        model.setPerson(studentToMarkAttendance, updatedStudent);
+
         return new CommandResult(String.format(MESSAGE_MARK_ATTENDANCE_SUCCESS,
-                studentToMarkAttendance.getName(), week, status));
+                updatedStudent.getName(), week, status));
     }
 
     @Override
