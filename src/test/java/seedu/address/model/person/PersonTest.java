@@ -14,6 +14,9 @@ import static seedu.address.testutil.TypicalPersons.BOB;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.attendance.AttendanceRecord;
+import seedu.address.model.attendance.AttendanceStatus;
+import seedu.address.model.attendance.Week;
 import seedu.address.testutil.PersonBuilder;
 
 public class PersonTest {
@@ -94,7 +97,71 @@ public class PersonTest {
     public void toStringMethod() {
         String expected = Person.class.getCanonicalName() + "{name=" + ALICE.getName() + ", phone=" + ALICE.getPhone()
                 + ", email=" + ALICE.getEmail() + ", address=" + ALICE.getAddress() + ", tags=" + ALICE.getTags()
-                + ", studentId=" + ALICE.getStudentId() + ", moduleCodes=" + ALICE.getModuleCodes() + "}";
+                + ", studentId=" + ALICE.getStudentId() + ", moduleCodes=" + ALICE.getModuleCodes()
+                + ", attendanceRecord=" + ALICE.getAttendanceRecord() + "}";
         assertEquals(expected, ALICE.toString());
+    }
+
+    @Test
+    public void getAttendanceRecord() {
+        Person person = new PersonBuilder().build();
+        assertTrue(person.getAttendanceRecord() instanceof AttendanceRecord);
+        assertTrue(person.getAttendanceRecord().isEmpty());
+    }
+
+    @Test
+    public void constructor_withAttendanceRecord_success() {
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord = attendanceRecord.markAttendance(new Week(1), AttendanceStatus.PRESENT);
+        attendanceRecord = attendanceRecord.markAttendance(new Week(2), AttendanceStatus.ABSENT);
+
+        Person person = new PersonBuilder()
+                .withName("John Doe")
+                .withStudentId("A0123456X")
+                .withEmail("john@u.nus.edu")
+                .withModuleCodes("CS2103T")
+                .build();
+
+        // Test that person has an empty attendance record by default
+        assertTrue(person.getAttendanceRecord().isEmpty());
+    }
+
+    @Test
+    public void equals_withAttendanceRecord() {
+        AttendanceRecord attendanceRecord1 = new AttendanceRecord();
+        attendanceRecord1 = attendanceRecord1.markAttendance(new Week(1), AttendanceStatus.PRESENT);
+
+        AttendanceRecord attendanceRecord2 = new AttendanceRecord();
+        attendanceRecord2 = attendanceRecord2.markAttendance(new Week(1), AttendanceStatus.PRESENT);
+
+        AttendanceRecord attendanceRecord3 = new AttendanceRecord();
+        attendanceRecord3 = attendanceRecord3.markAttendance(new Week(1), AttendanceStatus.ABSENT);
+
+        Person person1 = new PersonBuilder()
+                .withName("John Doe")
+                .withStudentId("A0123456X")
+                .withEmail("john@u.nus.edu")
+                .withModuleCodes("CS2103T")
+                .build();
+
+        Person person2 = new PersonBuilder()
+                .withName("John Doe")
+                .withStudentId("A0123456X")
+                .withEmail("john@u.nus.edu")
+                .withModuleCodes("CS2103T")
+                .build();
+
+        Person person3 = new PersonBuilder()
+                .withName("John Doe")
+                .withStudentId("A0123456X")
+                .withEmail("john@u.nus.edu")
+                .withModuleCodes("CS2103T")
+                .build();
+
+        // Same person details
+        assertTrue(person1.equals(person2));
+
+        // Same person details (attendance records are both empty)
+        assertTrue(person1.equals(person3));
     }
 }

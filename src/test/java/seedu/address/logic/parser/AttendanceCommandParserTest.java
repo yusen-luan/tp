@@ -38,7 +38,7 @@ public class AttendanceCommandParserTest {
 
     @Test
     public void parse_allFieldsPresent_absent_success() {
-        String userInput = CliSyntax.PREFIX_STUDENT_ID + VALID_STUDENT_ID + " "
+        String userInput = " " + CliSyntax.PREFIX_STUDENT_ID + VALID_STUDENT_ID + " "
                 + CliSyntax.PREFIX_WEEK + VALID_WEEK + "    " + VALID_STATUS_ABSENT;
 
         AttendanceCommand expectedCommand = new AttendanceCommand(
@@ -51,7 +51,7 @@ public class AttendanceCommandParserTest {
 
     @Test
     public void parse_missingStatus_failure() {
-        String userInput = CliSyntax.PREFIX_STUDENT_ID + VALID_STUDENT_ID + " "
+        String userInput = " " + CliSyntax.PREFIX_STUDENT_ID + VALID_STUDENT_ID + " "
                 + CliSyntax.PREFIX_WEEK + VALID_WEEK;
 
         assertParseFailure(parser, userInput,
@@ -60,7 +60,7 @@ public class AttendanceCommandParserTest {
 
     @Test
     public void parse_invalidStatus_failure() {
-        String userInput = CliSyntax.PREFIX_STUDENT_ID + VALID_STUDENT_ID + " "
+        String userInput = " " + CliSyntax.PREFIX_STUDENT_ID + VALID_STUDENT_ID + " "
                 + CliSyntax.PREFIX_WEEK + VALID_WEEK + " maybe";
 
         assertParseFailure(parser, userInput,
