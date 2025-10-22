@@ -39,10 +39,10 @@ public class AttendanceRecordTest {
         AttendanceStatus status = AttendanceStatus.PRESENT;
 
         AttendanceRecord updatedRecord = record.markAttendance(week, status);
-        
+
         // Original record should remain unchanged
         assertTrue(record.isEmpty());
-        
+
         // Updated record should have the new attendance
         assertFalse(updatedRecord.isEmpty());
         assertEquals(AttendanceStatus.PRESENT, updatedRecord.getAllAttendances().get(week));
@@ -56,7 +56,7 @@ public class AttendanceRecordTest {
 
         // Update existing week
         AttendanceRecord updatedRecord = record.markAttendance(new Week(1), AttendanceStatus.ABSENT);
-        
+
         assertEquals(AttendanceStatus.ABSENT, updatedRecord.getAllAttendances().get(new Week(1)));
         assertEquals(1, updatedRecord.getAllAttendances().size());
     }
@@ -64,7 +64,7 @@ public class AttendanceRecordTest {
     @Test
     public void markAttendance_multipleWeeks_success() {
         AttendanceRecord record = new AttendanceRecord();
-        
+
         record = record.markAttendance(new Week(1), AttendanceStatus.PRESENT);
         record = record.markAttendance(new Week(2), AttendanceStatus.ABSENT);
         record = record.markAttendance(new Week(3), AttendanceStatus.PRESENT);
@@ -97,9 +97,9 @@ public class AttendanceRecordTest {
         AttendanceRecord record = new AttendanceRecord(attendances);
 
         Map<Week, AttendanceStatus> allAttendances = record.getAllAttendances();
-        
+
         // Should be immutable
-        assertThrows(UnsupportedOperationException.class, () -> 
+        assertThrows(UnsupportedOperationException.class, () ->
             allAttendances.put(new Week(2), AttendanceStatus.ABSENT));
     }
 

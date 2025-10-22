@@ -140,7 +140,7 @@ public class ViewCommand extends Command {
             double percentage = totalWeeks > 0 ? (double) presentCount / totalWeeks * 100 : 0;
             sb.append("\nAttendance Rate: ").append(String.format("%.1f", percentage)).append("% (").append(presentCount).append("/").append(totalWeeks).append(" weeks)");
         }
-        
+
         return sb.toString();
     }
 

@@ -14,7 +14,7 @@ public class AttendanceTest {
         Week week = new Week(1);
         AttendanceStatus status = AttendanceStatus.PRESENT;
         Attendance attendance = new Attendance(week, status);
-        
+
         assertEquals(week, attendance.getWeek());
         assertEquals(status, attendance.getStatus());
     }
@@ -87,7 +87,7 @@ public class AttendanceTest {
         Week week = new Week(1);
         AttendanceStatus status = AttendanceStatus.PRESENT;
         Attendance attendance = new Attendance(week, status);
-        
+
         String result = attendance.toString();
         assertTrue(result.contains("Attendance"));
         assertTrue(result.contains("week=Week 1"));
@@ -96,7 +96,7 @@ public class AttendanceTest {
         Week week2 = new Week(2);
         AttendanceStatus status2 = AttendanceStatus.ABSENT;
         Attendance attendance2 = new Attendance(week2, status2);
-        
+
         result = attendance2.toString();
         assertTrue(result.contains("Attendance"));
         assertTrue(result.contains("week=Week 2"));
