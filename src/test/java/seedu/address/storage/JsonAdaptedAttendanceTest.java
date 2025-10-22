@@ -32,7 +32,7 @@ public class JsonAdaptedAttendanceTest {
     public void toModelType_validData_success() throws Exception {
         JsonAdaptedAttendance adaptedAttendance = new JsonAdaptedAttendance(1, "present");
         Attendance attendance = adaptedAttendance.toModelType();
-        
+
         assertEquals(new Week(1), attendance.getWeek());
         assertEquals(AttendanceStatus.PRESENT, attendance.getStatus());
     }
@@ -41,7 +41,7 @@ public class JsonAdaptedAttendanceTest {
     public void toModelType_validAbsentData_success() throws Exception {
         JsonAdaptedAttendance adaptedAttendance = new JsonAdaptedAttendance(2, "absent");
         Attendance attendance = adaptedAttendance.toModelType();
-        
+
         assertEquals(new Week(2), attendance.getWeek());
         assertEquals(AttendanceStatus.ABSENT, attendance.getStatus());
     }
@@ -74,7 +74,7 @@ public class JsonAdaptedAttendanceTest {
     public void toModelType_caseInsensitiveStatus_success() throws Exception {
         JsonAdaptedAttendance adaptedAttendance = new JsonAdaptedAttendance(1, "PRESENT");
         Attendance attendance = adaptedAttendance.toModelType();
-        
+
         assertEquals(AttendanceStatus.PRESENT, attendance.getStatus());
     }
 
@@ -82,7 +82,7 @@ public class JsonAdaptedAttendanceTest {
     public void toModelType_mixedCaseStatus_success() throws Exception {
         JsonAdaptedAttendance adaptedAttendance = new JsonAdaptedAttendance(1, "Present");
         Attendance attendance = adaptedAttendance.toModelType();
-        
+
         assertEquals(AttendanceStatus.PRESENT, attendance.getStatus());
     }
 }

@@ -2,9 +2,8 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.List;
-
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 import seedu.address.commons.core.index.Index;
@@ -93,7 +92,9 @@ public class ViewCommand extends Command {
         // Basic student information
         sb.append("=== STUDENT DETAILS ===\n");
         sb.append("Name: ").append(person.getName().fullName).append("\n");
-        sb.append("Student ID: ").append(person.getStudentId() != null ? person.getStudentId().value : "N/A").append("\n");
+        sb.append("Student ID: ")
+                .append(person.getStudentId() != null ? person.getStudentId().value : "N/A")
+                .append("\n");
         sb.append("Email: ").append(person.getEmail().value).append("\n");
 
         // Module codes
@@ -119,7 +120,8 @@ public class ViewCommand extends Command {
         if (person.getAttendanceRecord().isEmpty()) {
             sb.append("No attendance recorded yet.\n");
         } else {
-            Map<Week, AttendanceStatus> attendances = person.getAttendanceRecord().getAllAttendances();
+            Map<Week, AttendanceStatus> attendances = person.getAttendanceRecord()
+                    .getAllAttendances();
 
             // Sort by week number and display vertically
             attendances.entrySet().stream()
@@ -128,8 +130,11 @@ public class ViewCommand extends Command {
                         Week week = entry.getKey();
                         AttendanceStatus status = entry.getValue();
                         String symbol = status == AttendanceStatus.PRESENT ? "✓" : "✗";
-                        String statusText = status == AttendanceStatus.PRESENT ? "Present" : "Absent";
-                        sb.append("Week ").append(week.value).append(": ").append(symbol).append(" ").append(statusText).append("\n");
+                        String statusText = status == AttendanceStatus.PRESENT
+                                ? "Present" : "Absent";
+                        sb.append("Week ").append(week.value).append(": ")
+                                .append(symbol).append(" ").append(statusText)
+                                .append("\n");
                     });
 
             // Calculate attendance percentage
@@ -138,9 +143,11 @@ public class ViewCommand extends Command {
                     .mapToLong(status -> status == AttendanceStatus.PRESENT ? 1 : 0)
                     .sum();
             double percentage = totalWeeks > 0 ? (double) presentCount / totalWeeks * 100 : 0;
-            sb.append("\nAttendance Rate: ").append(String.format("%.1f", percentage)).append("% (").append(presentCount).append("/").append(totalWeeks).append(" weeks)");
+            sb.append("\nAttendance Rate: ").append(String.format("%.1f", percentage))
+                    .append("% (").append(presentCount).append("/").append(totalWeeks)
+                    .append(" weeks)");
         }
-        
+
         return sb.toString();
     }
 

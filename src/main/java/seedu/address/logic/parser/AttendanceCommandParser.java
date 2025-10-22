@@ -33,7 +33,7 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
 
         String studentIdString = argMultimap.getValue(PREFIX_STUDENT_ID).get();
         String weekString = argMultimap.getValue(PREFIX_WEEK).get();
-        
+
         // Try to get status from preamble first, then from after the week
         String statusString = argMultimap.getPreamble().trim();
         if (statusString.isEmpty()) {

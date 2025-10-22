@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.model.attendance.AttendanceRecord;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
@@ -18,7 +19,6 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.Tag;
-import seedu.address.model.attendance.AttendanceRecord;
 
 /**
  * Jackson-friendly version of {@link Person}.
@@ -40,10 +40,13 @@ class JsonAdaptedPerson {
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
      */
     @JsonCreator
-    public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
-            @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("studentId") String studentId, @JsonProperty("moduleCodes") List<String> moduleCodes,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("attendances") List<JsonAdaptedAttendance> attendances) {
+    public JsonAdaptedPerson(@JsonProperty("name") String name,
+            @JsonProperty("phone") String phone, @JsonProperty("email") String email,
+            @JsonProperty("address") String address,
+            @JsonProperty("studentId") String studentId,
+            @JsonProperty("moduleCodes") List<String> moduleCodes,
+            @JsonProperty("tags") List<JsonAdaptedTag> tags,
+            @JsonProperty("attendances") List<JsonAdaptedAttendance> attendances) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -131,7 +134,8 @@ class JsonAdaptedPerson {
             }
 
             // Use student constructor (without phone/address)
-            return new Person(modelName, modelStudentId, modelEmail, modelModuleCodes, modelTags, modelAttendanceRecord);
+            return new Person(modelName, modelStudentId, modelEmail, modelModuleCodes,
+                    modelTags, modelAttendanceRecord);
         }
 
         // Otherwise, create a regular person (with phone and address)
