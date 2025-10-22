@@ -2,6 +2,8 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.List;
+
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
@@ -19,11 +21,12 @@ public class AttendanceCommand extends Command {
     public static final String COMMAND_WORD = "attendance";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Marks attendance for a student identified by their student ID.\n"
-            + "Parameters: s/STUDENT_ID w/WEEK present|absent\n"
-            + "Example: " + COMMAND_WORD + " s/A0123456X w/1 present";
+            + ": Marks attendance for a student identified by their student ID, or all students.\n"
+            + "Parameters: s/STUDENT_ID w/WEEK present|absent OR s/all w/WEEK present|absent\n"
+            + "Example: " + COMMAND_WORD + " s/A0123456X w/1 present OR " + COMMAND_WORD + " s/all w/1 present";
 
     public static final String MESSAGE_MARK_ATTENDANCE_SUCCESS = "Marked attendance for %1$s: Week %2$s - %3$s";
+    public static final String MESSAGE_MARK_ALL_SUCCESS = "Marked attendance for all students: Week %1$s - %2$s (%3$d students)";
     public static final String MESSAGE_STUDENT_NOT_FOUND = "No student found with ID: %1$s";
 
     private final StudentId targetStudentId;
@@ -34,10 +37,9 @@ public class AttendanceCommand extends Command {
      * Creates an AttendanceCommand to mark the attendance of the specified student.
      */
     public AttendanceCommand(StudentId targetStudentId, Week week, AttendanceStatus status) {
-        requireNonNull(targetStudentId);
         requireNonNull(week);
         requireNonNull(status);
-        this.targetStudentId = targetStudentId;
+        this.targetStudentId = targetStudentId; // Can be null for "mark all"
         this.week = week;
         this.status = status;
     }
@@ -46,6 +48,18 @@ public class AttendanceCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
+        // Check if this is a "mark all" command
+        if (targetStudentId == null) {
+            return executeMarkAll(model);
+        } else {
+            return executeMarkSingle(model);
+        }
+    }
+
+    /**
+     * Executes the command to mark attendance for a single student.
+     */
+    private CommandResult executeMarkSingle(Model model) throws CommandException {
         Person studentToMarkAttendance = model.findPersonByStudentId(targetStudentId);
 
         if (studentToMarkAttendance == null) {
@@ -70,7 +84,38 @@ public class AttendanceCommand extends Command {
         model.setPerson(studentToMarkAttendance, updatedStudent);
 
         return new CommandResult(String.format(MESSAGE_MARK_ATTENDANCE_SUCCESS,
-                updatedStudent.getName(), week, status));
+                updatedStudent.getName(), week.value, status));
+    }
+
+    /**
+     * Executes the command to mark attendance for all students.
+     */
+    private CommandResult executeMarkAll(Model model) throws CommandException {
+        List<Person> allStudents = model.getAddressBook().getPersonList();
+        int markedCount = 0;
+
+        for (Person student : allStudents) {
+            // Mark attendance for each student
+            AttendanceRecord updatedAttendanceRecord = student.getAttendanceRecord()
+                    .markAttendance(week, status);
+
+            // Create updated person with new attendance record
+            Person updatedStudent = new Person(
+                    student.getName(),
+                    student.getStudentId(),
+                    student.getEmail(),
+                    student.getModuleCodes(),
+                    student.getTags(),
+                    updatedAttendanceRecord
+            );
+
+            // Update the student in the model
+            model.setPerson(student, updatedStudent);
+            markedCount++;
+        }
+
+        return new CommandResult(String.format(MESSAGE_MARK_ALL_SUCCESS,
+                week.value, status, markedCount));
     }
 
     @Override

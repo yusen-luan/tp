@@ -31,7 +31,7 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENT_ID, PREFIX_WEEK);
 
-        StudentId studentId = ParserUtil.parseStudentId(argMultimap.getValue(PREFIX_STUDENT_ID).get());
+        String studentIdString = argMultimap.getValue(PREFIX_STUDENT_ID).get();
         String weekAndStatus = argMultimap.getValue(PREFIX_WEEK).get();
         String[] parts = weekAndStatus.trim().split("\\s+", 2);
 
@@ -42,7 +42,13 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         Week week = ParserUtil.parseWeek(parts[0]);
         AttendanceStatus status = ParserUtil.parseAttendanceStatus(parts[1]);
 
-        return new AttendanceCommand(studentId, week, status);
+        // Check if this is a "mark all" command
+        if ("all".equalsIgnoreCase(studentIdString)) {
+            return new AttendanceCommand(null, week, status); // null studentId indicates mark all
+        } else {
+            StudentId studentId = ParserUtil.parseStudentId(studentIdString);
+            return new AttendanceCommand(studentId, week, status);
+        }
     }
 
     /**
