@@ -26,7 +26,8 @@ public class AttendanceCommand extends Command {
             + "Example: " + COMMAND_WORD + " s/A0123456X w/1 present OR " + COMMAND_WORD + " s/all w/1 present";
 
     public static final String MESSAGE_MARK_ATTENDANCE_SUCCESS = "Marked attendance for %1$s: Week %2$s - %3$s";
-    public static final String MESSAGE_MARK_ALL_SUCCESS = "Marked attendance for all students: Week %1$s - %2$s (%3$d students)";
+    public static final String MESSAGE_MARK_ALL_SUCCESS = "Marked attendance for all students: "
+            + "Week %1$s - %2$s (%3$d students)";
     public static final String MESSAGE_STUDENT_NOT_FOUND = "No student found with ID: %1$s";
 
     private final StudentId targetStudentId;

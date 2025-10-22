@@ -37,7 +37,7 @@ public class AttendanceCommandParserTest {
     }
 
     @Test
-    public void parse_allFieldsPresent_absent_success() {
+    public void parseAllFieldsPresentAbsentSuccess() {
         String userInput = " " + CliSyntax.PREFIX_STUDENT_ID + VALID_STUDENT_ID + " "
                 + CliSyntax.PREFIX_WEEK + VALID_WEEK + "    " + VALID_STATUS_ABSENT;
 
