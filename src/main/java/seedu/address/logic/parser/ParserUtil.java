@@ -16,6 +16,8 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.Tag;
+import seedu.address.model.attendance.AttendanceStatus;
+import seedu.address.model.attendance.Week;
 
 /**
  * Contains utility methods used for parsing strings in the various *Parser classes.
@@ -164,5 +166,38 @@ public class ParserUtil {
             tagSet.add(parseTag(tagName));
         }
         return tagSet;
+    }
+
+    /**
+     * Parses a {@code String week} into a {@code Week}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code week} is invalid.
+     */
+    public static Week parseWeek(String week) throws ParseException {
+        requireNonNull(week);
+        String trimmedWeek = week.trim();
+        try {
+            int weekNumber = Integer.parseInt(trimmedWeek);
+            return new Week(weekNumber);
+        } catch (NumberFormatException e) {
+            throw new ParseException(Week.MESSAGE_CONSTRAINTS);
+        }
+    }
+
+    /**
+     * Parses a {@code String status} into an {@code AttendanceStatus}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code status} is invalid.
+     */
+    public static AttendanceStatus parseAttendanceStatus(String status) throws ParseException {
+        requireNonNull(status);
+        String trimmedStatus = status.trim();
+        try {
+            return AttendanceStatus.fromString(trimmedStatus);
+        } catch (IllegalArgumentException e) {
+            throw new ParseException("Invalid attendance status. Use 'present' or 'absent'.");
+        }
     }
 }
