@@ -156,6 +156,38 @@ Examples:
 * `view 1` - Views the 1st student in the current list and filters the display to show only that student
 * `view s/A0123456X` - Views the student with student ID A0123456X
 
+### Marking attendance : `attendance`
+
+Marks attendance for a student for a specific week.
+
+Format: `attendance s/STUDENT_ID w/WEEK present|absent` or `attendance s/all w/WEEK present|absent`
+
+* Marks attendance for the student with the specified `STUDENT_ID` or all students
+* `WEEK` must be a number between 1 and 13 (inclusive)
+* `present|absent` specifies whether the student was present or absent
+* Use `s/all` to mark all students at once
+* The student must exist in TeachMate
+
+**Success message:** 
+* Individual: `Marked attendance for [name]: Week [week] - [status]`
+* All students: `Marked attendance for all students: Week [week] - [status] ([count] students)`
+
+**Error messages:**
+* If the student ID is not found: `No student found with ID: [ID]`
+* If the week is invalid: `Week should be a number between 1 and 13 (inclusive)`
+* If the status is invalid: `Invalid attendance status. Use 'present' or 'absent'.`
+
+<box type="tip" seamless>
+
+**Tip:** Attendance is displayed in the student list with tick (✓) for present and cross (✗) for absent marks.
+</box>
+
+Examples:
+* `attendance s/A0123456X w/1 present` - Marks student A0123456X as present for week 1
+* `attendance s/A0123456X w/2 absent` - Marks student A0123456X as absent for week 2
+* `attendance s/all w/1 present` - Marks all students as present for week 1
+* `attendance s/all w/2 absent` - Marks all students as absent for week 2
+
 ### Editing a student : `edit`
 
 Edits an existing student in TeachMate. You can edit students whether they have phone/address (legacy data) or only have student-specific fields.
