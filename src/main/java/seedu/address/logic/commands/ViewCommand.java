@@ -89,13 +89,13 @@ public class ViewCommand extends Command {
      */
     private String createDetailedViewMessage(Person person) {
         StringBuilder sb = new StringBuilder();
-        
+
         // Basic student information
         sb.append("=== STUDENT DETAILS ===\n");
         sb.append("Name: ").append(person.getName().fullName).append("\n");
         sb.append("Student ID: ").append(person.getStudentId() != null ? person.getStudentId().value : "N/A").append("\n");
         sb.append("Email: ").append(person.getEmail().value).append("\n");
-        
+
         // Module codes
         if (!person.getModuleCodes().isEmpty()) {
             String moduleCodesText = person.getModuleCodes().stream()
@@ -104,7 +104,7 @@ public class ViewCommand extends Command {
                     .orElse("N/A");
             sb.append("Modules: ").append(moduleCodesText).append("\n");
         }
-        
+
         // Tags
         if (!person.getTags().isEmpty()) {
             String tagsText = person.getTags().stream()
@@ -113,14 +113,14 @@ public class ViewCommand extends Command {
                     .orElse("N/A");
             sb.append("Tags: ").append(tagsText).append("\n");
         }
-        
+
         // Attendance record
         sb.append("\n=== ATTENDANCE RECORD ===\n");
         if (person.getAttendanceRecord().isEmpty()) {
             sb.append("No attendance recorded yet.\n");
         } else {
             Map<Week, AttendanceStatus> attendances = person.getAttendanceRecord().getAllAttendances();
-            
+
             // Sort by week number and display vertically
             attendances.entrySet().stream()
                     .sorted(Map.Entry.comparingByKey(Comparator.comparing(week -> week.value)))
@@ -131,7 +131,7 @@ public class ViewCommand extends Command {
                         String statusText = status == AttendanceStatus.PRESENT ? "Present" : "Absent";
                         sb.append("Week ").append(week.value).append(": ").append(symbol).append(" ").append(statusText).append("\n");
                     });
-            
+
             // Calculate attendance percentage
             int totalWeeks = attendances.size();
             long presentCount = attendances.values().stream()

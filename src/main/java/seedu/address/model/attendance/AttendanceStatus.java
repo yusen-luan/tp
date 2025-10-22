@@ -24,13 +24,13 @@ public enum AttendanceStatus {
     public static AttendanceStatus fromString(String statusString) {
         requireNonNull(statusString);
         String trimmed = statusString.trim().toLowerCase();
-        
+
         for (AttendanceStatus status : values()) {
             if (status.value.equals(trimmed)) {
                 return status;
             }
         }
-        
+
         throw new IllegalArgumentException("Invalid attendance status: " + statusString);
     }
 

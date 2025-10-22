@@ -44,7 +44,7 @@ public class AttendanceRecord {
     public AttendanceRecord markAttendance(Week week, AttendanceStatus status) {
         requireNonNull(week);
         requireNonNull(status);
-        
+
         Map<Week, AttendanceStatus> newMap = new HashMap<>(attendanceMap);
         newMap.put(week, status);
         return new AttendanceRecord(newMap);

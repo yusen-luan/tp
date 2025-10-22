@@ -21,6 +21,8 @@ import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.Tag;
+import seedu.address.model.attendance.AttendanceStatus;
+import seedu.address.model.attendance.Week;
 
 public class ParserUtilTest {
     private static final String INVALID_NAME = "R@chel";
@@ -244,5 +246,60 @@ public class ParserUtilTest {
         String moduleCodeWithWhitespace = WHITESPACE + VALID_MODULE_CODE + WHITESPACE;
         ModuleCode expectedModuleCode = new ModuleCode(VALID_MODULE_CODE);
         assertEquals(expectedModuleCode, ParserUtil.parseModuleCode(moduleCodeWithWhitespace));
+    }
+
+    // Tests for Week parsing
+    @Test
+    public void parseWeek_validValue_returnsWeek() throws Exception {
+        assertEquals(new Week(1), ParserUtil.parseWeek("1"));
+        assertEquals(new Week(7), ParserUtil.parseWeek("7"));
+        assertEquals(new Week(13), ParserUtil.parseWeek("13"));
+    }
+
+    @Test
+    public void parseWeek_validValueWithWhitespace_returnsTrimmedWeek() throws Exception {
+        String weekWithWhitespace = WHITESPACE + "1" + WHITESPACE;
+        assertEquals(new Week(1), ParserUtil.parseWeek(weekWithWhitespace));
+    }
+
+    @Test
+    public void parseWeek_invalidValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseWeek("0"));
+        assertThrows(ParseException.class, () -> ParserUtil.parseWeek("14"));
+        assertThrows(ParseException.class, () -> ParserUtil.parseWeek("abc"));
+        assertThrows(ParseException.class, () -> ParserUtil.parseWeek(""));
+    }
+
+    @Test
+    public void parseWeek_nullValue_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseWeek(null));
+    }
+
+    // Tests for AttendanceStatus parsing
+    @Test
+    public void parseAttendanceStatus_validValue_returnsAttendanceStatus() throws Exception {
+        assertEquals(AttendanceStatus.PRESENT, ParserUtil.parseAttendanceStatus("present"));
+        assertEquals(AttendanceStatus.ABSENT, ParserUtil.parseAttendanceStatus("absent"));
+        assertEquals(AttendanceStatus.PRESENT, ParserUtil.parseAttendanceStatus("Present"));
+        assertEquals(AttendanceStatus.ABSENT, ParserUtil.parseAttendanceStatus("ABSENT"));
+    }
+
+    @Test
+    public void parseAttendanceStatus_validValueWithWhitespace_returnsTrimmedAttendanceStatus() throws Exception {
+        String statusWithWhitespace = WHITESPACE + "present" + WHITESPACE;
+        assertEquals(AttendanceStatus.PRESENT, ParserUtil.parseAttendanceStatus(statusWithWhitespace));
+    }
+
+    @Test
+    public void parseAttendanceStatus_invalidValue_throwsParseException() {
+        assertThrows(ParseException.class, () -> ParserUtil.parseAttendanceStatus("invalid"));
+        assertThrows(ParseException.class, () -> ParserUtil.parseAttendanceStatus(""));
+        assertThrows(ParseException.class, () -> ParserUtil.parseAttendanceStatus("p"));
+        assertThrows(ParseException.class, () -> ParserUtil.parseAttendanceStatus("a"));
+    }
+
+    @Test
+    public void parseAttendanceStatus_nullValue_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseAttendanceStatus(null));
     }
 }

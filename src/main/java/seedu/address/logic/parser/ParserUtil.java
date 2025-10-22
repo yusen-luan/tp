@@ -182,6 +182,8 @@ public class ParserUtil {
             return new Week(weekNumber);
         } catch (NumberFormatException e) {
             throw new ParseException(Week.MESSAGE_CONSTRAINTS);
+        } catch (IllegalArgumentException e) {
+            throw new ParseException(Week.MESSAGE_CONSTRAINTS);
         }
     }
 
