@@ -4,11 +4,16 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.List;
 
+import java.util.Comparator;
+import java.util.Map;
+
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.attendance.AttendanceStatus;
+import seedu.address.model.attendance.Week;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 
@@ -73,7 +78,70 @@ public class ViewCommand extends Command {
         // Filter the list to show only the selected student
         model.updateFilteredPersonList(person -> person.equals(personToView));
 
-        return new CommandResult(String.format(MESSAGE_VIEW_STUDENT_SUCCESS, personToView.getName()));
+        // Create detailed view message with attendance information
+        String detailedMessage = createDetailedViewMessage(personToView);
+
+        return new CommandResult(detailedMessage);
+    }
+
+    /**
+     * Creates a detailed view message with student information and attendance record.
+     */
+    private String createDetailedViewMessage(Person person) {
+        StringBuilder sb = new StringBuilder();
+        
+        // Basic student information
+        sb.append("=== STUDENT DETAILS ===\n");
+        sb.append("Name: ").append(person.getName().fullName).append("\n");
+        sb.append("Student ID: ").append(person.getStudentId() != null ? person.getStudentId().value : "N/A").append("\n");
+        sb.append("Email: ").append(person.getEmail().value).append("\n");
+        
+        // Module codes
+        if (!person.getModuleCodes().isEmpty()) {
+            String moduleCodesText = person.getModuleCodes().stream()
+                    .map(mc -> mc.value)
+                    .reduce((a, b) -> a + ", " + b)
+                    .orElse("N/A");
+            sb.append("Modules: ").append(moduleCodesText).append("\n");
+        }
+        
+        // Tags
+        if (!person.getTags().isEmpty()) {
+            String tagsText = person.getTags().stream()
+                    .map(tag -> tag.tagName)
+                    .reduce((a, b) -> a + ", " + b)
+                    .orElse("N/A");
+            sb.append("Tags: ").append(tagsText).append("\n");
+        }
+        
+        // Attendance record
+        sb.append("\n=== ATTENDANCE RECORD ===\n");
+        if (person.getAttendanceRecord().isEmpty()) {
+            sb.append("No attendance recorded yet.\n");
+        } else {
+            Map<Week, AttendanceStatus> attendances = person.getAttendanceRecord().getAllAttendances();
+            
+            // Sort by week number and display vertically
+            attendances.entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey(Comparator.comparing(week -> week.value)))
+                    .forEach(entry -> {
+                        Week week = entry.getKey();
+                        AttendanceStatus status = entry.getValue();
+                        String symbol = status == AttendanceStatus.PRESENT ? "✓" : "✗";
+                        String statusText = status == AttendanceStatus.PRESENT ? "Present" : "Absent";
+                        sb.append("Week ").append(week.value).append(": ").append(symbol).append(" ").append(statusText).append("\n");
+                    });
+            
+            // Calculate attendance percentage
+            int totalWeeks = attendances.size();
+            long presentCount = attendances.values().stream()
+                    .mapToLong(status -> status == AttendanceStatus.PRESENT ? 1 : 0)
+                    .sum();
+            double percentage = totalWeeks > 0 ? (double) presentCount / totalWeeks * 100 : 0;
+            sb.append("\nAttendance Rate: ").append(String.format("%.1f", percentage)).append("% (").append(presentCount).append("/").append(totalWeeks).append(" weeks)");
+        }
+        
+        return sb.toString();
     }
 
     @Override

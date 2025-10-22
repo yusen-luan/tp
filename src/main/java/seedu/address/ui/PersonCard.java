@@ -1,12 +1,15 @@
 package seedu.address.ui;
 
 import java.util.Comparator;
+import java.util.Map;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import seedu.address.model.attendance.AttendanceStatus;
+import seedu.address.model.attendance.Week;
 import seedu.address.model.person.Person;
 
 /**
@@ -40,6 +43,8 @@ public class PersonCard extends UiPart<Region> {
     private Label studentId;
     @FXML
     private Label moduleCode;
+    @FXML
+    private Label attendance;
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
@@ -60,8 +65,34 @@ public class PersonCard extends UiPart<Region> {
             moduleCode.setText("N/A");
         }
         email.setText(person.getEmail().value);
+        attendance.setText(formatAttendanceSummary(person.getAttendanceRecord()));
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+    }
+
+    /**
+     * Formats the attendance record as a short summary string.
+     * Example: "W1:✓ W2:✗ W3:✓"
+     */
+    private String formatAttendanceSummary(seedu.address.model.attendance.AttendanceRecord attendanceRecord) {
+        if (attendanceRecord.isEmpty()) {
+            return "No attendance recorded";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        Map<Week, AttendanceStatus> attendances = attendanceRecord.getAllAttendances();
+
+        // Sort by week number and format as W1:✓ W2:✗ etc.
+        attendances.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey(Comparator.comparing(week -> week.value)))
+                .forEach(entry -> {
+                    Week week = entry.getKey();
+                    AttendanceStatus status = entry.getValue();
+                    String symbol = status == AttendanceStatus.PRESENT ? "✓" : "✗";
+                    sb.append("W").append(week.value).append(":").append(symbol).append(" ");
+                });
+
+        return sb.toString().trim();
     }
 }
