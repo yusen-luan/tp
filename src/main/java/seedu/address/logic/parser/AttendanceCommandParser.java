@@ -25,16 +25,22 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
     public AttendanceCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_STUDENT_ID, PREFIX_WEEK);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_STUDENT_ID, PREFIX_WEEK)
-                || argMultimap.getPreamble().isEmpty()) {
+        if (!arePrefixesPresent(argMultimap, PREFIX_STUDENT_ID, PREFIX_WEEK)) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE));
         }
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_STUDENT_ID, PREFIX_WEEK);
 
         StudentId studentId = ParserUtil.parseStudentId(argMultimap.getValue(PREFIX_STUDENT_ID).get());
-        Week week = ParserUtil.parseWeek(argMultimap.getValue(PREFIX_WEEK).get());
-        AttendanceStatus status = ParserUtil.parseAttendanceStatus(argMultimap.getPreamble());
+        String weekAndStatus = argMultimap.getValue(PREFIX_WEEK).get();
+        String[] parts = weekAndStatus.trim().split("\\s+", 2);
+
+        if (parts.length < 2) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE));
+        }
+
+        Week week = ParserUtil.parseWeek(parts[0]);
+        AttendanceStatus status = ParserUtil.parseAttendanceStatus(parts[1]);
 
         return new AttendanceCommand(studentId, week, status);
     }
