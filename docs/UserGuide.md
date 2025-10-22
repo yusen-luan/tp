@@ -180,6 +180,21 @@ Examples:
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
+### Filtering students by tags: `filter`
+
+Filters students who have all of the specified tags.
+
+Format: `filter t/TAG [t/MORE_TAGS]…​`
+
+* At least one tag must be provided
+* Only students who have **all** the specified tags will be shown (i.e. `AND` search)
+* Tags are case-sensitive and must match exactly
+* Tags must be alphanumeric (no spaces)
+
+Examples:
+* `filter t/friends` returns all students tagged with `friends`
+* `filter t/struggling t/needsHelp` returns students who have both `struggling` and `needsHelp` tags
+
 ### Deleting a student : `delete`
 
 Deletes the specified student from TeachMate.
@@ -263,6 +278,7 @@ Furthermore, certain edits can cause TeachMate to behave in unexpected ways (e.g
 | **Clear**  | `clear`                                                                                                                                                                   |
 | **Delete** | `delete INDEX`<br> e.g., `delete 3`                                                                                                                                       |
 | **Edit**   | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]…​ [t/TAG]…​`<br> e.g., `edit 2 n/Jane Lee s/A9999999Z`                              |
+| **Filter** | `filter t/TAG [t/MORE_TAGS]…​`<br> e.g., `filter t/struggling t/needsHelp`                                                                                               |
 | **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find John Jane`                                                                                                                |
 | **List**   | `list` or `list m/MODULE_CODE`<br> e.g., `list m/CS2103T`                                                                                                                |
 | **View**   | `view INDEX` or `view s/STUDENT_ID`<br> e.g., `view 1` or `view s/A0123456X`                                                                                             |
