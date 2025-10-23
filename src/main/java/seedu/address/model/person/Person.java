@@ -2,12 +2,15 @@ package seedu.address.model.person;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.consultation.Consultation;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.tag.Tag;
 
@@ -25,6 +28,7 @@ public class Person {
     private final Set<ModuleCode> moduleCodes = new HashSet<>();
     // Data fields
     private final Address address;
+    private final List<Consultation> consultations;
     private final Set<Tag> tags = new HashSet<>();
 
     /**
@@ -42,6 +46,7 @@ public class Person {
         if (moduleCodes != null) {
             this.moduleCodes.addAll(moduleCodes);
         }
+        this.consultations = null;
     }
 
     /**
@@ -55,10 +60,12 @@ public class Person {
         this.address = address;
         this.tags.addAll(tags);
         this.studentId = null;
+        this.consultations = null;
+
     }
 
     /**
-     * Constructor for Student (with StudentId and ModuleCodes, no phone/address)
+     * Constructor for Student (with StudentId and ModuleCodes, no phone/address/consultations)
      */
     public Person(Name name, StudentId studentId, Email email,
                   Set<ModuleCode> moduleCodes, Set<Tag> tags) {
@@ -69,6 +76,23 @@ public class Person {
         this.phone = null; // Not used for students
         this.address = null; // Not used for students
         this.moduleCodes.addAll(moduleCodes);
+        this.tags.addAll(tags);
+        this.consultations = new ArrayList<>();
+    }
+
+    /**
+     * Constructor for Student (with StudentId and ModuleCodes and Consultations, no phone/address)
+     */
+    public Person(Name name, StudentId studentId, Email email,
+                  Set<ModuleCode> moduleCodes, Set<Tag> tags, List<Consultation> consultations) {
+        requireAllNonNull(name, studentId, email, moduleCodes, tags, consultations);
+        this.name = name;
+        this.studentId = studentId;
+        this.email = email;
+        this.phone = null; // Not used for students
+        this.address = null; // Not used for students
+        this.moduleCodes.addAll(moduleCodes);
+        this.consultations = new ArrayList<>(consultations);
         this.tags.addAll(tags);
     }
 
@@ -106,6 +130,14 @@ public class Person {
      */
     public Set<Tag> getTags() {
         return Collections.unmodifiableSet(tags);
+    }
+
+    /**
+     * Returns an immutable consultation list, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public List<Consultation> getConsultations() {
+        return consultations == null ? null : Collections.unmodifiableList(consultations);
     }
 
     /**
