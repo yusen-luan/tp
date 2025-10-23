@@ -145,6 +145,9 @@ public class Person {
      */
     public List<Consultation> getConsultations() {
         return consultations == null ? null : Collections.unmodifiableList(consultations);
+    }
+
+    /**
      * Returns an immutable grade set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */
