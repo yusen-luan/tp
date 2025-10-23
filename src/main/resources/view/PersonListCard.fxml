@@ -31,7 +31,11 @@
       <Label fx:id="studentId" styleClass="cell_small_label" text="\$student Id" />
       <Label fx:id="moduleCode" styleClass="cell_small_label" text="\$module" />
       <Label fx:id="email" styleClass="cell_small_label" text="\$email" />
-      <FlowPane fx:id="grades" />
+      <FlowPane fx:id="grades">
+        <VBox.margin>
+          <Insets top="3" />
+        </VBox.margin>
+      </FlowPane>
     </VBox>
   </GridPane>
 </HBox>
