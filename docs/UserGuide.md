@@ -229,6 +229,42 @@ Examples:
 * `untag s/A0291772W t/Struggling t/Inactive` - Removes "Struggling" and "Inactive" tags from student with ID A0291772W
 * `untag 2 t/needsHelp` - Removes "needsHelp" tag from the 2nd student
 
+### Adding grades to a student : `grade`
+
+Adds one or more grades to an existing student in TeachMate.
+
+Format: `grade INDEX g/ASSIGNMENT_NAME:SCORE [g/ASSIGNMENT_NAME:SCORE]…​`
+
+* Adds grades to the student at the specified `INDEX`
+* The index refers to the index number shown in the displayed student list
+* The index **must be a positive integer** 1, 2, 3, …​
+* At least one grade must be provided
+* Grades are added to existing grades (not replaced)
+* Each grade consists of an assignment name and a score separated by a colon `:`
+* `ASSIGNMENT_NAME` should not be blank
+* `SCORE` must be a number between 0 and 100 (inclusive)
+* Only students (those with Student IDs) can have grades added
+* Duplicate grades for the same assignment name are not allowed
+
+<box type="warning" seamless>
+
+**Note:** If you try to add a grade for an assignment that already exists for the student, the command will fail. Each assignment name must be unique per student.
+</box>
+
+<box type="tip" seamless>
+
+**Tips:**
+* You can add multiple grades in one command by using multiple `g/` prefixes
+* Grades will appear as purple badges in the student card, below the email
+* Assignment names can contain spaces (e.g., "Final Exam")
+* Grades are automatically saved and will persist across application restarts
+</box>
+
+Examples:
+* `grade 1 g/Midterm:85` - Adds a grade of 85 for "Midterm" to the 1st student
+* `grade 2 g/Quiz1:90 g/Assignment1:88` - Adds two grades to the 2nd student
+* `grade 3 g/Final Exam:92` - Adds a grade for "Final Exam" to the 3rd student
+
 ### Locating students by name: `find`
 
 Finds students whose names contain any of the given keywords.
@@ -326,6 +362,15 @@ Furthermore, certain edits can cause TeachMate to behave in unexpected ways (e.g
 **Q**: Can tags contain spaces?<br>
 **A**: No, tags must be alphanumeric without spaces. Use camelCase or single words (e.g., `needsHelp`, `struggling`).
 
+**Q**: Can I edit or delete grades after adding them?<br>
+**A**: Currently, grades cannot be edited or deleted through commands. If you need to modify a grade, you can manually edit the `data/addressbook.json` file (make sure to back it up first), or delete the student and re-add them with the correct grades.
+
+**Q**: Why can't I add grades to a person without a student ID?<br>
+**A**: Grades are only applicable to students. The system requires students to have a student ID to ensure grades are tracked for the right individuals.
+
+**Q**: What happens to grades when I edit or delete a student?<br>
+**A**: When you edit a student's information (name, email, etc.), their grades are preserved. If you delete a student, all their associated grades are permanently deleted as well.
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## Known issues
@@ -346,6 +391,7 @@ Furthermore, certain edits can cause TeachMate to behave in unexpected ways (e.g
 | **Edit**   | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]…​ [t/TAG]…​`<br> e.g., `edit 2 n/Jane Lee s/A9999999Z`                              |
 | **Filter** | `filter t/TAG [t/MORE_TAGS]…​`<br> e.g., `filter t/struggling t/needsHelp`                                                                                               |
 | **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find John Jane`                                                                                                                |
+| **Grade**  | `grade INDEX g/ASSIGNMENT_NAME:SCORE [g/ASSIGNMENT_NAME:SCORE]…​`<br> e.g., `grade 1 g/Midterm:85 g/Quiz1:90`                                                            |
 | **List**   | `list` or `list m/MODULE_CODE`<br> e.g., `list m/CS2103T`                                                                                                                |
 | **Tag**    | `tag INDEX t/TAG [t/TAG]…​` or `tag s/STUDENT_ID t/TAG [t/TAG]…​`<br> e.g., `tag 1 t/Struggling t/Inactive` or `tag s/A0291772W t/Excelling`                            |
 | **Untag**  | `untag INDEX t/TAG [t/TAG]…​` or `untag s/STUDENT_ID t/TAG [t/TAG]…​`<br> e.g., `untag 1 t/Struggling` or `untag s/A0291772W t/Inactive`                                |
