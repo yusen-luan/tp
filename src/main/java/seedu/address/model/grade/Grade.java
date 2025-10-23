@@ -25,10 +25,12 @@ public class Grade {
     public Grade(String assignmentName, String score) {
         requireNonNull(assignmentName);
         requireNonNull(score);
-        checkArgument(isValidGrade(score), MESSAGE_CONSTRAINTS);
-        checkArgument(isValidAssignmentName(assignmentName), "Assignment name should not be blank");
-        this.assignmentName = assignmentName.trim();
-        this.score = score.trim();
+        String trimmedAssignmentName = assignmentName.trim();
+        String trimmedScore = score.trim();
+        checkArgument(isValidGrade(trimmedScore), MESSAGE_CONSTRAINTS);
+        checkArgument(isValidAssignmentName(trimmedAssignmentName), "Assignment name should not be blank");
+        this.assignmentName = trimmedAssignmentName;
+        this.score = trimmedScore;
     }
 
     /**
