@@ -25,6 +25,7 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.consultation.Consultation;
+import seedu.address.model.grade.Grade;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
@@ -114,16 +115,17 @@ public class EditCommand extends Command {
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
         List<Consultation> updatedConsultations =
                 editPersonDescriptor.getConsultations().orElse(personToEdit.getConsultations());
+        Set<Grade> updatedGrades = personToEdit.getGrades(); // Keep existing grades when editing
 
         // Check if this is a student (has studentId but no phone/address)
         if (updatedStudentId != null && updatedPhone == null && updatedAddress == null) {
             // Use student constructor
             return new Person(updatedName, updatedStudentId,
-                    updatedEmail, updatedModuleCodes, updatedTags, updatedConsultations);
+                    updatedEmail, updatedModuleCodes, updatedTags, updatedGrades, updatedConsultations);
         } else {
             // Use regular person constructor
             return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
-                    updatedStudentId, updatedModuleCodes);
+                    updatedStudentId, updatedModuleCodes, updatedGrades);
         }
     }
 

@@ -11,6 +11,7 @@ import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.consultation.Consultation;
+import seedu.address.model.grade.Grade;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.tag.Tag;
 
@@ -30,12 +31,13 @@ public class Person {
     private final Address address;
     private final List<Consultation> consultations;
     private final Set<Tag> tags = new HashSet<>();
+    private final Set<Grade> grades = new HashSet<>();
 
     /**
      * Every field must be present and not null.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
-                  StudentId studentId, Set<ModuleCode> moduleCodes) {
+                  StudentId studentId, Set<ModuleCode> moduleCodes, Set<Grade> grades) {
         requireAllNonNull(name, phone, email, address, tags);
         this.name = name;
         this.phone = phone;
@@ -47,6 +49,9 @@ public class Person {
             this.moduleCodes.addAll(moduleCodes);
         }
         this.consultations = null;
+        if (grades != null) {
+            this.grades.addAll(grades);
+        }
     }
 
     /**
@@ -68,8 +73,8 @@ public class Person {
      * Constructor for Student (with StudentId and ModuleCodes, no phone/address/consultations)
      */
     public Person(Name name, StudentId studentId, Email email,
-                  Set<ModuleCode> moduleCodes, Set<Tag> tags) {
-        requireAllNonNull(name, studentId, email, moduleCodes, tags);
+                  Set<ModuleCode> moduleCodes, Set<Tag> tags, Set<Grade> grades) {
+        requireAllNonNull(name, studentId, email, moduleCodes, tags, grades);
         this.name = name;
         this.studentId = studentId;
         this.email = email;
@@ -77,6 +82,7 @@ public class Person {
         this.address = null; // Not used for students
         this.moduleCodes.addAll(moduleCodes);
         this.tags.addAll(tags);
+        this.grades.addAll(grades);
         this.consultations = new ArrayList<>();
     }
 
@@ -84,8 +90,8 @@ public class Person {
      * Constructor for Student (with StudentId and ModuleCodes and Consultations, no phone/address)
      */
     public Person(Name name, StudentId studentId, Email email,
-                  Set<ModuleCode> moduleCodes, Set<Tag> tags, List<Consultation> consultations) {
-        requireAllNonNull(name, studentId, email, moduleCodes, tags, consultations);
+                  Set<ModuleCode> moduleCodes, Set<Tag> tags, Set<Grade> grades, List<Consultation> consultations) {
+        requireAllNonNull(name, studentId, email, moduleCodes, tags, grades, consultations);
         this.name = name;
         this.studentId = studentId;
         this.email = email;
@@ -94,6 +100,7 @@ public class Person {
         this.moduleCodes.addAll(moduleCodes);
         this.consultations = new ArrayList<>(consultations);
         this.tags.addAll(tags);
+        this.grades.addAll(grades);
     }
 
     public Name getName() {
@@ -138,6 +145,11 @@ public class Person {
      */
     public List<Consultation> getConsultations() {
         return consultations == null ? null : Collections.unmodifiableList(consultations);
+     * Returns an immutable grade set, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public Set<Grade> getGrades() {
+        return Collections.unmodifiableSet(grades);
     }
 
     /**
@@ -175,13 +187,14 @@ public class Person {
                 && Objects.equals(address, otherPerson.address)
                 && tags.equals(otherPerson.tags)
                 && Objects.equals(studentId, otherPerson.studentId)
-                && moduleCodes.equals(otherPerson.moduleCodes);
+                && moduleCodes.equals(otherPerson.moduleCodes)
+                && grades.equals(otherPerson.grades);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags, studentId, moduleCodes);
+        return Objects.hash(name, phone, email, address, tags, studentId, moduleCodes, grades);
     }
 
     @Override
@@ -194,6 +207,7 @@ public class Person {
                 .add("tags", tags)
                 .add("studentId", studentId)
                 .add("moduleCodes", moduleCodes)
+                .add("grades", grades)
                 .toString();
     }
 

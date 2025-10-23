@@ -10,6 +10,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -61,9 +62,9 @@ public class AddCommandParser implements Parser<AddCommand> {
 
         Person person;
         if (consultationList.isEmpty()) {
-            person = new Person(name, studentId, email, moduleCodeList, tagList);
+            person = new Person(name, studentId, email, moduleCodeList, tagList, new HashSet<>());
         } else {
-            person = new Person(name, studentId, email, moduleCodeList, tagList, consultationList);
+            person = new Person(name, studentId, email, moduleCodeList, tagList, new HashSet<>(), consultationList);
         }
 
         return new AddCommand(person);

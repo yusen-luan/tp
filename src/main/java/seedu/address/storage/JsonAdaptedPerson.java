@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.model.grade.Grade;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
@@ -33,6 +34,7 @@ class JsonAdaptedPerson {
     private final String studentId;
     private final List<String> moduleCodes;
     private final List<JsonAdaptedTag> tags;
+    private final List<JsonAdaptedGrade> grades;
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -41,7 +43,7 @@ class JsonAdaptedPerson {
     public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
             @JsonProperty("email") String email, @JsonProperty("address") String address,
             @JsonProperty("studentId") String studentId, @JsonProperty("moduleCodes") List<String> moduleCodes,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags) {
+            @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("grades") List<JsonAdaptedGrade> grades) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -49,6 +51,7 @@ class JsonAdaptedPerson {
         this.studentId = studentId;
         this.moduleCodes = moduleCodes != null ? new ArrayList<>(moduleCodes) : null;
         this.tags = tags != null ? new ArrayList<>(tags) : new ArrayList<>();
+        this.grades = grades != null ? new ArrayList<>(grades) : new ArrayList<>();
     }
 
     /**
@@ -66,6 +69,9 @@ class JsonAdaptedPerson {
         tags = source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .collect(Collectors.toList());
+        grades = source.getGrades().stream()
+                .map(JsonAdaptedGrade::new)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -77,6 +83,11 @@ class JsonAdaptedPerson {
         final List<Tag> personTags = new ArrayList<>();
         for (JsonAdaptedTag tag : tags) {
             personTags.add(tag.toModelType());
+        }
+
+        final List<Grade> personGrades = new ArrayList<>();
+        for (JsonAdaptedGrade grade : grades) {
+            personGrades.add(grade.toModelType());
         }
 
         if (name == null) {
@@ -96,6 +107,7 @@ class JsonAdaptedPerson {
         final Email modelEmail = new Email(email);
 
         final Set<Tag> modelTags = new HashSet<>(personTags);
+        final Set<Grade> modelGrades = new HashSet<>(personGrades);
 
         // Check if this is a student (has studentId and moduleCodes but NO phone/address)
         if (studentId != null && moduleCodes != null && !moduleCodes.isEmpty()
@@ -116,7 +128,7 @@ class JsonAdaptedPerson {
             }
 
             // Use student constructor (without phone/address)
-            return new Person(modelName, modelStudentId, modelEmail, modelModuleCodes, modelTags);
+            return new Person(modelName, modelStudentId, modelEmail, modelModuleCodes, modelTags, modelGrades);
         }
 
         // Otherwise, create a regular person (with phone and address)
@@ -159,7 +171,7 @@ class JsonAdaptedPerson {
         }
 
         return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelStudentId,
-                modelModuleCodes);
+                modelModuleCodes, modelGrades);
     }
 
 }
