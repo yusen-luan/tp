@@ -183,6 +183,52 @@ Examples:
 *  `edit 2 n/Jane Doe t/` - Edits the name of the 2nd student and clears all tags
 *  `edit 3 m/CS2103T m/CS2101` - Replaces all module codes with CS2103T and CS2101
 
+### Adding tags to a student : `tag`
+
+Adds one or more tags to an existing student in TeachMate without removing existing tags.
+
+Format:
+* `tag INDEX t/TAG [t/TAG]…​` - Add tags by list index
+* `tag s/STUDENT_ID t/TAG [t/TAG]…​` - Add tags by student ID
+
+* The index refers to the index number shown in the displayed student list
+* The index **must be a positive integer** 1, 2, 3, …​
+* Student ID must match the format A followed by 7 digits and 1 uppercase letter
+* At least one tag must be provided
+* Tags are added to existing tags (not replaced)
+* Duplicate tags that already exist on the student will still be added
+* `TAG` should be alphanumeric (no spaces)
+
+Examples:
+* `tag 1 t/Struggling t/Inactive` - Adds "Struggling" and "Inactive" tags to the 1st student
+* `tag s/A0291772W t/Excelling` - Adds "Excelling" tag to student with ID A0291772W
+* `tag 2 t/needsHelp` - Adds "needsHelp" tag to the 2nd student
+
+### Removing tags from a student : `untag`
+
+Removes one or more tags from an existing student in TeachMate.
+
+Format:
+* `untag INDEX t/TAG [t/TAG]…​` - Remove tags by list index
+* `untag s/STUDENT_ID t/TAG [t/TAG]…​` - Remove tags by student ID
+
+* The index refers to the index number shown in the displayed student list
+* The index **must be a positive integer** 1, 2, 3, …​
+* Student ID must match the format A followed by 7 digits and 1 uppercase letter
+* At least one tag must be provided
+* All specified tags must exist on the student, otherwise an error will be shown
+* `TAG` should be alphanumeric (no spaces)
+
+<box type="warning" seamless>
+
+**Note:** If you try to remove a tag that doesn't exist on the student, the command will fail and show you which tags are missing. Make sure the tags you want to remove are currently on the student.
+</box>
+
+Examples:
+* `untag 1 t/Struggling` - Removes "Struggling" tag from the 1st student
+* `untag s/A0291772W t/Struggling t/Inactive` - Removes "Struggling" and "Inactive" tags from student with ID A0291772W
+* `untag 2 t/needsHelp` - Removes "needsHelp" tag from the 2nd student
+
 ### Locating students by name: `find`
 
 Finds students whose names contain any of the given keywords.
@@ -301,6 +347,8 @@ Furthermore, certain edits can cause TeachMate to behave in unexpected ways (e.g
 | **Filter** | `filter t/TAG [t/MORE_TAGS]…​`<br> e.g., `filter t/struggling t/needsHelp`                                                                                               |
 | **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find John Jane`                                                                                                                |
 | **List**   | `list` or `list m/MODULE_CODE`<br> e.g., `list m/CS2103T`                                                                                                                |
+| **Tag**    | `tag INDEX t/TAG [t/TAG]…​` or `tag s/STUDENT_ID t/TAG [t/TAG]…​`<br> e.g., `tag 1 t/Struggling t/Inactive` or `tag s/A0291772W t/Excelling`                            |
+| **Untag**  | `untag INDEX t/TAG [t/TAG]…​` or `untag s/STUDENT_ID t/TAG [t/TAG]…​`<br> e.g., `untag 1 t/Struggling` or `untag s/A0291772W t/Inactive`                                |
 | **View**   | `view INDEX` or `view s/STUDENT_ID`<br> e.g., `view 1` or `view s/A0123456X`                                                                                             |
 | **Help**   | `help`                                                                                                                                                                    |
 | **Exit**   | `exit`                                                                                                                                                                    |
