@@ -45,11 +45,12 @@ public class UntagCommandTest {
         if (personToUntag.getStudentId() != null && personToUntag.getPhone() == null
                 && personToUntag.getAddress() == null) {
             personWithTag = new Person(personToUntag.getName(), personToUntag.getStudentId(),
-                    personToUntag.getEmail(), personToUntag.getModuleCodes(), updatedTagsWithNew);
+                    personToUntag.getEmail(), personToUntag.getModuleCodes(), updatedTagsWithNew,
+                    personToUntag.getGrades());
         } else {
             personWithTag = new Person(personToUntag.getName(), personToUntag.getPhone(), personToUntag.getEmail(),
                     personToUntag.getAddress(), updatedTagsWithNew, personToUntag.getStudentId(),
-                    personToUntag.getModuleCodes());
+                    personToUntag.getModuleCodes(), personToUntag.getGrades());
         }
 
         model.setPerson(personToUntag, personWithTag);
@@ -67,11 +68,12 @@ public class UntagCommandTest {
         if (personWithTag.getStudentId() != null && personWithTag.getPhone() == null
                 && personWithTag.getAddress() == null) {
             expectedPerson = new Person(personWithTag.getName(), personWithTag.getStudentId(),
-                    personWithTag.getEmail(), personWithTag.getModuleCodes(), expectedTags);
+                    personWithTag.getEmail(), personWithTag.getModuleCodes(), expectedTags,
+                    personWithTag.getGrades());
         } else {
             expectedPerson = new Person(personWithTag.getName(), personWithTag.getPhone(), personWithTag.getEmail(),
                     personWithTag.getAddress(), expectedTags, personWithTag.getStudentId(),
-                    personWithTag.getModuleCodes());
+                    personWithTag.getModuleCodes(), personWithTag.getGrades());
         }
 
         String expectedMessage = String.format(UntagCommand.MESSAGE_UNTAG_PERSON_SUCCESS,
@@ -129,11 +131,12 @@ public class UntagCommandTest {
         if (studentToUntag.getStudentId() != null && studentToUntag.getPhone() == null
                 && studentToUntag.getAddress() == null) {
             expectedPerson = new Person(studentToUntag.getName(), studentToUntag.getStudentId(),
-                    studentToUntag.getEmail(), studentToUntag.getModuleCodes(), expectedTags);
+                    studentToUntag.getEmail(), studentToUntag.getModuleCodes(), expectedTags,
+                    studentToUntag.getGrades());
         } else {
             expectedPerson = new Person(studentToUntag.getName(), studentToUntag.getPhone(),
                     studentToUntag.getEmail(), studentToUntag.getAddress(), expectedTags,
-                    studentToUntag.getStudentId(), studentToUntag.getModuleCodes());
+                    studentToUntag.getStudentId(), studentToUntag.getModuleCodes(), studentToUntag.getGrades());
         }
 
         String expectedMessage = String.format(UntagCommand.MESSAGE_UNTAG_PERSON_SUCCESS,
