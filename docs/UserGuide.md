@@ -80,7 +80,7 @@ Format: `help`
 
 Adds a student to TeachMate.
 
-Format: `add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/TAG]…​`
+Format: `add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/TAG]…​ [c/CONSULTATIONS]`
 
 <box type="info" seamless>
 
@@ -92,6 +92,7 @@ Format: `add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/
 * `TAG` should be alphanumeric (no spaces)
 * At least one module code is required
 * Tags are optional
+* Consultations are optional, if provided it should follow one of the supported formats listed below
 </box>
 
 <box type="tip" seamless>
@@ -104,9 +105,22 @@ Format: `add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/
 * Each domain label may contain hyphens between alphanumeric characters
 </box>
 
+<box type="tip" seamless>
+
+**Consultations Constraints:**
+* Consultations are optional — a student can be added without any consultations
+* If included, each consultation must follow one of these date/time formats:
+    * `dd/MM/yyyy HH:mm` → e.g., `22/10/2025 15:30`
+    * `dd-MM-yyyy HH:mm` → e.g., `22-10-2025 15:30`
+    * `dd MMM yyyy HH:mm` → e.g., `22 Oct 2025 15:30`
+    * `dd/MM/yyyy hh:mma` → e.g., `22/10/2025 3:30PM`
+
+</box>
+
+
 Examples:
 * `add n/John Doe s/A0123456X e/johnd@u.nus.edu m/CS2103T`
-* `add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t/needsHelp`
+* `add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t/needsHelp c/22 Oct 2025 15:30 `
 
 ### Listing students : `list`
 
@@ -140,7 +154,7 @@ Examples:
 
 Edits an existing student in TeachMate. You can edit students whether they have phone/address (legacy data) or only have student-specific fields.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]…​ [t/TAG]…​`
+Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]…​ [t/TAG]…​ [c/CONSULTATIONS]`
 
 * Edits the student at the specified `INDEX`
 * The index refers to the index number shown in the displayed student list
@@ -151,6 +165,7 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/M
 * When editing tags, the existing tags will be removed and replaced (not cumulative)
 * You can remove all tags by typing `t/` without specifying any tags
 * You can remove all module codes by typing `m/` without specifying any module codes
+* Editing consultations should still follow the same format as in the `add` command
 
 <box type="warning" seamless>
 
