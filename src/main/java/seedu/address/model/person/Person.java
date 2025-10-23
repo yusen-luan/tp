@@ -9,6 +9,7 @@ import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.attendance.AttendanceRecord;
+import seedu.address.model.grade.Grade;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.tag.Tag;
 
@@ -28,12 +29,13 @@ public class Person {
     private final Address address;
     private final Set<Tag> tags = new HashSet<>();
     private final AttendanceRecord attendanceRecord;
+    private final Set<Grade> grades = new HashSet<>();
 
     /**
      * Every field must be present and not null.
      */
     public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
-                  StudentId studentId, Set<ModuleCode> moduleCodes) {
+                  StudentId studentId, Set<ModuleCode> moduleCodes, Set<Grade> grades) {
         requireAllNonNull(name, phone, email, address, tags);
         this.name = name;
         this.phone = phone;
@@ -45,6 +47,9 @@ public class Person {
             this.moduleCodes.addAll(moduleCodes);
         }
         this.attendanceRecord = new AttendanceRecord();
+        if (grades != null) {
+          this.grades.addAll(grades);
+        }
     }
 
     /**
@@ -63,6 +68,9 @@ public class Person {
             this.moduleCodes.addAll(moduleCodes);
         }
         this.attendanceRecord = attendanceRecord != null ? attendanceRecord : new AttendanceRecord();
+        if (grades != null) {
+            this.grades.addAll(grades);
+        }
     }
 
     /**
@@ -83,8 +91,8 @@ public class Person {
      * Constructor for Student (with StudentId and ModuleCodes, no phone/address)
      */
     public Person(Name name, StudentId studentId, Email email,
-                  Set<ModuleCode> moduleCodes, Set<Tag> tags) {
-        requireAllNonNull(name, studentId, email, moduleCodes, tags);
+                  Set<ModuleCode> moduleCodes, Set<Tag> tags, Set<Grade> grades) {
+        requireAllNonNull(name, studentId, email, moduleCodes, tags, grades);
         this.name = name;
         this.studentId = studentId;
         this.email = email;
@@ -93,22 +101,28 @@ public class Person {
         this.moduleCodes.addAll(moduleCodes);
         this.tags.addAll(tags);
         this.attendanceRecord = new AttendanceRecord();
+        if (grades != null) {
+          this.grades.addAll(grades);
+        }
     }
 
     /**
      * Constructor for Student with custom AttendanceRecord
      */
     public Person(Name name, StudentId studentId, Email email,
-                  Set<ModuleCode> moduleCodes, Set<Tag> tags, AttendanceRecord attendanceRecord) {
-        requireAllNonNull(name, studentId, email, moduleCodes, tags);
-        this.name = name;
-        this.studentId = studentId;
-        this.email = email;
-        this.phone = null; // Not used for students
-        this.address = null; // Not used for students
-        this.moduleCodes.addAll(moduleCodes);
-        this.tags.addAll(tags);
-        this.attendanceRecord = attendanceRecord != null ? attendanceRecord : new AttendanceRecord();
+              Set<ModuleCode> moduleCodes, Set<Tag> tags, AttendanceRecord attendanceRecord, Set<Grade> grades) {
+      requireAllNonNull(name, studentId, email, moduleCodes, tags);
+      this.name = name;
+      this.studentId = studentId;
+      this.email = email;
+      this.phone = null;
+      this.address = null;
+      this.moduleCodes.addAll(moduleCodes);
+      this.tags.addAll(tags);
+      this.attendanceRecord = attendanceRecord != null ? attendanceRecord : new AttendanceRecord();
+      if (grades != null) {
+          this.grades.addAll(grades);
+      }
     }
 
     public Name getName() {
@@ -153,6 +167,14 @@ public class Person {
     public AttendanceRecord getAttendanceRecord() {
         return attendanceRecord;
     }
+  
+    /**
+     * Returns an immutable grade set, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public Set<Grade> getGrades() {
+        return Collections.unmodifiableSet(grades);
+    }
 
     /**
      * Returns true if both persons have the same name.
@@ -190,13 +212,14 @@ public class Person {
                 && tags.equals(otherPerson.tags)
                 && Objects.equals(studentId, otherPerson.studentId)
                 && moduleCodes.equals(otherPerson.moduleCodes)
-                && attendanceRecord.equals(otherPerson.attendanceRecord);
+                && attendanceRecord.equals(otherPerson.attendanceRecord)
+                && grades.equals(otherPerson.grades);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags, studentId, moduleCodes, attendanceRecord);
+        return Objects.hash(name, phone, email, address, tags, studentId, moduleCodes, attendanceRecord, grades);
     }
 
     @Override
@@ -210,6 +233,7 @@ public class Person {
                 .add("studentId", studentId)
                 .add("moduleCodes", moduleCodes)
                 .add("attendanceRecord", attendanceRecord)
+                .add("grades", grades)
                 .toString();
     }
 
