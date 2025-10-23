@@ -118,6 +118,23 @@ public class Person {
      * Constructor for Student with custom AttendanceRecord
      */
     public Person(Name name, StudentId studentId, Email email,
+                  Set<ModuleCode> moduleCodes, Set<Tag> tags, AttendanceRecord attendanceRecord) {
+        requireAllNonNull(name, studentId, email, moduleCodes, tags);
+        this.name = name;
+        this.studentId = studentId;
+        this.email = email;
+        this.phone = null; // Not used for students
+        this.address = null; // Not used for students
+        this.moduleCodes.addAll(moduleCodes);
+        this.tags.addAll(tags);
+        this.attendanceRecord = attendanceRecord != null ? attendanceRecord : new AttendanceRecord();
+        this.consultations = new ArrayList<>();
+    }
+
+    /**
+     * Constructor for Student with custom AttendanceRecord and Grades
+     */
+    public Person(Name name, StudentId studentId, Email email,
                   Set<ModuleCode> moduleCodes, Set<Tag> tags, AttendanceRecord attendanceRecord, Set<Grade> grades) {
         requireAllNonNull(name, studentId, email, moduleCodes, tags);
         this.name = name;
