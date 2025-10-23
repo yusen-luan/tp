@@ -13,6 +13,8 @@ import java.util.Set;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.attendance.AttendanceStatus;
+import seedu.address.model.attendance.Week;
 import seedu.address.model.grade.Grade;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.person.Address;
@@ -195,6 +197,41 @@ public class ParserUtil {
         }
         throw new ParseException("Invalid date/time format. Try formats like:\n"
                 + "22/10/2025 15:30 or 22 Oct 2025 3:30PM");
+    }
+
+    /**
+     * Parses a {@code String week} into a {@code Week}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code week} is invalid.
+     */
+    public static Week parseWeek(String week) throws ParseException {
+        requireNonNull(week);
+        String trimmedWeek = week.trim();
+        try {
+            int weekNumber = Integer.parseInt(trimmedWeek);
+            return new Week(weekNumber);
+        } catch (NumberFormatException e) {
+            throw new ParseException(Week.MESSAGE_CONSTRAINTS);
+        } catch (IllegalArgumentException e) {
+            throw new ParseException(Week.MESSAGE_CONSTRAINTS);
+        }
+    }
+
+    /**
+     * Parses a {@code String status} into an {@code AttendanceStatus}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code status} is invalid.
+     */
+    public static AttendanceStatus parseAttendanceStatus(String status) throws ParseException {
+        requireNonNull(status);
+        String trimmedStatus = status.trim();
+        try {
+            return AttendanceStatus.fromString(trimmedStatus);
+        } catch (IllegalArgumentException e) {
+            throw new ParseException("Invalid attendance status. Use 'present' or 'absent'.");
+        }
     }
 
     /**

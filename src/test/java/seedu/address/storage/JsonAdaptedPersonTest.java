@@ -41,7 +41,7 @@ public class JsonAdaptedPersonTest {
     @Test
     public void toModelType_validPersonDetails_returnsPerson() throws Exception {
         JsonAdaptedPerson person = new JsonAdaptedPerson(VALID_NAME, VALID_PHONE, VALID_EMAIL,
-                VALID_ADDRESS, VALID_STUDENT_ID, VALID_MODULE_CODES, VALID_TAGS, VALID_GRADES);
+        VALID_ADDRESS, VALID_STUDENT_ID, VALID_MODULE_CODES, VALID_TAGS, VALID_GRADES);
         // Note: BENSON doesn't have studentId and moduleCode, so we can't directly compare with BENSON
         // We'll just ensure it doesn't throw an exception
         person.toModelType();

@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.attendance.AttendanceRecord;
 import seedu.address.model.consultation.Consultation;
 import seedu.address.model.grade.Grade;
 import seedu.address.model.module.ModuleCode;
@@ -31,6 +32,7 @@ public class Person {
     private final Address address;
     private final List<Consultation> consultations;
     private final Set<Tag> tags = new HashSet<>();
+    private final AttendanceRecord attendanceRecord;
     private final Set<Grade> grades = new HashSet<>();
 
     /**
@@ -48,6 +50,29 @@ public class Person {
         if (moduleCodes != null) {
             this.moduleCodes.addAll(moduleCodes);
         }
+        this.attendanceRecord = new AttendanceRecord();
+        this.consultations = null;
+        if (grades != null) {
+            this.grades.addAll(grades);
+        }
+    }
+
+    /**
+     * Every field must be present and not null, with custom AttendanceRecord.
+     */
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+                  StudentId studentId, Set<ModuleCode> moduleCodes, AttendanceRecord attendanceRecord) {
+        requireAllNonNull(name, phone, email, address, tags);
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.tags.addAll(tags);
+        this.studentId = studentId;
+        if (moduleCodes != null) {
+            this.moduleCodes.addAll(moduleCodes);
+        }
+        this.attendanceRecord = attendanceRecord != null ? attendanceRecord : new AttendanceRecord();
         this.consultations = null;
         if (grades != null) {
             this.grades.addAll(grades);
@@ -65,8 +90,8 @@ public class Person {
         this.address = address;
         this.tags.addAll(tags);
         this.studentId = null;
+        this.attendanceRecord = new AttendanceRecord();
         this.consultations = null;
-
     }
 
     /**
@@ -82,7 +107,47 @@ public class Person {
         this.address = null; // Not used for students
         this.moduleCodes.addAll(moduleCodes);
         this.tags.addAll(tags);
-        this.grades.addAll(grades);
+        this.attendanceRecord = new AttendanceRecord();
+        if (grades != null) {
+            this.grades.addAll(grades);
+        }
+        this.consultations = new ArrayList<>();
+    }
+
+    /**
+     * Constructor for Student with custom AttendanceRecord
+     */
+    public Person(Name name, StudentId studentId, Email email,
+                  Set<ModuleCode> moduleCodes, Set<Tag> tags, AttendanceRecord attendanceRecord) {
+        requireAllNonNull(name, studentId, email, moduleCodes, tags);
+        this.name = name;
+        this.studentId = studentId;
+        this.email = email;
+        this.phone = null; // Not used for students
+        this.address = null; // Not used for students
+        this.moduleCodes.addAll(moduleCodes);
+        this.tags.addAll(tags);
+        this.attendanceRecord = attendanceRecord != null ? attendanceRecord : new AttendanceRecord();
+        this.consultations = new ArrayList<>();
+    }
+
+    /**
+     * Constructor for Student with custom AttendanceRecord and Grades
+     */
+    public Person(Name name, StudentId studentId, Email email,
+                  Set<ModuleCode> moduleCodes, Set<Tag> tags, AttendanceRecord attendanceRecord, Set<Grade> grades) {
+        requireAllNonNull(name, studentId, email, moduleCodes, tags);
+        this.name = name;
+        this.studentId = studentId;
+        this.email = email;
+        this.phone = null;
+        this.address = null;
+        this.moduleCodes.addAll(moduleCodes);
+        this.tags.addAll(tags);
+        this.attendanceRecord = attendanceRecord != null ? attendanceRecord : new AttendanceRecord();
+        if (grades != null) {
+            this.grades.addAll(grades);
+        }
         this.consultations = new ArrayList<>();
     }
 
@@ -101,6 +166,7 @@ public class Person {
         this.consultations = new ArrayList<>(consultations);
         this.tags.addAll(tags);
         this.grades.addAll(grades);
+        this.attendanceRecord = new AttendanceRecord();
     }
 
     public Name getName() {
@@ -140,12 +206,20 @@ public class Person {
     }
 
     /**
+     * Returns the attendance record for this person.
+     */
+    public AttendanceRecord getAttendanceRecord() {
+        return attendanceRecord;
+    }
+
+    /**
      * Returns an immutable consultation list, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */
     public List<Consultation> getConsultations() {
         return consultations == null ? null : Collections.unmodifiableList(consultations);
     }
+
 
     /**
      * Returns an immutable grade set, which throws {@code UnsupportedOperationException}
@@ -191,13 +265,16 @@ public class Person {
                 && tags.equals(otherPerson.tags)
                 && Objects.equals(studentId, otherPerson.studentId)
                 && moduleCodes.equals(otherPerson.moduleCodes)
+                && attendanceRecord.equals(otherPerson.attendanceRecord)
+                && Objects.equals(consultations, otherPerson.consultations)
                 && grades.equals(otherPerson.grades);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags, studentId, moduleCodes, grades);
+        return Objects.hash(name, phone, email, address, tags, studentId, moduleCodes, attendanceRecord,
+                consultations, grades);
     }
 
     @Override
@@ -210,6 +287,8 @@ public class Person {
                 .add("tags", tags)
                 .add("studentId", studentId)
                 .add("moduleCodes", moduleCodes)
+                .add("attendanceRecord", attendanceRecord)
+                .add("consultations", consultations)
                 .add("grades", grades)
                 .toString();
     }
