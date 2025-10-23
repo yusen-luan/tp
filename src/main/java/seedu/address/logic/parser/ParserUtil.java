@@ -195,6 +195,8 @@ public class ParserUtil {
         }
         throw new ParseException("Invalid date/time format. Try formats like:\n"
                 + "22/10/2025 15:30 or 22 Oct 2025 3:30PM");
+    }
+
     /**
      * Parses a {@code String grade} into a {@code Grade}.
      * Grade format should be "ASSIGNMENT_NAME:SCORE"
