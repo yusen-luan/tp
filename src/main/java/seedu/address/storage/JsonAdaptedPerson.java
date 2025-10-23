@@ -48,11 +48,8 @@ class JsonAdaptedPerson {
             @JsonProperty("studentId") String studentId,
             @JsonProperty("moduleCodes") List<String> moduleCodes,
             @JsonProperty("tags") List<JsonAdaptedTag> tags,
-            @JsonProperty("attendances") List<JsonAdaptedAttendance> attendances) {
-    public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
-            @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("studentId") String studentId, @JsonProperty("moduleCodes") List<String> moduleCodes,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags, @JsonProperty("grades") List<JsonAdaptedGrade> grades) {
+            @JsonProperty("attendances") List<JsonAdaptedAttendance> attendances,
+            @JsonProperty("grades") List<JsonAdaptedGrade> grades) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -81,6 +78,7 @@ class JsonAdaptedPerson {
                 .collect(Collectors.toList());
         attendances = source.getAttendanceRecord().getAllAttendances().entrySet().stream()
                 .map(entry -> new JsonAdaptedAttendance(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
         grades = source.getGrades().stream()
                 .map(JsonAdaptedGrade::new)
                 .collect(Collectors.toList());
@@ -150,8 +148,7 @@ class JsonAdaptedPerson {
 
             // Use student constructor (without phone/address)
             return new Person(modelName, modelStudentId, modelEmail, modelModuleCodes,
-                    modelTags, modelAttendanceRecord);
-            return new Person(modelName, modelStudentId, modelEmail, modelModuleCodes, modelTags, modelGrades);
+                    modelTags, modelAttendanceRecord, modelGrades);
         }
 
         // Otherwise, create a regular person (with phone and address)
@@ -204,7 +201,6 @@ class JsonAdaptedPerson {
 
         return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags, modelStudentId,
                 modelModuleCodes, modelAttendanceRecord);
-                modelModuleCodes, modelGrades);
     }
 
 }

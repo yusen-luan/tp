@@ -232,6 +232,9 @@ public class ParserUtil {
         } catch (IllegalArgumentException e) {
             throw new ParseException("Invalid attendance status. Use 'present' or 'absent'.");
         }
+    }
+
+    /**
      * Parses a {@code String grade} into a {@code Grade}.
      * Grade format should be "ASSIGNMENT_NAME:SCORE"
      * Leading and trailing whitespaces will be trimmed.
