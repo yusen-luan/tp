@@ -99,6 +99,7 @@ public class PersonTest {
                 + ", email=" + ALICE.getEmail() + ", address=" + ALICE.getAddress() + ", tags=" + ALICE.getTags()
                 + ", studentId=" + ALICE.getStudentId() + ", moduleCodes=" + ALICE.getModuleCodes()
                 + ", attendanceRecord=" + ALICE.getAttendanceRecord() + "}";
+                + ", grades=" + ALICE.getGrades() + "}";
         assertEquals(expected, ALICE.toString());
     }
 
