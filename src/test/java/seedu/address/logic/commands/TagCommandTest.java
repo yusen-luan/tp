@@ -46,11 +46,11 @@ public class TagCommandTest {
         if (personToTag.getStudentId() != null && personToTag.getPhone() == null
                 && personToTag.getAddress() == null) {
             expectedPerson = new Person(personToTag.getName(), personToTag.getStudentId(),
-                    personToTag.getEmail(), personToTag.getModuleCodes(), expectedTags);
+                    personToTag.getEmail(), personToTag.getModuleCodes(), expectedTags, personToTag.getGrades());
         } else {
             expectedPerson = new Person(personToTag.getName(), personToTag.getPhone(), personToTag.getEmail(),
                     personToTag.getAddress(), expectedTags, personToTag.getStudentId(),
-                    personToTag.getModuleCodes());
+                    personToTag.getModuleCodes(), personToTag.getGrades());
         }
 
         String expectedMessage = String.format(TagCommand.MESSAGE_TAG_PERSON_SUCCESS,
@@ -79,11 +79,11 @@ public class TagCommandTest {
         if (personToTag.getStudentId() != null && personToTag.getPhone() == null
                 && personToTag.getAddress() == null) {
             expectedPerson = new Person(personToTag.getName(), personToTag.getStudentId(),
-                    personToTag.getEmail(), personToTag.getModuleCodes(), expectedTags);
+                    personToTag.getEmail(), personToTag.getModuleCodes(), expectedTags, personToTag.getGrades());
         } else {
             expectedPerson = new Person(personToTag.getName(), personToTag.getPhone(), personToTag.getEmail(),
                     personToTag.getAddress(), expectedTags, personToTag.getStudentId(),
-                    personToTag.getModuleCodes());
+                    personToTag.getModuleCodes(), personToTag.getGrades());
         }
 
         String expectedMessage = String.format(TagCommand.MESSAGE_TAG_PERSON_SUCCESS,
@@ -128,11 +128,11 @@ public class TagCommandTest {
         if (studentToTag.getStudentId() != null && studentToTag.getPhone() == null
                 && studentToTag.getAddress() == null) {
             expectedPerson = new Person(studentToTag.getName(), studentToTag.getStudentId(),
-                    studentToTag.getEmail(), studentToTag.getModuleCodes(), expectedTags);
+                    studentToTag.getEmail(), studentToTag.getModuleCodes(), expectedTags, studentToTag.getGrades());
         } else {
             expectedPerson = new Person(studentToTag.getName(), studentToTag.getPhone(),
                     studentToTag.getEmail(), studentToTag.getAddress(), expectedTags,
-                    studentToTag.getStudentId(), studentToTag.getModuleCodes());
+                    studentToTag.getStudentId(), studentToTag.getModuleCodes(), studentToTag.getGrades());
         }
 
         String expectedMessage = String.format(TagCommand.MESSAGE_TAG_PERSON_SUCCESS,

@@ -133,12 +133,12 @@ public class UntagCommand extends Command {
                 && personToUntag.getAddress() == null) {
             // Use student constructor
             return new Person(personToUntag.getName(), personToUntag.getStudentId(),
-                    personToUntag.getEmail(), personToUntag.getModuleCodes(), updatedTags);
+                    personToUntag.getEmail(), personToUntag.getModuleCodes(), updatedTags, personToUntag.getGrades());
         } else {
             // Use regular person constructor
             return new Person(personToUntag.getName(), personToUntag.getPhone(), personToUntag.getEmail(),
                     personToUntag.getAddress(), updatedTags, personToUntag.getStudentId(),
-                    personToUntag.getModuleCodes());
+                    personToUntag.getModuleCodes(), personToUntag.getGrades());
         }
     }
 

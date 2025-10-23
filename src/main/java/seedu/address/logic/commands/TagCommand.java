@@ -120,12 +120,12 @@ public class TagCommand extends Command {
                 && personToTag.getAddress() == null) {
             // Use student constructor
             return new Person(personToTag.getName(), personToTag.getStudentId(),
-                    personToTag.getEmail(), personToTag.getModuleCodes(), updatedTags);
+                    personToTag.getEmail(), personToTag.getModuleCodes(), updatedTags, personToTag.getGrades());
         } else {
             // Use regular person constructor
             return new Person(personToTag.getName(), personToTag.getPhone(), personToTag.getEmail(),
                     personToTag.getAddress(), updatedTags, personToTag.getStudentId(),
-                    personToTag.getModuleCodes());
+                    personToTag.getModuleCodes(), personToTag.getGrades());
         }
     }
 
