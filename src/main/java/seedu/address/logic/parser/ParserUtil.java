@@ -2,8 +2,12 @@ package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
@@ -24,6 +28,13 @@ import seedu.address.model.tag.Tag;
 public class ParserUtil {
 
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
+
+    private static final List<DateTimeFormatter> DATE_FORMATS = List.of(
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"), // 22/10/2025 15:30
+            DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"), // 22-10-2025 15:30
+            DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm"), // 22 Oct 2025 15:30
+            DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mma") // 22/10/2025 03:30PM
+    );
 
     /**
      * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
@@ -165,6 +176,25 @@ public class ParserUtil {
             tagSet.add(parseTag(tagName));
         }
         return tagSet;
+    }
+
+
+    /**
+     * Parses a {@code String dateTimeStr} into a {@code LocalDateTime}.
+     * @param dateTimeStr
+     * @return
+     * @throws ParseException
+     */
+    public static LocalDateTime parseDateTime(String dateTimeStr) throws ParseException {
+        for (DateTimeFormatter formatter : DATE_FORMATS) {
+            try {
+                return LocalDateTime.parse(dateTimeStr, formatter);
+            } catch (DateTimeParseException ignored) {
+                // try next format
+            }
+        }
+        throw new ParseException("Invalid date/time format. Try formats like:\n"
+                + "22/10/2025 15:30 or 22 Oct 2025 3:30PM");
     }
 
     /**
