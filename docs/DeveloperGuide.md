@@ -255,6 +255,88 @@ _{more aspects and alternatives to be added}_
 
 _{Explain here how the data archiving feature will be implemented}_
 
+### Grade Feature
+
+#### Implementation
+
+The grade feature allows teaching assistants to add, view, and manage grades for students' assignments. It is implemented through the `Grade` model class and the `GradeCommand` command class.
+
+**Key Components:**
+
+The `Grade` class:
+- Stores an assignment name and a score (0-100)
+- Is immutable to prevent unintended modifications
+- Validates that scores are numeric and within valid range using regex pattern `^(100|[0-9]{1,2})$`
+- Implements proper `equals()` and `hashCode()` for use in collections
+
+The `GradeCommand`:
+- Takes an index and one or more grade entries in the format `g/ASSIGNMENT_NAME:SCORE`
+- Finds the person at the specified index in the filtered person list
+- Creates a new `Person` object with the updated grades (defensive copying)
+- Checks for duplicate grades (same assignment name) and prevents them
+- Only allows adding grades to students (persons with StudentId)
+
+**Execution Flow:**
+
+Given below is an example usage scenario and how the grade mechanism behaves.
+
+**Step 1.** The user executes `grade 1 g/Midterm:85` to add a grade for the 1st student.
+
+**Step 2.** The command is parsed by `AddressBookParser`, which identifies it as a grade command and creates a `GradeCommandParser`.
+
+**Step 3.** `GradeCommandParser` parses the arguments:
+- Extracts the index (1)
+- Extracts the grade string ("Midterm:85")
+- Splits on the colon to get assignment name "Midterm" and score "85"
+- Creates a `Grade` object after validation
+- Creates a `GradeCommand` with the index and set of grades
+
+**Step 4.** When `GradeCommand#execute()` is called:
+- Gets the person at index 1 from the filtered person list using `Model#getFilteredPersonList()`
+- Validates the person has a StudentId (only students can have grades)
+- Checks for duplicate grades by comparing assignment names
+- Creates a new `Person` with the existing grades plus the new grade
+- Updates the model with `Model#setPerson(personToEdit, editedPerson)`
+- Returns a `CommandResult` with success message
+
+The following sequence diagram shows how the grade operation works:
+
+<puml src="diagrams/GradeSequenceDiagram.puml" alt="GradeSequenceDiagram" />
+
+**Note:** The lifeline for `GradeCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+
+#### Design Considerations
+
+**Aspect: How grades are stored**
+
+* **Alternative 1 (current choice):** Store grades as a `Set<Grade>` in the `Person` class
+  * Pros: Simple, direct association between Person and Grade. Using a Set prevents duplicate grades automatically. Easy to retrieve all grades for a person.
+  * Cons: Grades cannot be accessed independently of persons. Cannot easily query all grades across all students.
+
+* **Alternative 2:** Store grades in a separate `GradeBook` class
+  * Pros: Better separation of concerns, allows grade-specific operations like calculating class average. Can query grades independently.
+  * Cons: More complex architecture, requires maintaining bidirectional references between Person and Grade. Higher coupling between components.
+
+**Aspect: Duplicate grade handling**
+
+* **Alternative 1 (current choice):** Prevent duplicates by checking assignment names
+  * Pros: Ensures data consistency, prevents accidental overwrites. Clear error message to user.
+  * Cons: Cannot easily update an existing grade - must delete first then add. More validation logic needed.
+
+* **Alternative 2:** Allow duplicates and keep all versions
+  * Pros: Maintains history of grade changes. Simpler implementation.
+  * Cons: Confusing for users which grade is "current". Takes more storage space. Need additional logic to determine which grade to display.
+
+**Aspect: Grade validation**
+
+* **Alternative 1 (current choice):** Validate in `Grade` constructor
+  * Pros: Ensures all Grade objects are valid (fail-fast). Defensive programming - impossible to create invalid grade. Validation logic centralized in one place.
+  * Cons: Cannot create Grade object with invalid data even for testing purposes.
+
+* **Alternative 2:** Validate only when parsing user input
+  * Pros: More flexible for internal use and testing. Can create temporary Grade objects during processing.
+  * Cons: Risk of invalid grades propagating through the system. Validation logic scattered across multiple parsers.
+
 
 --------------------------------------------------------------------------------------------------------------------
 
