@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.StudentId;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
 import seedu.address.testutil.PersonBuilder;
 
@@ -87,6 +88,98 @@ public class AddressBookTest {
     public void toStringMethod() {
         String expected = AddressBook.class.getCanonicalName() + "{persons=" + addressBook.getPersonList() + "}";
         assertEquals(expected, addressBook.toString());
+    }
+
+    @Test
+    public void getPersonByStudentId_nullStudentId_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> addressBook.getPersonByStudentId(null));
+    }
+
+    @Test
+    public void getPersonByStudentId_studentIdNotInAddressBook_returnsEmpty() {
+        StudentId studentId = new StudentId("A0123456X");
+        assertTrue(addressBook.getPersonByStudentId(studentId).isEmpty());
+    }
+
+    @Test
+    public void getPersonByStudentId_studentIdInAddressBook_returnsCorrectPerson() {
+        Person alice = new PersonBuilder().withStudentId("A0123456X").build();
+        addressBook.addPerson(alice);
+
+        StudentId studentId = new StudentId("A0123456X");
+        assertTrue(addressBook.getPersonByStudentId(studentId).isPresent());
+        assertEquals(alice, addressBook.getPersonByStudentId(studentId).get());
+    }
+
+    @Test
+    public void addPerson_studentWithDuplicateName_success() {
+        Person alice1 = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        Person alice2 = new PersonBuilder().withName("Alice").withStudentId("A9999999Z").build();
+
+        addressBook.addPerson(alice1);
+        addressBook.addPerson(alice2);
+
+        assertEquals(2, addressBook.getPersonList().size());
+    }
+
+    @Test
+    public void setPerson_studentChangesStudentId_success() {
+        Person alice = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        Person bob = new PersonBuilder().withName("Bob").withStudentId("A1111111Y").build();
+        addressBook.addPerson(alice);
+        addressBook.addPerson(bob);
+
+        Person editedAlice = new PersonBuilder(alice).withStudentId("A9999999Z").build();
+        addressBook.setPerson(alice, editedAlice);
+
+        assertTrue(addressBook.getPersonList().contains(editedAlice));
+        assertEquals(2, addressBook.getPersonList().size());
+    }
+
+    @Test
+    public void setPerson_nonStudentEditedToStudentDuplicateId_throwsDuplicatePersonException() {
+        Person nonStudent = new PersonBuilder().withName("Charlie").withStudentId().build();
+        Person student = new PersonBuilder().withName("Dana").withStudentId("A0123456X").build();
+        addressBook.addPerson(nonStudent);
+        addressBook.addPerson(student);
+
+        Person editedCharlie = new PersonBuilder(nonStudent).withStudentId("A0123456X").build();
+        assertThrows(DuplicatePersonException.class, () -> addressBook.setPerson(nonStudent, editedCharlie));
+    }
+
+    @Test
+    public void setPerson_nonStudentEditedToStudentUniqueId_success() {
+        Person nonStudent = new PersonBuilder().withName("Eve").withStudentId().build();
+        Person student = new PersonBuilder().withName("Frank").withStudentId("A0123456X").build();
+        addressBook.addPerson(nonStudent);
+        addressBook.addPerson(student);
+
+        Person editedEve = new PersonBuilder(nonStudent).withStudentId("A1111111Y").build();
+        addressBook.setPerson(nonStudent, editedEve);
+
+        assertTrue(addressBook.getPersonList().contains(editedEve));
+        assertEquals(2, addressBook.getPersonList().size());
+    }
+
+    @Test
+    public void resetData_withDuplicateNamesButDifferentIds_success() {
+        Person alice1 = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        Person alice2 = new PersonBuilder().withName("Alice").withStudentId("A9999999Z").build();
+        List<Person> newPersons = Arrays.asList(alice1, alice2);
+        AddressBookStub newData = new AddressBookStub(newPersons);
+
+        addressBook.resetData(newData);
+        assertEquals(2, addressBook.getPersonList().size());
+    }
+
+    @Test
+    public void resetData_withDuplicateStudentIds_throwsDuplicatePersonException() {
+        Person alice = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        Person bob = new PersonBuilder().withName("Bob").withStudentId("A0123456X").build();
+        List<Person> newPersons = Arrays.asList(alice, bob);
+        AddressBookStub newData = new AddressBookStub(newPersons);
+
+        assertThrows(DuplicatePersonException.class, () -> addressBook.resetData(newData));
     }
 
     /**

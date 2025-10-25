@@ -76,7 +76,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     public Optional<Person> getPersonByStudentId(StudentId studentId) {
         requireNonNull(studentId);
         return persons.asUnmodifiableObservableList().stream()
-                .filter(person -> person.getStudentId().equals(studentId))
+                .filter(person -> person.getStudentId() != null && person.getStudentId().equals(studentId))
                 .findFirst();
     }
 

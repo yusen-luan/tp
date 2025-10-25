@@ -47,12 +47,29 @@ public class AddCommandTest {
     }
 
     @Test
-    public void execute_duplicatePerson_throwsCommandException() {
-        Person validPerson = new PersonBuilder().build();
-        AddCommand addCommand = new AddCommand(validPerson);
-        ModelStub modelStub = new ModelStubWithPerson(validPerson);
+    public void execute_duplicateNameDifferentStudentId_addSuccessful() throws Exception {
+        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
+        Person person1 = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        Person person2 = new PersonBuilder().withName("Alice").withStudentId("A9999999Z").build();
 
-        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+        CommandResult commandResult1 = new AddCommand(person1).execute(modelStub);
+        CommandResult commandResult2 = new AddCommand(person2).execute(modelStub);
+
+        assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(person1)),
+                commandResult1.getFeedbackToUser());
+        assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(person2)),
+                commandResult2.getFeedbackToUser());
+        assertEquals(Arrays.asList(person1, person2), modelStub.personsAdded);
+    }
+
+    @Test
+    public void execute_duplicateStudentId_throwsCommandException() {
+        Person validPerson = new PersonBuilder().withStudentId("A0123456X").build();
+        AddCommand addCommand = new AddCommand(validPerson);
+        ModelStub modelStub = new ModelStubWithStudentId(validPerson.getStudentId());
+
+        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_STUDENT_ID, () ->
+                addCommand.execute(modelStub));
     }
 
     @Test
@@ -172,20 +189,28 @@ public class AddCommandTest {
     }
 
     /**
-     * A Model stub that contains a single person.
+     * A Model stub that contains a person with a specific student ID.
      */
-    private class ModelStubWithPerson extends ModelStub {
-        private final Person person;
+    private class ModelStubWithStudentId extends ModelStub {
+        private final StudentId studentId;
 
-        ModelStubWithPerson(Person person) {
-            requireNonNull(person);
-            this.person = person;
+        ModelStubWithStudentId(StudentId studentId) {
+            requireNonNull(studentId);
+            this.studentId = studentId;
         }
 
         @Override
-        public boolean hasPerson(Person person) {
-            requireNonNull(person);
-            return this.person.isSamePerson(person);
+        public Optional<Person> getPersonByStudentId(StudentId studentId) {
+            requireNonNull(studentId);
+            if (this.studentId.equals(studentId)) {
+                // Return a dummy person with this student ID
+                return Optional.of(new PersonBuilder()
+                        .withName("Dummy Person")
+                        .withEmail("dummy@example.com")
+                        .withStudentId(studentId.value)
+                        .build());
+            }
+            return Optional.empty();
         }
     }
 
@@ -198,7 +223,24 @@ public class AddCommandTest {
         @Override
         public boolean hasPerson(Person person) {
             requireNonNull(person);
-            return personsAdded.stream().anyMatch(person::isSamePerson);
+            if (person.getStudentId() != null) {
+                // For students, check by student ID
+                return personsAdded.stream()
+                        .anyMatch(p -> p.getStudentId() != null
+                                && p.getStudentId().equals(person.getStudentId()));
+            } else {
+                // For non-students, check by name
+                return personsAdded.stream().anyMatch(person::isSamePerson);
+            }
+        }
+
+        @Override
+        public Optional<Person> getPersonByStudentId(StudentId studentId) {
+            requireNonNull(studentId);
+            return personsAdded.stream()
+                    .filter(person -> person.getStudentId() != null
+                            && person.getStudentId().equals(studentId))
+                    .findFirst();
         }
 
         @Override
