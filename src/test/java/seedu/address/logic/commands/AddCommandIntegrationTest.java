@@ -39,10 +39,16 @@ public class AddCommandIntegrationTest {
     }
 
     @Test
-    public void execute_duplicatePerson_throwsCommandException() {
+    public void execute_duplicateStudentId_throwsCommandException() {
         Person personInList = model.getAddressBook().getPersonList().get(0);
-        assertCommandFailure(new AddCommand(personInList), model,
-                AddCommand.MESSAGE_DUPLICATE_PERSON);
+        // Create a new person with the same student ID but different name
+        Person personWithDuplicateId = new PersonBuilder()
+                .withName("Different Name")
+                .withStudentId(personInList.getStudentId().value)
+                .withEmail("different@example.com")
+                .build();
+        assertCommandFailure(new AddCommand(personWithDuplicateId), model,
+                AddCommand.MESSAGE_DUPLICATE_STUDENT_ID);
     }
 
 }

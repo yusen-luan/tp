@@ -30,10 +30,20 @@ public class UniquePersonList implements Iterable<Person> {
 
     /**
      * Returns true if the list contains an equivalent person as the given argument.
+     * For students (with student IDs), uniqueness is checked by student ID.
+     * For non-students (without student IDs), uniqueness is checked by name.
      */
     public boolean contains(Person toCheck) {
         requireNonNull(toCheck);
-        return internalList.stream().anyMatch(toCheck::isSamePerson);
+        if (toCheck.getStudentId() != null) {
+            // For students, check by student ID
+            return internalList.stream()
+                    .anyMatch(person -> person.getStudentId() != null
+                            && person.getStudentId().equals(toCheck.getStudentId()));
+        } else {
+            // For non-students, check by name
+            return internalList.stream().anyMatch(toCheck::isSamePerson);
+        }
     }
 
     /**
