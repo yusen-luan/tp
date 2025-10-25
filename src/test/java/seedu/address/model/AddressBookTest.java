@@ -123,6 +123,45 @@ public class AddressBookTest {
     }
 
     @Test
+    public void setPerson_studentChangesStudentId_success() {
+        Person alice = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        Person bob = new PersonBuilder().withName("Bob").withStudentId("A1111111Y").build();
+        addressBook.addPerson(alice);
+        addressBook.addPerson(bob);
+
+        Person editedAlice = new PersonBuilder(alice).withStudentId("A9999999Z").build();
+        addressBook.setPerson(alice, editedAlice);
+
+        assertTrue(addressBook.getPersonList().contains(editedAlice));
+        assertEquals(2, addressBook.getPersonList().size());
+    }
+
+    @Test
+    public void setPerson_nonStudentEditedToStudentDuplicateId_throwsDuplicatePersonException() {
+        Person nonStudent = new PersonBuilder().withName("Charlie").withStudentId().build();
+        Person student = new PersonBuilder().withName("Dana").withStudentId("A0123456X").build();
+        addressBook.addPerson(nonStudent);
+        addressBook.addPerson(student);
+
+        Person editedCharlie = new PersonBuilder(nonStudent).withStudentId("A0123456X").build();
+        assertThrows(DuplicatePersonException.class, () -> addressBook.setPerson(nonStudent, editedCharlie));
+    }
+
+    @Test
+    public void setPerson_nonStudentEditedToStudentUniqueId_success() {
+        Person nonStudent = new PersonBuilder().withName("Eve").withStudentId().build();
+        Person student = new PersonBuilder().withName("Frank").withStudentId("A0123456X").build();
+        addressBook.addPerson(nonStudent);
+        addressBook.addPerson(student);
+
+        Person editedEve = new PersonBuilder(nonStudent).withStudentId("A1111111Y").build();
+        addressBook.setPerson(nonStudent, editedEve);
+
+        assertTrue(addressBook.getPersonList().contains(editedEve));
+        assertEquals(2, addressBook.getPersonList().size());
+    }
+
+    @Test
     public void resetData_withDuplicateNamesButDifferentIds_success() {
         Person alice1 = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
         Person alice2 = new PersonBuilder().withName("Alice").withStudentId("A9999999Z").build();
