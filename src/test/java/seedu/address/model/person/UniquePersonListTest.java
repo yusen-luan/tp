@@ -172,4 +172,93 @@ public class UniquePersonListTest {
     public void toStringMethod() {
         assertEquals(uniquePersonList.asUnmodifiableObservableList().toString(), uniquePersonList.toString());
     }
+
+    @Test
+    public void contains_studentWithDuplicateName_returnsTrue() {
+        Person alice1 = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        uniquePersonList.add(alice1);
+
+        Person alice2 = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        assertTrue(uniquePersonList.contains(alice2));
+    }
+
+    @Test
+    public void contains_studentWithSameNameDifferentId_returnsFalse() {
+        Person alice1 = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        uniquePersonList.add(alice1);
+
+        Person alice2 = new PersonBuilder().withName("Alice").withStudentId("A9999999Z").build();
+        assertFalse(uniquePersonList.contains(alice2));
+    }
+
+    @Test
+    public void add_studentWithDuplicateNameDifferentId_success() {
+        Person alice1 = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        Person alice2 = new PersonBuilder().withName("Alice").withStudentId("A9999999Z").build();
+
+        uniquePersonList.add(alice1);
+        uniquePersonList.add(alice2);
+
+        assertTrue(uniquePersonList.contains(alice1));
+        assertTrue(uniquePersonList.contains(alice2));
+    }
+
+    @Test
+    public void add_studentWithDuplicateStudentId_throwsDuplicatePersonException() {
+        Person alice = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        Person bob = new PersonBuilder().withName("Bob").withStudentId("A0123456X").build();
+
+        uniquePersonList.add(alice);
+        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.add(bob));
+    }
+
+    @Test
+    public void setPerson_editedPersonHasDifferentNameSameId_throwsDuplicatePersonException() {
+        Person alice = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        Person bob = new PersonBuilder().withName("Bob").withStudentId("A9999999Z").build();
+
+        uniquePersonList.add(alice);
+        uniquePersonList.add(bob);
+
+        Person editedBob = new PersonBuilder(bob).withName("Charlie").withStudentId("A0123456X").build();
+        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.setPerson(bob, editedBob));
+    }
+
+    @Test
+    public void setPerson_editedPersonHasDifferentNameDifferentId_success() {
+        Person alice = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        Person bob = new PersonBuilder().withName("Bob").withStudentId("A9999999Z").build();
+
+        uniquePersonList.add(alice);
+        uniquePersonList.add(bob);
+
+        Person editedBob = new PersonBuilder(bob).withName("Alice").build();
+        uniquePersonList.setPerson(bob, editedBob);
+
+        // editedBob has same student ID as bob, so contains should return true
+        assertTrue(uniquePersonList.contains(editedBob));
+        assertEquals(2, uniquePersonList.asUnmodifiableObservableList().size());
+    }
+
+    @Test
+    public void setPersons_listWithDuplicateStudentIds_throwsDuplicatePersonException() {
+        Person alice = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        Person bob = new PersonBuilder().withName("Bob").withStudentId("A0123456X").build();
+
+        List<Person> listWithDuplicateIds = Arrays.asList(alice, bob);
+        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.setPersons(listWithDuplicateIds));
+    }
+
+    @Test
+    public void setPersons_listWithDuplicateNamesButDifferentIds_success() {
+        Person alice1 = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        Person alice2 = new PersonBuilder().withName("Alice").withStudentId("A9999999Z").build();
+
+        List<Person> listWithDuplicateNames = Arrays.asList(alice1, alice2);
+        uniquePersonList.setPersons(listWithDuplicateNames);
+
+        assertEquals(2, uniquePersonList.asUnmodifiableObservableList().size());
+        assertTrue(uniquePersonList.contains(alice1));
+        assertTrue(uniquePersonList.contains(alice2));
+    }
 }
