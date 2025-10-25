@@ -241,6 +241,48 @@ public class UniquePersonListTest {
     }
 
     @Test
+    public void setPerson_studentChangesStudentId_success() {
+        Person student = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
+        Person otherStudent = new PersonBuilder().withName("Bob").withStudentId("A1111111Y").build();
+
+        uniquePersonList.add(student);
+        uniquePersonList.add(otherStudent);
+
+        Person editedStudent = new PersonBuilder(student).withStudentId("A9999999Z").build();
+        uniquePersonList.setPerson(student, editedStudent);
+
+        assertTrue(uniquePersonList.contains(editedStudent));
+        assertEquals(2, uniquePersonList.asUnmodifiableObservableList().size());
+    }
+
+    @Test
+    public void setPerson_nonStudentEditedToStudentWithDuplicateId_throwsDuplicatePersonException() {
+        Person nonStudent = new PersonBuilder().withName("Charlie").withStudentId().build();
+        Person existingStudent = new PersonBuilder().withName("Dana").withStudentId("A0123456X").build();
+
+        uniquePersonList.add(nonStudent);
+        uniquePersonList.add(existingStudent);
+
+        Person editedCharlie = new PersonBuilder(nonStudent).withStudentId("A0123456X").build();
+        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.setPerson(nonStudent, editedCharlie));
+    }
+
+    @Test
+    public void setPerson_nonStudentEditedToStudentWithUniqueId_success() {
+        Person nonStudent = new PersonBuilder().withName("Eve").withStudentId().build();
+        Person existingStudent = new PersonBuilder().withName("Frank").withStudentId("A0123456X").build();
+
+        uniquePersonList.add(nonStudent);
+        uniquePersonList.add(existingStudent);
+
+        Person editedEve = new PersonBuilder(nonStudent).withStudentId("A1111111Y").build();
+        uniquePersonList.setPerson(nonStudent, editedEve);
+
+        assertTrue(uniquePersonList.contains(editedEve));
+        assertEquals(2, uniquePersonList.asUnmodifiableObservableList().size());
+    }
+
+    @Test
     public void setPersons_listWithDuplicateStudentIds_throwsDuplicatePersonException() {
         Person alice = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
         Person bob = new PersonBuilder().withName("Bob").withStudentId("A0123456X").build();
