@@ -283,6 +283,36 @@ public class UniquePersonListTest {
     }
 
     @Test
+    public void setPerson_nonStudentEditedToExistingNonStudentName_throwsDuplicatePersonException() {
+        Person charlie = new PersonBuilder().withName("Charlie").withStudentId().build();
+        Person dana = new PersonBuilder().withName("Dana").withStudentId().build();
+
+        uniquePersonList.add(charlie);
+        uniquePersonList.add(dana);
+
+        Person editedDana = new PersonBuilder(dana).withName("Charlie").build();
+        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.setPerson(dana, editedDana));
+    }
+
+    @Test
+    public void contains_nonStudentWithSameNameDifferentDetails_returnsTrue() {
+        Person charlie = new PersonBuilder().withName("Charlie").withStudentId().build();
+        Person charlieVariant = new PersonBuilder(charlie).withEmail("charlie@example.com").build();
+
+        uniquePersonList.add(charlie);
+        assertTrue(uniquePersonList.contains(charlieVariant));
+    }
+
+    @Test
+    public void contains_studentWithSameNameAsNonStudent_returnsFalse() {
+        Person charlie = new PersonBuilder().withName("Charlie").withStudentId().build();
+        Person charlieStudent = new PersonBuilder().withName("Charlie").withStudentId("A0123456X").build();
+
+        uniquePersonList.add(charlie);
+        assertFalse(uniquePersonList.contains(charlieStudent));
+    }
+
+    @Test
     public void setPersons_listWithDuplicateStudentIds_throwsDuplicatePersonException() {
         Person alice = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
         Person bob = new PersonBuilder().withName("Bob").withStudentId("A0123456X").build();
