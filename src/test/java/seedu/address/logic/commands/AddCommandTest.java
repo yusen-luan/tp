@@ -64,7 +64,7 @@ public class AddCommandTest {
 
     @Test
     public void execute_duplicateStudentId_throwsCommandException() {
-        Person validPerson = new PersonBuilder().build();
+        Person validPerson = new PersonBuilder().withStudentId("A0123456X").build();
         AddCommand addCommand = new AddCommand(validPerson);
         ModelStub modelStub = new ModelStubWithStudentId(validPerson.getStudentId());
 
@@ -204,7 +204,11 @@ public class AddCommandTest {
             requireNonNull(studentId);
             if (this.studentId.equals(studentId)) {
                 // Return a dummy person with this student ID
-                return Optional.of(new PersonBuilder().withStudentId(studentId.value).build());
+                return Optional.of(new PersonBuilder()
+                        .withName("Dummy Person")
+                        .withEmail("dummy@example.com")
+                        .withStudentId(studentId.value)
+                        .build());
             }
             return Optional.empty();
         }
@@ -219,7 +223,24 @@ public class AddCommandTest {
         @Override
         public boolean hasPerson(Person person) {
             requireNonNull(person);
-            return personsAdded.stream().anyMatch(person::isSamePerson);
+            if (person.getStudentId() != null) {
+                // For students, check by student ID
+                return personsAdded.stream()
+                        .anyMatch(p -> p.getStudentId() != null
+                                && p.getStudentId().equals(person.getStudentId()));
+            } else {
+                // For non-students, check by name
+                return personsAdded.stream().anyMatch(person::isSamePerson);
+            }
+        }
+
+        @Override
+        public Optional<Person> getPersonByStudentId(StudentId studentId) {
+            requireNonNull(studentId);
+            return personsAdded.stream()
+                    .filter(person -> person.getStudentId() != null
+                            && person.getStudentId().equals(studentId))
+                    .findFirst();
         }
 
         @Override

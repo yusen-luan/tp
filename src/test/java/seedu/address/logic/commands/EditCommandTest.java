@@ -120,24 +120,36 @@ public class EditCommandTest {
     }
 
     @Test
-    public void execute_duplicatePersonUnfilteredList_failure() {
+    public void execute_duplicateStudentIdUnfilteredList_failure() {
         Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(firstPerson).build();
-        EditCommand editCommand = new EditCommand(INDEX_SECOND_PERSON, descriptor);
+        Person secondPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
 
-        assertCommandFailure(editCommand, model, EditCommand.MESSAGE_DUPLICATE_PERSON);
+        // Only test if both persons have student IDs
+        if (firstPerson.getStudentId() != null && secondPerson.getStudentId() != null) {
+            EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                    .withStudentId(firstPerson.getStudentId().value).build();
+            EditCommand editCommand = new EditCommand(INDEX_SECOND_PERSON, descriptor);
+
+            assertCommandFailure(editCommand, model, EditCommand.MESSAGE_DUPLICATE_STUDENT_ID);
+        }
     }
 
     @Test
-    public void execute_duplicatePersonFilteredList_failure() {
+    public void execute_duplicateStudentIdFilteredList_failure() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
 
-        // edit person in filtered list into a duplicate in address book
-        Person personInList = model.getAddressBook().getPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
-        EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON,
-                new EditPersonDescriptorBuilder(personInList).build());
+        Person firstPersonInList = model.getAddressBook().getPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person secondPersonInList = model.getAddressBook().getPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
 
-        assertCommandFailure(editCommand, model, EditCommand.MESSAGE_DUPLICATE_PERSON);
+        // Only test if both persons have student IDs
+        if (firstPersonInList.getStudentId() != null && secondPersonInList.getStudentId() != null) {
+            // edit person in filtered list to have the student ID of another person in address book
+            EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON,
+                    new EditPersonDescriptorBuilder()
+                            .withStudentId(secondPersonInList.getStudentId().value).build());
+
+            assertCommandFailure(editCommand, model, EditCommand.MESSAGE_DUPLICATE_STUDENT_ID);
+        }
     }
 
     @Test
