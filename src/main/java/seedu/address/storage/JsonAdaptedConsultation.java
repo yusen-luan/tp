@@ -16,7 +16,7 @@ public class JsonAdaptedConsultation {
     private String dateTime;
 
     @JsonCreator
-    public JsonAdaptedConsultation(@JsonProperty("dateTIme") String dateTime) {
+    public JsonAdaptedConsultation(@JsonProperty("dateTime") String dateTime) {
         this.dateTime = dateTime;
     }
 
