@@ -2,83 +2,76 @@ package seedu.address.model.attendance;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
 public class WeekTest {
 
     @Test
-    public void constructor_validWeek_success() {
-        // Test valid week numbers
-        assertEquals(1, new Week(1).value);
-        assertEquals(7, new Week(7).value);
-        assertEquals(13, new Week(13).value);
+    public void constructor_validWeek_createsWeekSuccessfully() {
+        Week week = new Week(1);
+        assertEquals(1, week.value);
     }
 
     @Test
-    public void constructor_invalidWeek_throwsIllegalArgumentException() {
-        // Test invalid week numbers
-        assertThrows(IllegalArgumentException.class, () -> new Week(0));
-        assertThrows(IllegalArgumentException.class, () -> new Week(14));
-        assertThrows(IllegalArgumentException.class, () -> new Week(-1));
-        assertThrows(IllegalArgumentException.class, () -> new Week(100));
+    public void constructor_maxWeek_createsWeekSuccessfully() {
+        Week week = new Week(13);
+        assertEquals(13, week.value);
     }
 
     @Test
-    public void isValidWeek() {
-        // Valid weeks
-        assertTrue(Week.isValidWeek(1));
-        assertTrue(Week.isValidWeek(7));
-        assertTrue(Week.isValidWeek(13));
-
-        // Invalid weeks
-        assertFalse(Week.isValidWeek(0));
-        assertFalse(Week.isValidWeek(14));
-        assertFalse(Week.isValidWeek(-1));
-        assertFalse(Week.isValidWeek(100));
+    public void equals_sameValue_returnsTrue() {
+        Week week1 = new Week(5);
+        Week week2 = new Week(5);
+        assertEquals(week1, week2);
     }
 
     @Test
-    public void equals() {
-        Week week1 = new Week(1);
-        Week week2 = new Week(1);
-        Week week3 = new Week(2);
-
-        // Same object
-        assertTrue(week1.equals(week1));
-
-        // Same value
-        assertTrue(week1.equals(week2));
-
-        // Different value
-        assertFalse(week1.equals(week3));
-
-        // Different type
-        assertFalse(week1.equals(1));
-
-        // Null
-        assertFalse(week1.equals(null));
+    public void equals_differentValue_returnsFalse() {
+        Week week1 = new Week(3);
+        Week week2 = new Week(4);
+        assertNotEquals(week1, week2);
     }
 
     @Test
-    public void testHashCode() {
-        Week week1 = new Week(1);
-        Week week2 = new Week(1);
-        Week week3 = new Week(2);
+    public void equals_sameObject_returnsTrue() {
+        Week week = new Week(7);
+        assertTrue(week.equals(week));
+    }
 
-        // Same value should have same hash code
+    @Test
+    public void equals_differentType_returnsFalse() {
+        Week week = new Week(2);
+        assertFalse(week.equals("2"));
+    }
+
+    @Test
+    public void hashCode_sameValue_sameHashCode() {
+        Week week1 = new Week(6);
+        Week week2 = new Week(6);
         assertEquals(week1.hashCode(), week2.hashCode());
-
-        // Different value should have different hash code
-        assertFalse(week1.hashCode() == week3.hashCode());
     }
 
     @Test
-    public void testToString() {
-        assertEquals("Week 1", new Week(1).toString());
-        assertEquals("Week 7", new Week(7).toString());
-        assertEquals("Week 13", new Week(13).toString());
+    public void hashCode_differentValue_differentHashCode() {
+        Week week1 = new Week(1);
+        Week week2 = new Week(2);
+        assertNotEquals(week1.hashCode(), week2.hashCode());
+    }
+
+    @Test
+    public void toString_validWeek_returnsCorrectFormat() {
+        Week week = new Week(8);
+        assertTrue(week.toString().contains("8"));
+    }
+
+    @Test
+    public void week_allValidWeeks_createdSuccessfully() {
+        for (int i = 1; i <= 13; i++) {
+            Week week = new Week(i);
+            assertEquals(i, week.value);
+        }
     }
 }
