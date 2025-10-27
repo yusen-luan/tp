@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.attendance.AttendanceRecord;
 import seedu.address.model.consultation.Consultation;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.person.Email;
