@@ -2,80 +2,63 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.RowConstraints?>
 
 <HBox id="cardPane" fx:id="cardPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
-  <VBox HBox.hgrow="ALWAYS" spacing="8">
+  <VBox HBox.hgrow="ALWAYS" spacing="10">
     <padding>
-      <Insets top="12" right="12" bottom="12" left="12" />
+      <Insets top="14" right="16" bottom="14" left="16" />
     </padding>
 
-    <!-- NAME AND ID HEADER -->
-    <HBox spacing="8" alignment="CENTER_LEFT">
-      <Label fx:id="id" styleClass="cell_big_label" style="-fx-text-fill: #58a6ff; -fx-font-weight: bold;">
-        <minWidth>
-          <Region fx:constant="USE_PREF_SIZE" />
-        </minWidth>
+    <!-- HEADER: Badge, Name, and Student ID on single row -->
+    <HBox alignment="CENTER_LEFT" spacing="10">
+      <!-- Index badge -->
+      <Label fx:id="id" styleClass="id-badge-compact" style="-fx-min-width: 32; -fx-pref-width: 32; -fx-alignment: center;">
+        <padding>
+          <Insets top="4" right="6" bottom="4" left="6" />
+        </padding>
       </Label>
-      <Label fx:id="name" text="\$first" styleClass="cell_big_label" style="-fx-font-size: 18px; -fx-font-weight: 600;" />
+
+      <!-- Name and Student ID stacked -->
+      <VBox spacing="1" HBox.hgrow="ALWAYS">
+        <Label fx:id="name" text="\$first" styleClass="name-label-compact" />
+        <Label fx:id="studentId" text="\$studentId" styleClass="student-id-label" />
+      </VBox>
     </HBox>
 
-    <!-- TAGS -->
-    <FlowPane fx:id="tags" />
+    <!-- ACADEMIC INFO - Compact Row -->
+    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="academic-section-compact">
+      <padding>
+        <Insets top="8" right="10" bottom="8" left="10" />
+      </padding>
 
-    <!-- STUDENT INFO GRID -->
-    <GridPane hgap="12" vgap="6">
-      <columnConstraints>
-        <ColumnConstraints hgrow="NEVER" minWidth="80" prefWidth="80" />
-        <ColumnConstraints hgrow="ALWAYS" />
-      </columnConstraints>
-      <rowConstraints>
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-      </rowConstraints>
-
-      <!-- Student ID -->
-      <Label text="Student ID:" GridPane.columnIndex="0" GridPane.rowIndex="0"
-             style="-fx-text-fill: #8b949e; -fx-font-size: 11px; -fx-font-weight: 600;" />
-      <Label fx:id="studentId" text="\$studentId" GridPane.columnIndex="1" GridPane.rowIndex="0"
-             styleClass="cell_small_label" style="-fx-text-fill: #c9d1d9;" />
-
-      <!-- Email -->
-      <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="1"
-             style="-fx-text-fill: #8b949e; -fx-font-size: 11px; -fx-font-weight: 600;" />
-      <Label fx:id="email" text="\$email" GridPane.columnIndex="1" GridPane.rowIndex="1"
-             styleClass="cell_small_label" style="-fx-text-fill: #c9d1d9;" />
-
-      <!-- Modules -->
-      <Label text="Modules:" GridPane.columnIndex="0" GridPane.rowIndex="2"
-             style="-fx-text-fill: #8b949e; -fx-font-size: 11px; -fx-font-weight: 600;" />
-      <Label fx:id="moduleCode" text="\$modules" GridPane.columnIndex="1" GridPane.rowIndex="2"
-             styleClass="cell_small_label" style="-fx-text-fill: #c9d1d9;" />
+      <!-- Module -->
+      <HBox spacing="6" alignment="CENTER_LEFT">
+        <Label text="📚" styleClass="icon-compact" />
+        <Label fx:id="moduleCode" text="\$modules" styleClass="field-value-compact" />
+      </HBox>
 
       <!-- Attendance -->
-      <Label text="Attendance:" GridPane.columnIndex="0" GridPane.rowIndex="3"
-             style="-fx-text-fill: #8b949e; -fx-font-size: 11px; -fx-font-weight: 600;" />
-      <Label fx:id="attendance" text="\$attendance" GridPane.columnIndex="1" GridPane.rowIndex="3"
-             styleClass="cell_small_label" style="-fx-text-fill: #c9d1d9;" />
-    </GridPane>
+      <HBox spacing="6" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+        <Label text="✓" styleClass="icon-compact" style="-fx-font-size: 14pt; -fx-font-weight: bold;" />
+        <Label fx:id="attendance" text="\$attendance" styleClass="field-value-compact" />
+      </HBox>
+    </HBox>
 
-    <!-- GRADES SECTION -->
-    <VBox spacing="4" style="-fx-background-color: rgba(137, 87, 229, 0.1); -fx-padding: 8; -fx-background-radius: 6;">
-      <Label text="GRADES" style="-fx-text-fill: #8b949e; -fx-font-size: 10px; -fx-font-weight: 700; letter-spacing: 0.5px;" />
-      <FlowPane fx:id="grades">
-        <VBox.margin>
-          <Insets top="2" />
-        </VBox.margin>
-      </FlowPane>
-    </VBox>
+    <!-- GRADES - Compact inline -->
+    <HBox spacing="6" alignment="CENTER_LEFT" styleClass="grades-section-compact">
+      <padding>
+        <Insets top="8" right="10" bottom="8" left="10" />
+      </padding>
+
+      <Label text="🎓" styleClass="icon-compact" style="-fx-font-size: 13pt;" />
+      <FlowPane fx:id="grades" hgap="6" vgap="6" HBox.hgrow="ALWAYS" />
+    </HBox>
+
+    <!-- TAGS - Compact inline -->
+    <FlowPane fx:id="tags" hgap="6" vgap="6" />
 
   </VBox>
 </HBox>

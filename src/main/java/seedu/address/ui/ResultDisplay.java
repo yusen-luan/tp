@@ -12,9 +12,7 @@ import javafx.scene.layout.Region;
 public class ResultDisplay extends UiPart<Region> {
 
     private static final String FXML = "ResultDisplay.fxml";
-    private static final String SUCCESS_ICON = "✓";
     private static final String ERROR_ICON = "✗";
-    private static final String INFO_ICON = "ℹ";
     private static final String SEPARATOR = "────────────────────────────────────────────────";
 
     @FXML
@@ -37,21 +35,16 @@ public class ResultDisplay extends UiPart<Region> {
      * Formats the message with markdown-style enhancements for better readability.
      */
     private String formatMessage(String message) {
-        // Check if message contains common success/error patterns
-        boolean isSuccess = isSuccessMessage(message);
+        // Check if message contains common error patterns
         boolean isError = isErrorMessage(message);
 
         StringBuilder formatted = new StringBuilder();
 
-        // Add icon and header based on message type
-        if (isSuccess) {
-            formatted.append(SUCCESS_ICON).append(" SUCCESS\n");
-            formatted.append(SEPARATOR).append("\n\n");
-        } else if (isError) {
+        // Only show header for errors
+        if (isError) {
             formatted.append(ERROR_ICON).append(" ERROR\n");
             formatted.append(SEPARATOR).append("\n\n");
         } else {
-            formatted.append(INFO_ICON).append(" INFO\n");
             formatted.append(SEPARATOR).append("\n\n");
         }
 
@@ -89,20 +82,6 @@ public class ResultDisplay extends UiPart<Region> {
         formatted.append("\n").append(SEPARATOR);
 
         return formatted.toString();
-    }
-
-    /**
-     * Checks if the message indicates success.
-     */
-    private boolean isSuccessMessage(String message) {
-        String lower = message.toLowerCase();
-        return lower.contains("added")
-                || lower.contains("deleted")
-                || lower.contains("edited")
-                || lower.contains("cleared")
-                || lower.contains("successfully")
-                || lower.contains("listed")
-                || (lower.contains("found") && !lower.contains("not found"));
     }
 
     /**
