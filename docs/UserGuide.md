@@ -136,7 +136,7 @@ Examples:
 
 ### Viewing a student : `view`
 
-Views the name of a student identified by their index or student ID.
+Views detailed information and attendance records about a student identified by their index or student ID.
 
 Format:
 * `view INDEX` - View student by list index
@@ -147,13 +147,26 @@ Format:
 * The index **must be a positive integer** 1, 2, 3, …​
 * Student ID must match the format A followed by 7 digits and 1 uppercase letter (e.g., A0123456X)
 * The student must exist in TeachMate
+* The display will automatically filter to show only the selected student
 
 **What will be displayed:**
-* Full name
-* Student ID
-* Email address
-* All enrolled module codes
-* Tags (if any)
+
+The view command displays comprehensive information in two sections:
+
+1. **Student Details:**
+   * Full name
+   * Student ID
+   * Email address
+   * All enrolled module codes (comma-separated)
+   * Tags (if any, comma-separated)
+
+2. **Attendance Record:**
+   * Week-by-week attendance status for all recorded weeks
+   * Each entry shows: "Week [number]: [symbol] [status]"
+   * Present weeks marked with: ✓ Present
+   * Absent weeks marked with: ✗ Absent
+   * Weeks are displayed in ascending order (Week 1, Week 2, etc.)
+   * If no attendance has been recorded yet, displays: "No attendance recorded yet."
 
 **Success message:** `Viewing student: [name]`
 
@@ -170,6 +183,21 @@ Examples:
 * `view 1` - Views the 1st student in the current list and filters the display to show only that student
 * `view s/A0123456X` - Views the student with student ID A0123456X
 
+**Example output:**
+```
+=== STUDENT DETAILS ===
+Name: John Doe
+Student ID: A0123456X
+Email: johnd@u.nus.edu
+Modules: CS2103T, CS2101
+Tags: struggling, needsHelp
+
+=== ATTENDANCE RECORD ===
+Week 1: ✓ Present
+Week 2: ✗ Absent
+Week 3: ✓ Present
+```
+
 ### Marking attendance : `attendance`
 
 Marks attendance for a student for a specific week.
@@ -177,12 +205,13 @@ Marks attendance for a student for a specific week.
 Format: `attendance s/STUDENT_ID w/WEEK present|absent` or `attendance s/all w/WEEK present|absent`
 
 * Marks attendance for the student with the specified `STUDENT_ID` or all students
-* `WEEK` must be a number between 1 and 13 (inclusive)
-* `present|absent` specifies whether the student was present or absent
-* Use `s/all` to mark all students at once
+* `WEEK` must be a number between 1 and 13 (inclusive), representing the teaching week
+* `present|absent` specifies whether the student was present or absent (case-insensitive)
+* Use `s/all` to mark all students at once for bulk operations
 * The student must exist in TeachMate
+* Marking attendance for the same week again will update the previous record
 
-**Success message:** 
+**Success message:**
 * Individual: `Marked attendance for [name]: Week [week] - [status]`
 * All students: `Marked attendance for all students: Week [week] - [status] ([count] students)`
 
@@ -193,7 +222,10 @@ Format: `attendance s/STUDENT_ID w/WEEK present|absent` or `attendance s/all w/W
 
 <box type="tip" seamless>
 
-**Tip:** Attendance is displayed in the student list with tick (✓) for present and cross (✗) for absent marks.
+**Tips:**
+* Attendance can be viewed in detail using the `view` command, which shows week-by-week records
+* When marking all students, the command affects every student in TeachMate regardless of the current filtered list
+* Present attendance is marked with ✓ and absent with ✗ in the attendance record
 </box>
 
 Examples:
@@ -443,5 +475,6 @@ Furthermore, certain edits can cause TeachMate to behave in unexpected ways (e.g
 | **Tag**    | `tag INDEX t/TAG [t/TAG]…​` or `tag s/STUDENT_ID t/TAG [t/TAG]…​`<br> e.g., `tag 1 t/Struggling t/Inactive` or `tag s/A0291772W t/Excelling`                            |
 | **Untag**  | `untag INDEX t/TAG [t/TAG]…​` or `untag s/STUDENT_ID t/TAG [t/TAG]…​`<br> e.g., `untag 1 t/Struggling` or `untag s/A0291772W t/Inactive`                                |
 | **View**   | `view INDEX` or `view s/STUDENT_ID`<br> e.g., `view 1` or `view s/A0123456X`                                                                                             |
+| **Attendance** | `attendance s/STUDENT_ID w/WEEK present|absent` or `attendance s/all w/WEEK present|absent`<br> e.g., `attendance s/A0123456X w/1 present` or `attendance s/all w/1 present` |
 | **Help**   | `help`                                                                                                                                                                    |
 | **Exit**   | `exit`                                                                                                                                                                    |
