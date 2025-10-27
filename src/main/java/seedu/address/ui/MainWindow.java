@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCombination;
@@ -49,6 +50,11 @@ public class MainWindow extends UiPart<Stage> {
 
     @FXML
     private StackPane statusbarPlaceholder;
+
+    @FXML
+    private Button themeToggleButton;
+
+    private boolean isDarkTheme = true;
 
     /**
      * Creates a {@code MainWindow} with the given {@code Stage} and {@code Logic}.
@@ -192,5 +198,30 @@ public class MainWindow extends UiPart<Stage> {
             resultDisplay.setFeedbackToUser(e.getMessage());
             throw e;
         }
+    }
+
+    /**
+     * Toggles between dark and light themes.
+     */
+    @FXML
+    private void handleThemeToggle() {
+        isDarkTheme = !isDarkTheme;
+
+        // Update button icon
+        themeToggleButton.setText(isDarkTheme ? "☀" : "🌙");
+
+        // Switch stylesheets
+        var stylesheets = primaryStage.getScene().getStylesheets();
+        stylesheets.clear();
+
+        String themeFile = isDarkTheme
+            ? getClass().getResource("/view/DarkTheme.css").toExternalForm()
+            : getClass().getResource("/view/LightTheme.css").toExternalForm();
+        String extensionsFile = getClass().getResource("/view/Extensions.css").toExternalForm();
+
+        stylesheets.add(themeFile);
+        stylesheets.add(extensionsFile);
+
+        logger.info("Switched to " + (isDarkTheme ? "dark" : "light") + " theme");
     }
 }
