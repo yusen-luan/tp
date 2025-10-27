@@ -30,10 +30,20 @@ public class UniquePersonList implements Iterable<Person> {
 
     /**
      * Returns true if the list contains an equivalent person as the given argument.
+     * For students (with student IDs), uniqueness is checked by student ID.
+     * For non-students (without student IDs), uniqueness is checked by name.
      */
     public boolean contains(Person toCheck) {
         requireNonNull(toCheck);
-        return internalList.stream().anyMatch(toCheck::isSamePerson);
+        if (toCheck.getStudentId() != null) {
+            // For students, check by student ID
+            return internalList.stream()
+                    .anyMatch(person -> person.getStudentId() != null
+                            && person.getStudentId().equals(toCheck.getStudentId()));
+        } else {
+            // For non-students, check by name
+            return internalList.stream().anyMatch(toCheck::isSamePerson);
+        }
     }
 
     /**
@@ -51,7 +61,10 @@ public class UniquePersonList implements Iterable<Person> {
     /**
      * Replaces the person {@code target} in the list with {@code editedPerson}.
      * {@code target} must exist in the list.
-     * The person identity of {@code editedPerson} must not be the same as another existing person in the list.
+     * For students, the person identity of {@code editedPerson} must not have the same student ID
+     * as another existing person in the list.
+     * For non-students, the person identity of {@code editedPerson} must not have the same name
+     * as another existing person in the list.
      */
     public void setPerson(Person target, Person editedPerson) {
         requireAllNonNull(target, editedPerson);
@@ -61,8 +74,21 @@ public class UniquePersonList implements Iterable<Person> {
             throw new PersonNotFoundException();
         }
 
-        if (!target.isSamePerson(editedPerson) && contains(editedPerson)) {
-            throw new DuplicatePersonException();
+        // Check for duplicate - but allow if it's the same person being updated
+        if (editedPerson.getStudentId() != null) {
+            // For students, check by student ID
+            boolean isDifferentPerson = target.getStudentId() == null
+                    || !target.getStudentId().equals(editedPerson.getStudentId());
+            if (isDifferentPerson && internalList.stream()
+                    .anyMatch(person -> person.getStudentId() != null
+                            && person.getStudentId().equals(editedPerson.getStudentId()))) {
+                throw new DuplicatePersonException();
+            }
+        } else {
+            // For non-students, check by name
+            if (!target.isSamePerson(editedPerson) && contains(editedPerson)) {
+                throw new DuplicatePersonException();
+            }
         }
 
         internalList.set(index, editedPerson);
@@ -136,12 +162,25 @@ public class UniquePersonList implements Iterable<Person> {
 
     /**
      * Returns true if {@code persons} contains only unique persons.
+     * For students, uniqueness is checked by student ID.
+     * For non-students, uniqueness is checked by name.
      */
     private boolean personsAreUnique(List<Person> persons) {
         for (int i = 0; i < persons.size() - 1; i++) {
             for (int j = i + 1; j < persons.size(); j++) {
-                if (persons.get(i).isSamePerson(persons.get(j))) {
-                    return false;
+                Person personI = persons.get(i);
+                Person personJ = persons.get(j);
+
+                // Check by student ID for students
+                if (personI.getStudentId() != null && personJ.getStudentId() != null) {
+                    if (personI.getStudentId().equals(personJ.getStudentId())) {
+                        return false;
+                    }
+                } else if (personI.getStudentId() == null && personJ.getStudentId() == null) {
+                    // Check by name for non-students
+                    if (personI.isSamePerson(personJ)) {
+                        return false;
+                    }
                 }
             }
         }
