@@ -100,7 +100,7 @@ public class GradeCommand extends Command {
         // Use student constructor if phone/address are null
         if (personToEdit.getPhone() == null || personToEdit.getAddress() == null) {
             return new Person(personToEdit.getName(), personToEdit.getStudentId(), personToEdit.getEmail(),
-                    personToEdit.getModuleCodes(), personToEdit.getTags(), 
+                    personToEdit.getModuleCodes(), personToEdit.getTags(),
                     personToEdit.getAttendanceRecord(), updatedGrades, personToEdit.getConsultations());
         } else {
             return new Person(personToEdit.getName(), personToEdit.getPhone(), personToEdit.getEmail(),

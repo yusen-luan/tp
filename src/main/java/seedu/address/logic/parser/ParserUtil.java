@@ -33,13 +33,13 @@ public class ParserUtil {
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
 
     private static final List<DateTimeFormatter> DATE_FORMATS = List.of(
-            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"),              // 22/10/2025 15:30
-            DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"),              // 22-10-2025 15:30
-            DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm").withLocale(Locale.ENGLISH),  // 22 Oct 2025 15:30
-            DateTimeFormatter.ofPattern("dd MMM yyyy h:mma").withLocale(Locale.ENGLISH),  // 22 Oct 2025 3:30PM
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"), // 22/10/2025 15:30
+            DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"), // 22-10-2025 15:30
+            DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm").withLocale(Locale.ENGLISH), // 22 Oct 2025 15:30
+            DateTimeFormatter.ofPattern("dd MMM yyyy h:mma").withLocale(Locale.ENGLISH), // 22 Oct 2025 3:30PM
             DateTimeFormatter.ofPattern("dd MMM yyyy h:mm a").withLocale(Locale.ENGLISH), // 22 Oct 2025 3:30 PM
-            DateTimeFormatter.ofPattern("dd/MM/yyyy h:mma").withLocale(Locale.ENGLISH),   // 22/10/2025 3:30PM
-            DateTimeFormatter.ofPattern("dd/MM/yyyy h:mm a").withLocale(Locale.ENGLISH)   // 22/10/2025 3:30 PM
+            DateTimeFormatter.ofPattern("dd/MM/yyyy h:mma").withLocale(Locale.ENGLISH), // 22/10/2025 3:30PM
+            DateTimeFormatter.ofPattern("dd/MM/yyyy h:mm a").withLocale(Locale.ENGLISH) // 22/10/2025 3:30 PM
     );
 
 

@@ -64,7 +64,8 @@ public class AddCommandParser implements Parser<AddCommand> {
         if (consultationList.isEmpty()) {
             person = new Person(name, studentId, email, moduleCodeList, tagList, null, new HashSet<>());
         } else {
-            person = new Person(name, studentId, email, moduleCodeList, tagList, null, new HashSet<>(), consultationList);
+            person = new Person(name, studentId, email, moduleCodeList, tagList,
+                    null, new HashSet<>(), consultationList);
         }
 
         return new AddCommand(person);
