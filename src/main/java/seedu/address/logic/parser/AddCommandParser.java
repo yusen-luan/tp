@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.attendance.AttendanceRecord;
 import seedu.address.model.consultation.Consultation;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.person.Email;
@@ -62,9 +63,11 @@ public class AddCommandParser implements Parser<AddCommand> {
 
         Person person;
         if (consultationList.isEmpty()) {
-            person = new Person(name, studentId, email, moduleCodeList, tagList, new HashSet<>());
+            person = new Person(name, studentId, email, moduleCodeList, tagList,
+                    new AttendanceRecord(), new HashSet<>());
         } else {
-            person = new Person(name, studentId, email, moduleCodeList, tagList, new HashSet<>(), consultationList);
+            person = new Person(name, studentId, email, moduleCodeList, tagList,
+                    null, new HashSet<>(), consultationList);
         }
 
         return new AddCommand(person);

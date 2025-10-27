@@ -51,7 +51,7 @@ public class Person {
             this.moduleCodes.addAll(moduleCodes);
         }
         this.attendanceRecord = new AttendanceRecord();
-        this.consultations = null;
+        this.consultations = new ArrayList<>();
         if (grades != null) {
             this.grades.addAll(grades);
         }
@@ -73,7 +73,7 @@ public class Person {
             this.moduleCodes.addAll(moduleCodes);
         }
         this.attendanceRecord = attendanceRecord != null ? attendanceRecord : new AttendanceRecord();
-        this.consultations = null;
+        this.consultations = new ArrayList<>();
         if (grades != null) {
             this.grades.addAll(grades);
         }
@@ -91,7 +91,7 @@ public class Person {
         this.tags.addAll(tags);
         this.studentId = null;
         this.attendanceRecord = new AttendanceRecord();
-        this.consultations = null;
+        this.consultations = new ArrayList<>();
     }
 
     /**
@@ -135,7 +135,8 @@ public class Person {
      * Constructor for Student with custom AttendanceRecord and Grades
      */
     public Person(Name name, StudentId studentId, Email email,
-                  Set<ModuleCode> moduleCodes, Set<Tag> tags, AttendanceRecord attendanceRecord, Set<Grade> grades) {
+                  Set<ModuleCode> moduleCodes, Set<Tag> tags, AttendanceRecord attendanceRecord,
+                  Set<Grade> grades) {
         requireAllNonNull(name, studentId, email, moduleCodes, tags);
         this.name = name;
         this.studentId = studentId;
@@ -155,7 +156,8 @@ public class Person {
      * Constructor for Student (with StudentId and ModuleCodes and Consultations, no phone/address)
      */
     public Person(Name name, StudentId studentId, Email email,
-                  Set<ModuleCode> moduleCodes, Set<Tag> tags, Set<Grade> grades, List<Consultation> consultations) {
+                  Set<ModuleCode> moduleCodes, Set<Tag> tags, AttendanceRecord attendanceRecord,
+                  Set<Grade> grades, List<Consultation> consultations) {
         requireAllNonNull(name, studentId, email, moduleCodes, tags, grades, consultations);
         this.name = name;
         this.studentId = studentId;
@@ -166,7 +168,7 @@ public class Person {
         this.consultations = new ArrayList<>(consultations);
         this.tags.addAll(tags);
         this.grades.addAll(grades);
-        this.attendanceRecord = new AttendanceRecord();
+        this.attendanceRecord = attendanceRecord != null ? attendanceRecord : new AttendanceRecord();
     }
 
     public Name getName() {
