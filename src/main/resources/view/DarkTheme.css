@@ -85,7 +85,7 @@
 .list-view {
     -fx-background-color: transparent;
     -fx-background-insets: 0;
-    -fx-padding: 12px;
+    -fx-padding: 12px 20px;
     -fx-border-width: 0;
 }
 
@@ -118,12 +118,10 @@
 }
 
 .list-cell:filled:hover #cardPane {
-    -fx-background-color: rgba(255, 255, 255, 0.12);
-    -fx-border-color: rgba(255, 255, 255, 0.3);
-    -fx-border-width: 1.5px;
-    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.3), 20, 0, 0, 5);
-    -fx-scale-x: 1.02;
-    -fx-scale-y: 1.02;
+    -fx-background-color: rgba(255, 255, 255, 0.06);
+    -fx-border-color: rgba(255, 255, 255, 0.15);
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.1), 8, 0, 0, 2);
 }
 
 .list-cell .label {
@@ -137,7 +135,7 @@
     -fx-border-width: 1px;
     -fx-border-radius: 20px;
     -fx-background-radius: 20px;
-    -fx-padding: 0;
+    -fx-padding: 12px 18px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 15, 0, 0, 5);
     -fx-background-insets: 0;
 }
@@ -334,16 +332,16 @@
     -fx-font-family: -apple-system, "SF Mono", "Consolas", monospace;
     -fx-font-size: 16pt;
     -fx-text-fill: #ffffff;
-    -fx-padding: 16px 24px;
+    -fx-padding: 18px 28px;
     -fx-prompt-text-fill: rgba(255, 255, 255, 0.4);
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 15, 0, 0, 4);
 }
 
 #commandTextField:focused {
-    -fx-border-color: rgba(10, 132, 255, 0.9);
-    -fx-border-width: 2px;
-    -fx-background-color: rgba(28, 28, 30, 0.95);
-    -fx-effect: dropshadow(gaussian, rgba(10, 132, 255, 0.7), 30, 0, 0, 0);
+    -fx-border-color: rgba(10, 132, 255, 0.6);
+    -fx-border-width: 1.5px;
+    -fx-background-color: rgba(28, 28, 30, 0.9);
+    -fx-effect: dropshadow(gaussian, rgba(10, 132, 255, 0.3), 12, 0, 0, 0);
 }
 
 #commandTypeLabel {
@@ -374,11 +372,18 @@
     -fx-font-family: -apple-system, "SF Mono", "Consolas", monospace;
     -fx-font-size: 13pt;
     -fx-text-fill: #ffffff;
-    -fx-padding: 20px;
+    -fx-padding: 24px 28px;
     -fx-border-color: rgba(255, 255, 255, 0.18);
     -fx-border-width: 1px;
     -fx-border-radius: 16px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 15, 0, 0, 4);
+    -fx-text-alignment: top;
+    -fx-wrap-text: true;
+    -fx-control-inner-background: rgba(28, 28, 30, 0.8);
+}
+
+.result-display:focused {
+    -fx-text-fill: #ffffff;
 }
 
 .result-display .label {
