@@ -255,6 +255,233 @@ _{more aspects and alternatives to be added}_
 
 _{Explain here how the data archiving feature will be implemented}_
 
+### View Student Feature
+
+#### Implementation
+
+The view student feature allows teaching assistants to view detailed information about a specific student, including their personal details and complete attendance record. It is implemented through the `ViewCommand` command class and `ViewCommandParser` parser class.
+
+**Key Components:**
+
+The `ViewCommand` class:
+- Supports two methods of identifying students: by index in the displayed list or by student ID
+- Filters the displayed list to show only the selected student
+- Generates a comprehensive detailed view message containing student information and attendance records
+- Displays attendance week-by-week in the result display with text symbols (✓ for present, ✗ for absent) and status text
+
+The `ViewCommandParser`:
+- Parses user input to determine whether the user is searching by index or student ID
+- Uses the presence of `s/` prefix to differentiate between index-based and ID-based lookup
+- Creates appropriate `ViewCommand` objects with either an `Index` or `StudentId` parameter
+
+**Execution Flow:**
+
+Given below is an example usage scenario and how the view mechanism behaves.
+
+**Step 1.** The user executes `view 1` or `view s/A0123456X` to view a student's details.
+
+**Step 2.** The command is parsed by `AddressBookParser`, which identifies it as a view command and creates a `ViewCommandParser`.
+
+**Step 3.** `ViewCommandParser` parses the arguments:
+- If `s/` prefix is present: Extracts and validates the student ID, creates a `ViewCommand(StudentId)`
+- If no prefix: Parses the argument as an index, creates a `ViewCommand(Index)`
+
+**Step 4.** When `ViewCommand#execute()` is called:
+- If using index: Gets the person at the specified index from the filtered person list
+- If using student ID: Calls `Model#findPersonByStudentId()` to locate the student
+- Throws `CommandException` if student not found or index is invalid
+- Calls `Model#updateFilteredPersonList()` to filter and show only the selected student
+- Generates detailed view message via `createDetailedViewMessage(Person)`
+- Returns a `CommandResult` with the formatted message
+
+**Step 5.** The `createDetailedViewMessage()` method:
+- Formats basic student information (name, student ID, email)
+- Lists all enrolled module codes
+- Lists all tags if present
+- Displays attendance record sorted by week number
+- Shows each week's status with symbols (✓/✗) and text (Present/Absent) in the result display
+
+The following sequence diagram shows how a view operation works:
+
+```
+User -> UI: view 1
+UI -> LogicManager: execute("view 1")
+LogicManager -> AddressBookParser: parseCommand("view 1")
+AddressBookParser -> ViewCommandParser: parse("1")
+ViewCommandParser -> ViewCommand: new ViewCommand(Index)
+ViewCommand -> Model: getFilteredPersonList()
+ViewCommand -> Model: updateFilteredPersonList(predicate)
+ViewCommand -> ViewCommand: createDetailedViewMessage(person)
+ViewCommand --> LogicManager: CommandResult
+LogicManager --> UI: CommandResult
+UI -> User: Display detailed view
+```
+
+#### Design Considerations
+
+**Aspect: Dual lookup methods (index vs student ID)**
+
+* **Alternative 1 (current choice):** Support both index and student ID lookup
+  * Pros: Flexible for different use cases. Index is quick for visible students; student ID works regardless of filter state. Accommodates different user workflows.
+  * Cons: More complex parsing logic. Need to handle two different code paths in execution.
+
+* **Alternative 2:** Support only index-based lookup
+  * Pros: Simpler implementation. Consistent with other commands like delete, edit.
+  * Cons: Less convenient when user knows student ID but student is not visible in current list. Requires additional find/list commands first.
+
+**Aspect: Display format for attendance**
+
+* **Alternative 1 (current choice):** Two different display formats optimized for their context
+  * ResultDisplay (from `view` command): Each week displayed individually with symbols (✓/✗) and text (Present/Absent) for detailed review
+  * PersonCard (UI list): Visual grid of 13 colored rectangles with rounded edges - grey for no record, green (#4CAF50) for present, red (#F44336) for absent
+  * Pros: ResultDisplay format is clear for detailed inspection during `view` command. PersonCard grid provides instant visual pattern recognition across entire semester at a glance. Optimized for different use cases - detailed examination vs quick scanning.
+  * Cons: Two different display implementations to maintain. Users need to understand both representations. More complex UI code for PersonCard grid.
+
+* **Alternative 2:** Single consistent text-based format in both displays
+  * Pros: Consistent user experience across all views. Simpler implementation with single formatting method. Easier to maintain.
+  * Cons: Text format in PersonCard takes more horizontal space. Harder to see attendance patterns quickly. Less intuitive for visual scanning across multiple students in the list.
+
+**Aspect: List filtering after view**
+
+* **Alternative 1 (current choice):** Filter list to show only viewed student
+  * Pros: Focuses user attention on the selected student. Reduces visual clutter. Clear indication of which student is being viewed.
+  * Cons: Requires user to run `list` command to see all students again. Changes the displayed list state.
+
+* **Alternative 2:** Keep list unchanged, show details in popup or side panel
+  * Pros: Preserves list context. User can view multiple students without losing their place.
+  * Cons: Requires more complex UI components. Less suitable for CLI-focused application.
+
+### Attendance Tracking Feature
+
+#### Implementation
+
+The attendance tracking feature allows teaching assistants to mark and track student attendance for weekly tutorial sessions. It is implemented through the `AttendanceRecord` model class, `AttendanceCommand` command class, and supporting classes `Week`, `AttendanceStatus`.
+
+**Key Components:**
+
+The `AttendanceRecord` class:
+- Immutable data structure storing week-to-status mappings
+- Uses `Map<Week, AttendanceStatus>` internally for efficient lookup
+- Supports marking, querying, and retrieving all attendance records
+- Returns new `AttendanceRecord` instances when marking attendance (defensive copying)
+
+The `Week` class:
+- Represents tutorial week numbers (1-13, corresponding to a typical semester)
+- Validates week numbers are within valid range
+- Implements proper equality for use as map keys
+
+The `AttendanceStatus` enum:
+- Two states: `PRESENT` and `ABSENT`
+- Case-insensitive parsing from user input
+
+The `AttendanceCommand`:
+- Supports marking attendance for individual students by student ID
+- Supports bulk marking attendance for all students using `s/all`
+- Takes week number and attendance status as parameters
+- Creates updated `Person` objects with new attendance records
+
+The `PersonCard` UI component:
+- Displays attendance visually in the student list using a grid of 13 rectangles (16x16 pixels each with rounded edges)
+- Each rectangle represents one week (1-13) of the semester
+- Color coding: Grey (#CCCCCC) for no record, Green (#4CAF50) for present, Red (#F44336) for absent
+- Week numbers displayed above rectangles for easy reference
+- Provides instant visual pattern recognition of attendance across the entire semester
+
+**Execution Flow:**
+
+Given below is an example usage scenario and how the attendance marking mechanism behaves.
+
+**Step 1.** The user executes `attendance s/A0123456X w/1 present` to mark a student present for week 1.
+
+**Step 2.** The command is parsed by `AddressBookParser`, which identifies it as an attendance command and creates an `AttendanceCommandParser`.
+
+**Step 3.** `AttendanceCommandParser` parses the arguments:
+- Extracts student ID (`A0123456X`) or detects `all` keyword
+- Extracts week number (`1`) and validates it's between 1-13
+- Parses attendance status (`present`) into `AttendanceStatus.PRESENT`
+- Creates an `AttendanceCommand` with these parameters
+
+**Step 4.** When `AttendanceCommand#execute()` is called:
+- Determines if single student or all students should be marked
+- For single student:
+  - Calls `Model#findPersonByStudentId()` to locate the student
+  - Throws `CommandException` if student not found
+  - Gets current `AttendanceRecord` from the student
+  - Calls `AttendanceRecord#markAttendance(week, status)` to get updated record
+  - Creates new `Person` object with updated attendance record
+  - Calls `Model#setPerson()` to replace old person with updated person
+- For all students:
+  - Iterates through all students in address book
+  - Updates each student's attendance record similarly
+  - Counts number of students updated
+- Returns `CommandResult` with success message
+
+**Step 5.** The model persists the changes:
+- Updated person list triggers storage save
+- Attendance data is serialized to JSON format
+- Data is written to disk automatically
+
+The following sequence diagram shows how an attendance marking operation works:
+
+```
+User -> UI: attendance s/A0123456X w/1 present
+UI -> LogicManager: execute("attendance s/A0123456X w/1 present")
+LogicManager -> AddressBookParser: parseCommand("attendance s/A0123456X w/1 present")
+AddressBookParser -> AttendanceCommandParser: parse("s/A0123456X w/1 present")
+AttendanceCommandParser -> AttendanceCommand: new AttendanceCommand(studentId, week, status)
+AttendanceCommand -> Model: findPersonByStudentId(studentId)
+Model --> AttendanceCommand: person
+AttendanceCommand -> AttendanceRecord: markAttendance(week, status)
+AttendanceRecord --> AttendanceCommand: updatedRecord
+AttendanceCommand -> Person: new Person(..., updatedRecord)
+AttendanceCommand -> Model: setPerson(oldPerson, newPerson)
+AttendanceCommand --> LogicManager: CommandResult
+LogicManager --> UI: CommandResult
+UI -> User: Success message
+```
+
+#### Design Considerations
+
+**Aspect: Attendance record storage**
+
+* **Alternative 1 (current choice):** Store attendance as part of `Person` object
+  * Pros: Direct association between person and their attendance. Easy to access when viewing student details. Follows object-oriented principles. Simplifies serialization and storage.
+  * Cons: Attendance data is duplicated if needed elsewhere. Cannot easily query attendance independently.
+
+* **Alternative 2:** Store attendance in separate `AttendanceBook` class
+  * Pros: Separation of concerns. Can query attendance data independently. Supports attendance-focused operations (e.g., "show all students absent in week 3").
+  * Cons: More complex architecture. Requires maintaining relationships between Person and AttendanceRecord. More complex serialization logic.
+
+**Aspect: Immutability of AttendanceRecord**
+
+* **Alternative 1 (current choice):** Immutable AttendanceRecord
+  * Pros: Thread-safe. Prevents accidental modifications. Fits functional programming paradigm. Easier to reason about state changes. Consistent with other model classes.
+  * Cons: Creates new objects on every update. Slightly higher memory usage. Requires creating new Person object for each attendance change.
+
+* **Alternative 2:** Mutable AttendanceRecord
+  * Pros: More efficient for frequent updates. No need to recreate objects. Direct modification of state.
+  * Cons: Risk of unintended side effects. Thread safety concerns. Harder to track state changes. Inconsistent with existing codebase patterns.
+
+**Aspect: Bulk attendance marking**
+
+* **Alternative 1 (current choice):** Support `s/all` to mark all students
+  * Pros: Very convenient for TAs marking full-class attendance. Saves time when all students share same status. Single command instead of N commands.
+  * Cons: Requires special parsing logic for "all" keyword. All-or-nothing operation (cannot mark most students one way, exceptions another way). Risk of accidental bulk operations.
+
+* **Alternative 2:** Require individual marking for each student
+  * Pros: More explicit, less risk of mistakes. Simpler parsing logic. Forces TAs to verify each student.
+  * Cons: Tedious for large classes. Time-consuming when most students have same status. Many repetitive commands.
+
+**Aspect: Week number validation**
+
+* **Alternative 1 (current choice):** Validate weeks are between 1-13
+  * Pros: Matches typical NUS semester structure. Prevents obviously invalid data. Provides clear error messages to users.
+  * Cons: Not flexible for special terms or non-standard schedules. Hard-coded constraint.
+
+* **Alternative 2:** Allow any positive week number
+  * Pros: Flexible for different semester structures. Works for special terms, summer sessions, etc.
+  * Cons: Allows potentially meaningless data (e.g., week 100). No validation against errors. Harder to generate meaningful reports.
+
 ### Grade Feature
 
 #### Implementation
