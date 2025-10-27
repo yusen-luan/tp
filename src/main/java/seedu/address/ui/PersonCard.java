@@ -36,8 +36,6 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label id;
     @FXML
-    private Label email;
-    @FXML
     private FlowPane tags;
     @FXML
     private Label studentId;
@@ -54,7 +52,7 @@ public class PersonCard extends UiPart<Region> {
     public PersonCard(Person person, int displayedIndex) {
         super(FXML);
         this.person = person;
-        id.setText(displayedIndex + ". ");
+        id.setText(String.valueOf(displayedIndex));
         name.setText(person.getName().fullName);
         studentId.setText(person.getStudentId() != null ? person.getStudentId().value : "N/A");
         if (!person.getModuleCodes().isEmpty()) {
@@ -66,7 +64,6 @@ public class PersonCard extends UiPart<Region> {
         } else {
             moduleCode.setText("N/A");
         }
-        email.setText(person.getEmail().value);
         attendance.setText(formatAttendanceSummary(person.getAttendanceRecord()));
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
