@@ -47,20 +47,20 @@
 
         <StackPane VBox.vgrow="NEVER" fx:id="commandBoxPlaceholder" styleClass="pane-with-border">
           <padding>
-            <Insets top="12" right="16" bottom="12" left="16" />
+            <Insets top="12" right="20" bottom="12" left="20" />
           </padding>
         </StackPane>
 
         <StackPane VBox.vgrow="NEVER" fx:id="resultDisplayPlaceholder" styleClass="pane-with-border"
-                   minHeight="120" prefHeight="120" maxHeight="150">
+                   minHeight="180" prefHeight="180" maxHeight="225">
           <padding>
-            <Insets top="12" right="16" bottom="12" left="16" />
+            <Insets top="12" right="20" bottom="12" left="20" />
           </padding>
         </StackPane>
 
         <VBox fx:id="personList" styleClass="pane-with-border" minWidth="400" prefWidth="600" VBox.vgrow="ALWAYS">
           <padding>
-            <Insets top="16" right="16" bottom="16" left="16" />
+            <Insets top="16" right="20" bottom="16" left="20" />
           </padding>
           <StackPane fx:id="personListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
         </VBox>

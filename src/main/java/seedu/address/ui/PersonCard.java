@@ -7,10 +7,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.shape.Rectangle;
 import seedu.address.model.attendance.AttendanceStatus;
 import seedu.address.model.attendance.Week;
 import seedu.address.model.consultation.Consultation;
@@ -22,6 +24,9 @@ import seedu.address.model.person.Person;
 public class PersonCard extends UiPart<Region> {
 
     private static final String FXML = "PersonListCard.fxml";
+    private static final int TOTAL_WEEKS = 13;
+    private static final double RECTANGLE_WIDTH = 16;
+    private static final double RECTANGLE_HEIGHT = 16;
 
     /**
      * Note: Certain keywords such as "location" and "resources" are reserved keywords in JavaFX.
@@ -46,11 +51,13 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label moduleCode;
     @FXML
-    private Label attendance;
-    @FXML
     private FlowPane grades;
     @FXML
     private Label consultations;
+    @FXML
+    private HBox weekNumbersRow;
+    @FXML
+    private HBox attendanceRow;
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
@@ -70,7 +77,10 @@ public class PersonCard extends UiPart<Region> {
         } else {
             moduleCode.setText("N/A");
         }
-        attendance.setText(formatAttendanceSummary(person.getAttendanceRecord()));
+
+        // Populate attendance grid
+        populateAttendanceGrid(person);
+
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
@@ -85,28 +95,46 @@ public class PersonCard extends UiPart<Region> {
     }
 
     /**
-     * Formats the attendance record as a short summary string.
-     * Example: "W1:✓ W2:✗ W3:✓"
+     * Populates the attendance grid with 13 weeks, showing colored rectangles.
+     * Green rectangle = Present, Red rectangle = Absent, Gray rectangle = No record.
      */
-    private String formatAttendanceSummary(seedu.address.model.attendance.AttendanceRecord attendanceRecord) {
-        if (attendanceRecord.isEmpty()) {
-            return "No attendance recorded";
+    private void populateAttendanceGrid(Person person) {
+        Map<Week, AttendanceStatus> attendances = person.getAttendanceRecord().getAllAttendances();
+
+        for (int week = 1; week <= TOTAL_WEEKS; week++) {
+            // Create week number label
+            Label weekLabel = new Label(String.valueOf(week));
+            weekLabel.getStyleClass().add("week-number");
+            weekLabel.setPrefWidth(18);
+            weekLabel.setAlignment(Pos.CENTER);
+            weekNumbersRow.getChildren().add(weekLabel);
+
+            // Create attendance rectangle
+            Rectangle attendanceRectangle = new Rectangle(RECTANGLE_WIDTH, RECTANGLE_HEIGHT);
+            attendanceRectangle.getStyleClass().add("attendance-rectangle");
+
+            Week weekObj = new Week(week);
+            if (attendances.containsKey(weekObj)) {
+                AttendanceStatus status = attendances.get(weekObj);
+                if (status == AttendanceStatus.PRESENT) {
+                    attendanceRectangle.setStyle("-fx-fill: #4CAF50;"); // Green
+                    attendanceRectangle.getStyleClass().add("attendance-present");
+                } else {
+                    attendanceRectangle.setStyle("-fx-fill: #F44336;"); // Red
+                    attendanceRectangle.getStyleClass().add("attendance-absent");
+                }
+            } else {
+                attendanceRectangle.setStyle("-fx-fill: #CCCCCC;"); // Gray for no record
+                attendanceRectangle.getStyleClass().add("attendance-no-record");
+            }
+
+            // Wrap rectangle in HBox for alignment
+            HBox rectangleBox = new HBox();
+            rectangleBox.setPrefWidth(18);
+            rectangleBox.setAlignment(Pos.CENTER);
+            rectangleBox.getChildren().add(attendanceRectangle);
+            attendanceRow.getChildren().add(rectangleBox);
         }
-
-        StringBuilder sb = new StringBuilder();
-        Map<Week, AttendanceStatus> attendances = attendanceRecord.getAllAttendances();
-
-        // Sort by week number and format as W1:✓ W2:✗ etc.
-        attendances.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey(Comparator.comparing(week -> week.value)))
-                .forEach(entry -> {
-                    Week week = entry.getKey();
-                    AttendanceStatus status = entry.getValue();
-                    String symbol = status == AttendanceStatus.PRESENT ? "✓" : "✗";
-                    sb.append("W").append(week.value).append(":").append(symbol).append(" ");
-                });
-
-        return sb.toString().trim();
     }
 
     private String getConsultationsSummary(Person person) {

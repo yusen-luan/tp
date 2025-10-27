@@ -39,12 +39,23 @@
         <Label text="📚" styleClass="icon-compact" />
         <Label fx:id="moduleCode" text="\$modules" styleClass="field-value-compact" />
       </HBox>
+    </HBox>
 
-      <!-- Attendance -->
-      <HBox spacing="6" alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
-        <Label text="✓" styleClass="icon-compact" style="-fx-font-size: 14pt; -fx-font-weight: bold;" />
-        <Label fx:id="attendance" text="\$attendance" styleClass="field-value-compact" />
-      </HBox>
+    <!-- ATTENDANCE ROW - 13 Weeks with styled box -->
+    <HBox spacing="12" styleClass="attendance-section-box" alignment="CENTER_LEFT">
+      <padding>
+        <Insets top="8" right="10" bottom="8" left="10" />
+      </padding>
+
+      <Label text="Attendance:" styleClass="attendance-label" />
+
+      <VBox spacing="2" HBox.hgrow="ALWAYS">
+        <!-- Week numbers row (top) -->
+        <HBox fx:id="weekNumbersRow" spacing="10" alignment="TOP_LEFT" />
+
+        <!-- Attendance status row with colored rectangles (bottom) -->
+        <HBox fx:id="attendanceRow" spacing="10" alignment="TOP_LEFT" />
+      </VBox>
     </HBox>
 
     <!-- GRADES - Compact inline -->
