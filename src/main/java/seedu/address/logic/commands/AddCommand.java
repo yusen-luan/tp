@@ -36,7 +36,7 @@ public class AddCommand extends Command {
             + PREFIX_EMAIL + "johnd@u.nus.edu "
             + PREFIX_MODULE_CODE + "CS2103T "
             + PREFIX_MODULE_CODE + "CS2101 "
-            + PREFIX_TAG + "struggling"
+            + PREFIX_TAG + "struggling "
             + PREFIX_CONSULTATION + "22 Oct 2025 14:00\n"
             + "Tag and Consultation are optional attributes.";
 
