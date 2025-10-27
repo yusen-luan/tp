@@ -78,7 +78,9 @@ public class AttendanceCommand extends Command {
                 studentToMarkAttendance.getEmail(),
                 studentToMarkAttendance.getModuleCodes(),
                 studentToMarkAttendance.getTags(),
-                updatedAttendanceRecord
+                updatedAttendanceRecord,
+                studentToMarkAttendance.getGrades(),
+                studentToMarkAttendance.getConsultations()
         );
 
         // Update the student in the model
@@ -107,7 +109,9 @@ public class AttendanceCommand extends Command {
                     student.getEmail(),
                     student.getModuleCodes(),
                     student.getTags(),
-                    updatedAttendanceRecord
+                    updatedAttendanceRecord,
+                    student.getGrades(),
+                    student.getConsultations()
             );
 
             // Update the student in the model

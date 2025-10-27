@@ -37,6 +37,10 @@
           <Insets top="3" />
         </VBox.margin>
       </FlowPane>
+        <VBox spacing="2">
+            <Label text="Consultations:" styleClass="cell_header_label" />
+            <Label fx:id="consultations" styleClass="cell_small_label" wrapText="true" />
+        </VBox>
     </VBox>
   </GridPane>
 </HBox>

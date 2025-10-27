@@ -1,7 +1,10 @@
 package seedu.address.ui;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -10,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.attendance.AttendanceStatus;
 import seedu.address.model.attendance.Week;
+import seedu.address.model.consultation.Consultation;
 import seedu.address.model.person.Person;
 
 /**
@@ -47,6 +51,8 @@ public class PersonCard extends UiPart<Region> {
     private Label attendance;
     @FXML
     private FlowPane grades;
+    @FXML
+    private Label consultations;
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
@@ -78,6 +84,7 @@ public class PersonCard extends UiPart<Region> {
                     gradeLabel.getStyleClass().add("grade-label");
                     grades.getChildren().add(gradeLabel);
                 });
+        consultations.setText(getConsultationsSummary(person));
     }
 
     /**
@@ -103,5 +110,18 @@ public class PersonCard extends UiPart<Region> {
                 });
 
         return sb.toString().trim();
+    }
+
+    private String getConsultationsSummary(Person person) {
+        List<Consultation> consultationList = person.getConsultations();
+
+        if (consultationList.isEmpty()) {
+            return "No consultations";
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy h:mm a");
+        return consultationList.stream()
+                .map(c -> c.getDateTime().format(formatter))
+                .collect(Collectors.joining("\n"));
     }
 }

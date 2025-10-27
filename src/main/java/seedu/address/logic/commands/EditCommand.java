@@ -128,7 +128,7 @@ public class EditCommand extends Command {
         if (updatedStudentId != null && updatedPhone == null && updatedAddress == null) {
             // Use student constructor
             return new Person(updatedName, updatedStudentId,
-                    updatedEmail, updatedModuleCodes, updatedTags, updatedGrades, updatedConsultations);
+                    updatedEmail, updatedModuleCodes, updatedTags, null, updatedGrades, updatedConsultations);
         } else {
             // Use regular person constructor
             return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.attendance.AttendanceRecord;
+import seedu.address.model.consultation.Consultation;
 import seedu.address.model.grade.Grade;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.person.Address;
@@ -37,6 +38,7 @@ class JsonAdaptedPerson {
     private final List<JsonAdaptedTag> tags;
     private final List<JsonAdaptedAttendance> attendances;
     private final List<JsonAdaptedGrade> grades;
+    private final List<JsonAdaptedConsultation> consultations;
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -49,7 +51,8 @@ class JsonAdaptedPerson {
             @JsonProperty("moduleCodes") List<String> moduleCodes,
             @JsonProperty("tags") List<JsonAdaptedTag> tags,
             @JsonProperty("attendances") List<JsonAdaptedAttendance> attendances,
-            @JsonProperty("grades") List<JsonAdaptedGrade> grades) {
+            @JsonProperty("grades") List<JsonAdaptedGrade> grades,
+            @JsonProperty("consultations") List<JsonAdaptedConsultation> consultations) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -59,6 +62,7 @@ class JsonAdaptedPerson {
         this.tags = tags != null ? new ArrayList<>(tags) : new ArrayList<>();
         this.attendances = attendances != null ? new ArrayList<>(attendances) : new ArrayList<>();
         this.grades = grades != null ? new ArrayList<>(grades) : new ArrayList<>();
+        this.consultations = consultations != null ? new ArrayList<>(consultations) : new ArrayList<>();
     }
 
     /**
@@ -82,6 +86,9 @@ class JsonAdaptedPerson {
         grades = source.getGrades().stream()
                 .map(JsonAdaptedGrade::new)
                 .collect(Collectors.toList());
+        consultations = source.getConsultations().stream()
+                .map(JsonAdaptedConsultation::new)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -98,6 +105,11 @@ class JsonAdaptedPerson {
         final List<Grade> personGrades = new ArrayList<>();
         for (JsonAdaptedGrade grade : grades) {
             personGrades.add(grade.toModelType());
+        }
+
+        final List<Consultation> personConsultations = new ArrayList<>();
+        for (JsonAdaptedConsultation consultation : consultations) {
+            personConsultations.add(consultation.toModelType());
         }
 
         if (name == null) {
@@ -148,7 +160,7 @@ class JsonAdaptedPerson {
 
             // Use student constructor (without phone/address)
             return new Person(modelName, modelStudentId, modelEmail, modelModuleCodes,
-                    modelTags, modelAttendanceRecord, modelGrades);
+                    modelTags, modelAttendanceRecord, modelGrades, personConsultations);
         }
 
         // Otherwise, create a regular person (with phone and address)

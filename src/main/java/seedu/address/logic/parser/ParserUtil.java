@@ -8,6 +8,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import seedu.address.commons.core.index.Index;
@@ -32,11 +33,15 @@ public class ParserUtil {
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
 
     private static final List<DateTimeFormatter> DATE_FORMATS = List.of(
-            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"), // 22/10/2025 15:30
-            DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"), // 22-10-2025 15:30
-            DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm"), // 22 Oct 2025 15:30
-            DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mma") // 22/10/2025 03:30PM
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"),              // 22/10/2025 15:30
+            DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"),              // 22-10-2025 15:30
+            DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm").withLocale(Locale.ENGLISH),  // 22 Oct 2025 15:30
+            DateTimeFormatter.ofPattern("dd MMM yyyy h:mma").withLocale(Locale.ENGLISH),  // 22 Oct 2025 3:30PM
+            DateTimeFormatter.ofPattern("dd MMM yyyy h:mm a").withLocale(Locale.ENGLISH), // 22 Oct 2025 3:30 PM
+            DateTimeFormatter.ofPattern("dd/MM/yyyy h:mma").withLocale(Locale.ENGLISH),   // 22/10/2025 3:30PM
+            DateTimeFormatter.ofPattern("dd/MM/yyyy h:mm a").withLocale(Locale.ENGLISH)   // 22/10/2025 3:30 PM
     );
+
 
     /**
      * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
