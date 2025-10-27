@@ -136,16 +136,6 @@ public class ViewCommand extends Command {
                                 .append(symbol).append(" ").append(statusText)
                                 .append("\n");
                     });
-
-            // Calculate attendance percentage
-            int totalWeeks = attendances.size();
-            long presentCount = attendances.values().stream()
-                    .mapToLong(status -> status == AttendanceStatus.PRESENT ? 1 : 0)
-                    .sum();
-            double percentage = totalWeeks > 0 ? (double) presentCount / totalWeeks * 100 : 0;
-            sb.append("\nAttendance Rate: ").append(String.format("%.1f", percentage))
-                    .append("% (").append(presentCount).append("/").append(totalWeeks)
-                    .append(" weeks)");
         }
 
         return sb.toString();
