@@ -18,3 +18,60 @@
 .tooltip-text {
     -fx-text-fill: white;
 }
+
+/* ========== ATTENDANCE GRID STYLES ========== */
+
+.attendance-section {
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.attendance-section-box {
+    -fx-border-color: #3d3d3d;
+    -fx-border-width: 1;
+    -fx-background-color: #1f1f1f;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+}
+
+.attendance-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 11pt;
+    -fx-font-weight: normal;
+    -fx-alignment: center;
+    -fx-padding: 0;
+    -fx-min-width: 80;
+}
+
+.week-number {
+    -fx-text-fill: #aaaaaa;
+    -fx-font-size: 8pt;
+    -fx-font-weight: normal;
+    -fx-alignment: center;
+    -fx-padding: 0;
+    -fx-min-width: 18;
+}
+
+.attendance-rectangle {
+    -fx-stroke-width: 0.5;
+    -fx-stroke: transparent;
+    -fx-arc-width: 2;
+    -fx-arc-height: 2;
+}
+
+.attendance-present {
+    -fx-fill: #4CAF50;
+    -fx-stroke: #45a049;
+}
+
+.attendance-absent {
+    -fx-fill: #F44336;
+    -fx-stroke: #da190b;
+}
+
+.attendance-no-record {
+    -fx-fill: #CCCCCC;
+    -fx-stroke: #999999;
+}
