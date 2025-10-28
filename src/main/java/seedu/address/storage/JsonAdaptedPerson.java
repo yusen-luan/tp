@@ -160,7 +160,7 @@ class JsonAdaptedPerson {
 
             // Use student constructor (without phone/address)
             return new Person(modelName, modelStudentId, modelEmail, modelModuleCodes,
-                    modelTags, modelAttendanceRecord, modelGrades, personConsultations);
+                    modelTags, modelAttendanceRecord, modelGrades, personConsultations, null);
         }
 
         // Otherwise, create a regular person (with phone and address)

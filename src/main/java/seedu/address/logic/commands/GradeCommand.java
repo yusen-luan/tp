@@ -101,7 +101,8 @@ public class GradeCommand extends Command {
         if (personToEdit.getPhone() == null || personToEdit.getAddress() == null) {
             return new Person(personToEdit.getName(), personToEdit.getStudentId(), personToEdit.getEmail(),
                     personToEdit.getModuleCodes(), personToEdit.getTags(),
-                    personToEdit.getAttendanceRecord(), updatedGrades, personToEdit.getConsultations());
+                    personToEdit.getAttendanceRecord(), updatedGrades, personToEdit.getConsultations(),
+                    personToEdit.getRemark());
         } else {
             return new Person(personToEdit.getName(), personToEdit.getPhone(), personToEdit.getEmail(),
                     personToEdit.getAddress(), personToEdit.getTags(), personToEdit.getStudentId(),
