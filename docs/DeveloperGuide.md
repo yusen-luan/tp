@@ -303,19 +303,7 @@ Given below is an example usage scenario and how the view mechanism behaves.
 
 The following sequence diagram shows how a view operation works:
 
-```
-User -> UI: view 1
-UI -> LogicManager: execute("view 1")
-LogicManager -> AddressBookParser: parseCommand("view 1")
-AddressBookParser -> ViewCommandParser: parse("1")
-ViewCommandParser -> ViewCommand: new ViewCommand(Index)
-ViewCommand -> Model: getFilteredPersonList()
-ViewCommand -> Model: updateFilteredPersonList(predicate)
-ViewCommand -> ViewCommand: createDetailedViewMessage(person)
-ViewCommand --> LogicManager: CommandResult
-LogicManager --> UI: CommandResult
-UI -> User: Display detailed view
-```
+<puml src="diagrams/ViewSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `view 1` Command" />
 
 #### Design Considerations
 
@@ -423,22 +411,7 @@ Given below is an example usage scenario and how the attendance marking mechanis
 
 The following sequence diagram shows how an attendance marking operation works:
 
-```
-User -> UI: attendance s/A0123456X w/1 present
-UI -> LogicManager: execute("attendance s/A0123456X w/1 present")
-LogicManager -> AddressBookParser: parseCommand("attendance s/A0123456X w/1 present")
-AddressBookParser -> AttendanceCommandParser: parse("s/A0123456X w/1 present")
-AttendanceCommandParser -> AttendanceCommand: new AttendanceCommand(studentId, week, status)
-AttendanceCommand -> Model: findPersonByStudentId(studentId)
-Model --> AttendanceCommand: person
-AttendanceCommand -> AttendanceRecord: markAttendance(week, status)
-AttendanceRecord --> AttendanceCommand: updatedRecord
-AttendanceCommand -> Person: new Person(..., updatedRecord)
-AttendanceCommand -> Model: setPerson(oldPerson, newPerson)
-AttendanceCommand --> LogicManager: CommandResult
-LogicManager --> UI: CommandResult
-UI -> User: Success message
-```
+<puml src="diagrams/AttendanceSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `attendance s/A0123456X w/1 present` Command" />
 
 #### Design Considerations
 
