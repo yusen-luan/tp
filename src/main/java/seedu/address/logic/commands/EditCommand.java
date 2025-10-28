@@ -32,6 +32,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Remark;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.Tag;
 
@@ -123,12 +124,14 @@ public class EditCommand extends Command {
         List<Consultation> updatedConsultations =
                 editPersonDescriptor.getConsultations().orElse(personToEdit.getConsultations());
         Set<Grade> updatedGrades = personToEdit.getGrades(); // Keep existing grades when editing
+        Remark updatedRemark = personToEdit.getRemark(); // Keep existing remark when editing
 
         // Check if this is a student (has studentId but no phone/address)
         if (updatedStudentId != null && updatedPhone == null && updatedAddress == null) {
             // Use student constructor
             return new Person(updatedName, updatedStudentId,
-                    updatedEmail, updatedModuleCodes, updatedTags, null, updatedGrades, updatedConsultations);
+                    updatedEmail, updatedModuleCodes, updatedTags, null, updatedGrades, updatedConsultations,
+                    updatedRemark);
         } else {
             // Use regular person constructor
             return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,

@@ -1,8 +1,10 @@
 package seedu.address.testutil;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import seedu.address.model.attendance.AttendanceRecord;
 import seedu.address.model.grade.Grade;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.person.Address;
@@ -10,6 +12,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Remark;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.util.SampleDataUtil;
@@ -33,6 +36,7 @@ public class PersonBuilder {
     private StudentId studentId;
     private Set<ModuleCode> moduleCodes;
     private Set<Grade> grades;
+    private Remark remark;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -46,6 +50,7 @@ public class PersonBuilder {
         studentId = null;
         moduleCodes = new HashSet<>();
         grades = new HashSet<>();
+        remark = null;
     }
 
     /**
@@ -60,6 +65,7 @@ public class PersonBuilder {
         studentId = personToCopy.getStudentId();
         moduleCodes = new HashSet<>(personToCopy.getModuleCodes());
         grades = new HashSet<>(personToCopy.getGrades());
+        remark = personToCopy.getRemark();
     }
 
     /**
@@ -156,13 +162,22 @@ public class PersonBuilder {
     }
 
     /**
+     * Sets the {@code Remark} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withRemark(String remark) {
+        this.remark = new Remark(remark);
+        return this;
+    }
+
+    /**
      * Builds a {@code Person} from the current builder state.
      * Uses the appropriate constructor based on which fields are set.
      */
     public Person build() {
         // If studentId is set but phone or address is null, build as a student (without phone/address)
         if (studentId != null && (phone == null || address == null)) {
-            return new Person(name, studentId, email, moduleCodes, tags, grades);
+            return new Person(name, studentId, email, moduleCodes, tags,
+                    new AttendanceRecord(), grades, new ArrayList<>(), remark);
         }
         // If both phone and address are set, use the full constructor
         if (phone != null && address != null) {
