@@ -344,6 +344,40 @@ Examples:
 * `grade 2 g/Quiz1:90 g/Assignment1:88` - Adds two grades to the 2nd student
 * `grade 3 g/Final Exam:92` - Adds a grade for "Final Exam" to the 3rd student
 
+### Adding remarks to a student : `remark`
+
+Adds or updates a personalized remark for an existing student in TeachMate.
+
+Format: `remark s/STUDENT_ID r/REMARK`
+
+* Adds or updates a remark for the student with the specified `STUDENT_ID`
+* Student ID must match the format A followed by 7 digits and 1 uppercase letter
+* `REMARK` can contain any text including spaces and special characters
+* `REMARK` supports multi-line text for longer notes
+* The remark must not be blank (must contain at least one non-whitespace character)
+* If a remark already exists for the student, it will be replaced with the new remark
+* The student must exist in TeachMate
+
+**Success message:** `Added remark to Student: [student details]`
+
+**Error messages:**
+* If the student ID is not found: `No student found with ID: [ID]`
+* If the remark is blank: `Remarks should not be blank`
+
+<box type="tip" seamless>
+
+**Tips:**
+* Use remarks to record personalized notes about each student (e.g., learning preferences, areas of difficulty, progress notes)
+* Remarks are displayed in the student card view with a 📝 icon
+* To view all details including remarks, use the student card in the list view
+* Remarks are automatically saved and will persist across application restarts
+</box>
+
+Examples:
+* `remark s/A0123456X r/Needs extra help with OOP concepts` - Adds a remark for student A0123456X
+* `remark s/A0234567Y r/Excellent participation in tutorials` - Adds a remark for student A0234567Y
+* `remark s/A0345678Z r/Struggling with time management. Recommended office hours on Fridays.` - Adds a multi-line remark
+
 ### Locating students by name: `find`
 
 Finds students whose names contain any of the given keywords.
@@ -472,6 +506,7 @@ Furthermore, certain edits can cause TeachMate to behave in unexpected ways (e.g
 | **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find John Jane`                                                                                                                |
 | **Grade**  | `grade INDEX g/ASSIGNMENT_NAME:SCORE [g/ASSIGNMENT_NAME:SCORE]…​`<br> e.g., `grade 1 g/Midterm:85 g/Quiz1:90`                                                            |
 | **List**   | `list` or `list m/MODULE_CODE`<br> e.g., `list m/CS2103T`                                                                                                                |
+| **Remark** | `remark s/STUDENT_ID r/REMARK`<br> e.g., `remark s/A0123456X r/Needs extra help with OOP concepts`                                                                       |
 | **Tag**    | `tag INDEX t/TAG [t/TAG]…​` or `tag s/STUDENT_ID t/TAG [t/TAG]…​`<br> e.g., `tag 1 t/Struggling t/Inactive` or `tag s/A0291772W t/Excelling`                            |
 | **Untag**  | `untag INDEX t/TAG [t/TAG]…​` or `untag s/STUDENT_ID t/TAG [t/TAG]…​`<br> e.g., `untag 1 t/Struggling` or `untag s/A0291772W t/Inactive`                                |
 | **View**   | `view INDEX` or `view s/STUDENT_ID`<br> e.g., `view 1` or `view s/A0123456X`                                                                                             |
