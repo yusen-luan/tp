@@ -107,20 +107,28 @@ Format: `add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/
 
 <box type="tip" seamless>
 
-**Consultations Constraints:**
-* Consultations are optional — a student can be added without any consultations
-* If included, each consultation must follow one of these date/time formats:
-    * `dd/MM/yyyy HH:mm` → e.g., `22/10/2025 15:30`
-    * `dd-MM-yyyy HH:mm` → e.g., `22-10-2025 15:30`
-    * `dd MMM yyyy HH:mm` → e.g., `22 Oct 2025 15:30`
-    * `dd/MM/yyyy hh:mma` → e.g., `22/10/2025 3:30PM`
+## Consultations Constraints
 
+- **Consultations are optional** — a student can be added without any consultations.
+- **If included**, each consultation’s date and time must follow **one of the supported formats** below:
+
+| Accepted Format        | Example Input       |
+|------------------------|---------------------|
+| `dd/MM/yyyy HH:mm`     | `22/10/2025 15:30`  |
+| `dd-MM-yyyy HH:mm`     | `22-10-2025 15:30`  |
+| `yyyy-MM-dd HH:mm`     | `2025-10-22 15:30`  |
+| `yyyy/MM/dd HH:mm`     | `2025/10/22 15:30`  |
+
+### Notes
+- The time must be entered in **24-hour format** (e.g., `14:00` for 2 PM).
+- All formats require both a **date** and a **time** — partial inputs like `22/10/2025` or `15:30` alone are not accepted.
+- Invalid inputs (e.g., `2025-13-45 25:99`) will result in an error message showing the supported formats.
 </box>
 
 
 Examples:
 * `add n/John Doe s/A0123456X e/johnd@u.nus.edu m/CS2103T`
-* `add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t/needsHelp c/22 Oct 2025 15:30 `
+* `add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t/needsHelp c/22/10/2025 15:30 `
 
 ### Listing students : `list`
 

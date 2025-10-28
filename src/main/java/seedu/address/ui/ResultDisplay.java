@@ -65,7 +65,9 @@ public class ResultDisplay extends UiPart<Region> {
             } else if (line.startsWith("-") || line.startsWith("*")) {
                 // Bullet list
                 formatted.append("  ").append(line).append("\n");
-            } else if (line.contains(":")) {
+            } else if (line.contains(":")
+                    && !line.matches(".*\\d+:\\d+.*")  // ignore times like 2:00 or 14:30
+                    && !line.trim().startsWith("•")) {
                 // Key-value pairs - make them stand out
                 String[] parts = line.split(":", 2);
                 if (parts.length == 2) {
