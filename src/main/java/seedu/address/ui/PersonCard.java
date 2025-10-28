@@ -58,6 +58,8 @@ public class PersonCard extends UiPart<Region> {
     private HBox weekNumbersRow;
     @FXML
     private HBox attendanceRow;
+    @FXML
+    private Label remark;
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
@@ -92,6 +94,7 @@ public class PersonCard extends UiPart<Region> {
                     grades.getChildren().add(gradeLabel);
                 });
         consultations.setText(getConsultationsSummary(person));
+        remark.setText(person.getRemark() != null ? person.getRemark().value : "No remarks");
     }
 
     /**
