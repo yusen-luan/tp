@@ -78,6 +78,16 @@
       <Label fx:id="consultations" text="\$consultations" styleClass="field-value-compact" wrapText="true" />
     </HBox>
 
+    <!-- REMARK - Compact inline -->
+    <HBox spacing="6" alignment="CENTER_LEFT" styleClass="remark-section-compact">
+      <padding>
+        <Insets top="8" right="10" bottom="8" left="10" />
+      </padding>
+
+      <Label text="📝" styleClass="icon-compact" style="-fx-font-size: 13pt;" />
+      <Label fx:id="remark" text="\$remark" styleClass="field-value-compact" wrapText="true" />
+    </HBox>
+
     <!-- TAGS - Compact inline -->
     <FlowPane fx:id="tags" hgap="6" vgap="6" />
 
