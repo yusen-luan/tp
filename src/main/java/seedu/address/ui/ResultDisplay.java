@@ -24,8 +24,18 @@ public class ResultDisplay extends UiPart<Region> {
      */
     public ResultDisplay() {
         super(FXML);
-        // Disable context menu on WebView
         resultDisplay.setContextMenuEnabled(false);
+        initializeDisplay();
+    }
+
+    /**
+     * Initializes the display with proper background color.
+     */
+    private void initializeDisplay() {
+        String html = "<!DOCTYPE html><html><head><style>"
+                + getGitHubStyleCss()
+                + "</style></head><body></body></html>";
+        resultDisplay.getEngine().loadContent(html);
     }
 
     /**
@@ -34,9 +44,10 @@ public class ResultDisplay extends UiPart<Region> {
      */
     public void setTheme(boolean isDark) {
         this.isDarkTheme = isDark;
-        // Refresh the display with new theme
         if (!lastMessage.isEmpty()) {
             setFeedbackToUser(lastMessage);
+        } else {
+            initializeDisplay();
         }
     }
 
@@ -104,24 +115,20 @@ public class ResultDisplay extends UiPart<Region> {
                 continue;
             }
 
-            // Skip the checkmark if it's at the start (already in header)
             if (line.startsWith("✓")) {
                 line = line.substring(1).trim();
             }
 
-            // Bullet points
             if (line.startsWith("•")) {
                 if (!content.toString().contains("<ul>")) {
                     content.append("<ul class='bullet-list'>");
                 }
                 content.append("<li>").append(escapeHtml(line.substring(1).trim())).append("</li>");
             } else {
-                // Close any open list
                 if (content.toString().endsWith("</li>")) {
                     content.append("</ul>");
                 }
 
-                // Regular paragraph with highlighting for student IDs and values
                 String formatted = highlightImportantParts(line);
                 content.append("<p>").append(formatted).append("</p>");
             }
