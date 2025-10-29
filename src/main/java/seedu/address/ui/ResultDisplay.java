@@ -118,21 +118,9 @@ public class ResultDisplay extends UiPart<Region> {
             // Add bullet points for list items
             if (line.matches("^[\\d]+\\..*")) {
                 // Numbered list
-                formatted.append("  ").append(line).append("\n");
+                content.append("<p>").append(escapeHtml(line)).append("</p>");
             } else if (line.startsWith("-") || line.startsWith("*")) {
                 // Bullet list
-                formatted.append("  ").append(line).append("\n");
-            } else if (line.contains(":")
-                    && !line.matches(".*\\d+:\\d+.*") // ignore times like 2:00 or 14:30
-                    && !line.trim().startsWith("•")) {
-                // Key-value pairs - make them stand out
-                String[] parts = line.split(":", 2);
-                if (parts.length == 2) {
-                    formatted.append("▸ ").append(parts[0].trim()).append(":\n");
-                    formatted.append("  ").append(parts[1].trim()).append("\n");
-                } else {
-                    formatted.append("  ").append(line).append("\n");
-                }
                 content.append("<li>").append(escapeHtml(line.substring(1).trim())).append("</li>");
             } else {
                 if (content.toString().endsWith("</li>")) {
