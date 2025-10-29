@@ -5,11 +5,14 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONSULTATION;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_GRADE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MODULE_CODE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_REMARK;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENT_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_WEEK;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +25,11 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.attendance.Attendance;
+import seedu.address.model.attendance.AttendanceStatus;
+import seedu.address.model.attendance.Week;
 import seedu.address.model.consultation.Consultation;
+import seedu.address.model.grade.Grade;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -39,7 +46,8 @@ public class EditCommandParser implements Parser<EditCommand> {
         requireNonNull(args);
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS, PREFIX_TAG,
-                    PREFIX_STUDENT_ID, PREFIX_MODULE_CODE, PREFIX_CONSULTATION);
+                    PREFIX_STUDENT_ID, PREFIX_MODULE_CODE, PREFIX_CONSULTATION, PREFIX_GRADE, PREFIX_WEEK,
+                    PREFIX_REMARK);
 
         Index index;
 
@@ -79,6 +87,25 @@ public class EditCommandParser implements Parser<EditCommand> {
                 consultations.add(new Consultation(ParserUtil.parseDateTime(consultationString)));
             }
             editPersonDescriptor.setConsultations(consultations);
+        }
+        if (argMultimap.getValue(PREFIX_GRADE).isPresent()) {
+            String gradeString = argMultimap.getValue(PREFIX_GRADE).get();
+            Grade grade = ParserUtil.parseGrade(gradeString);
+            editPersonDescriptor.setGrade(grade);
+        }
+        if (argMultimap.getValue(PREFIX_WEEK).isPresent()) {
+            String weekString = argMultimap.getValue(PREFIX_WEEK).get();
+            String[] parts = weekString.split(":", 2);
+            if (parts.length != 2) {
+                throw new ParseException("Attendance format should be WEEK_NUMBER:STATUS");
+            }
+            Week week = ParserUtil.parseWeek(parts[0].trim());
+            AttendanceStatus status = ParserUtil.parseAttendanceStatus(parts[1].trim());
+            Attendance attendance = new Attendance(week, status);
+            editPersonDescriptor.setAttendance(attendance);
+        }
+        if (argMultimap.getValue(PREFIX_REMARK).isPresent()) {
+            editPersonDescriptor.setRemark(ParserUtil.parseRemark(argMultimap.getValue(PREFIX_REMARK).get()));
         }
         parseTagsForEdit(argMultimap.getAllValues(PREFIX_TAG)).ifPresent(editPersonDescriptor::setTags);
 
