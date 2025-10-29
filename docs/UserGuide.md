@@ -426,12 +426,15 @@ Format: `filter t/TAG [t/MORE_TAGS]…​`
 
 * At least one tag must be provided
 * Only students who have **all** the specified tags will be shown (i.e. `AND` search)
-* Tags are case-sensitive and must match exactly
+* **Tag matching is case-insensitive** (e.g., `Friends` matches `friends`)
+* **Substring matching is supported** (e.g., `help` matches tags containing "help" like `needHelp`)
 * Tags must be alphanumeric (no spaces)
 
 Examples:
-* `filter t/friends` returns all students tagged with `friends`
+* `filter t/friends` returns all students tagged with `friends`, `Friends`, or `FRIENDS`
 * `filter t/struggling t/needsHelp` returns students who have both `struggling` and `needsHelp` tags
+* `filter t/help` returns students with tags like `needHelp`, `helpfulStudent`, or `help`
+* `filter t/FRIEND` returns students with tags like `friends`, `friendlyStudent`, or `bestFriend`
 
 ### Deleting a student : `delete`
 

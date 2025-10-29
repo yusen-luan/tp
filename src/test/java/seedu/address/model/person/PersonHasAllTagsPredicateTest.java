@@ -63,6 +63,30 @@ public class PersonHasAllTagsPredicateTest {
         tagSet.add(new Tag("friends"));
         predicate = new PersonHasAllTagsPredicate(tagSet);
         assertTrue(predicate.test(new PersonBuilder().withTags("friends", "owesMoney", "colleague").build()));
+
+        // Case-insensitive matching - uppercase query
+        tagSet = new HashSet<>();
+        tagSet.add(new Tag("FRIENDS"));
+        predicate = new PersonHasAllTagsPredicate(tagSet);
+        assertTrue(predicate.test(new PersonBuilder().withTags("friends").build()));
+
+        // Case-insensitive matching - mixed case
+        tagSet = new HashSet<>();
+        tagSet.add(new Tag("FrIeNdS"));
+        predicate = new PersonHasAllTagsPredicate(tagSet);
+        assertTrue(predicate.test(new PersonBuilder().withTags("friends").build()));
+
+        // Substring matching - query is substring of person's tag
+        tagSet = new HashSet<>();
+        tagSet.add(new Tag("help"));
+        predicate = new PersonHasAllTagsPredicate(tagSet);
+        assertTrue(predicate.test(new PersonBuilder().withTags("needHelp").build()));
+
+        // Substring matching with case-insensitive
+        tagSet = new HashSet<>();
+        tagSet.add(new Tag("HELP"));
+        predicate = new PersonHasAllTagsPredicate(tagSet);
+        assertTrue(predicate.test(new PersonBuilder().withTags("needHelp").build()));
     }
 
     @Test
@@ -99,7 +123,12 @@ public class PersonHasAllTagsPredicateTest {
         tags.add(new Tag("owesMoney"));
         PersonHasAllTagsPredicate predicate = new PersonHasAllTagsPredicate(tags);
 
-        String expected = PersonHasAllTagsPredicate.class.getCanonicalName() + "{tags=" + tags + "}";
+        // After refactoring, the predicate stores lowercase keywords instead of Tag objects
+        Set<String> expectedKeywords = new HashSet<>();
+        expectedKeywords.add("friends");
+        expectedKeywords.add("owesmoney");
+        String expected = PersonHasAllTagsPredicate.class.getCanonicalName()
+                + "{tagKeywords=" + expectedKeywords + "}";
         assertEquals(expected, predicate.toString());
     }
 }
