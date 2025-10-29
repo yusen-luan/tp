@@ -722,6 +722,15 @@ Given below is an example usage scenario and how the remark mechanism behaves.
 - If remark is null, it is saved as null in JSON
 - Data is written to disk automatically
 
+The following sequence diagram shows how a remark operation works:
+
+<puml src="diagrams/RemarkSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `remark s/A0123456X r/...` Command" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `RemarkCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+</box>
+
 **UI Display:**
 
 The remark is displayed in the student card in the UI:
