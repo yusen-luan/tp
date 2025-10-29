@@ -100,4 +100,45 @@ public class AttendanceRecordTest {
         assertEquals(AttendanceStatus.ABSENT, record.getAllAttendances().get(new Week(2)));
         assertEquals(AttendanceStatus.PRESENT, record.getAllAttendances().get(new Week(13)));
     }
+
+    @Test
+    public void unmarkAttendance_existingWeek_removesRecord() {
+        AttendanceRecord record = new AttendanceRecord();
+        Week week = new Week(1);
+        record = record.markAttendance(week, AttendanceStatus.PRESENT);
+
+        AttendanceRecord updatedRecord = record.unmarkAttendance(week);
+
+        assertFalse(updatedRecord.hasAttendance(week));
+        assertEquals(0, updatedRecord.getAllAttendances().size());
+    }
+
+    @Test
+    public void unmarkAttendance_nonExistingWeek_noChange() {
+        AttendanceRecord record = new AttendanceRecord();
+        record = record.markAttendance(new Week(1), AttendanceStatus.PRESENT);
+        Week nonExistingWeek = new Week(2);
+
+        AttendanceRecord updatedRecord = record.unmarkAttendance(nonExistingWeek);
+
+        // Should still have week 1 marked, week 2 should remain unmarked
+        assertTrue(updatedRecord.hasAttendance(new Week(1)));
+        assertFalse(updatedRecord.hasAttendance(nonExistingWeek));
+        assertEquals(1, updatedRecord.getAllAttendances().size());
+    }
+
+    @Test
+    public void unmarkAttendance_multipleWeeks_onlyUnmarksSpecified() {
+        AttendanceRecord record = new AttendanceRecord();
+        record = record.markAttendance(new Week(1), AttendanceStatus.PRESENT);
+        record = record.markAttendance(new Week(2), AttendanceStatus.ABSENT);
+        record = record.markAttendance(new Week(3), AttendanceStatus.PRESENT);
+
+        AttendanceRecord updatedRecord = record.unmarkAttendance(new Week(2));
+
+        assertTrue(updatedRecord.hasAttendance(new Week(1)));
+        assertFalse(updatedRecord.hasAttendance(new Week(2)));
+        assertTrue(updatedRecord.hasAttendance(new Week(3)));
+        assertEquals(2, updatedRecord.getAllAttendances().size());
+    }
 }

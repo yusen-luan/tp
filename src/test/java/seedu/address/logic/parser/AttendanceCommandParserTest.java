@@ -65,7 +65,7 @@ public class AttendanceCommandParserTest {
                 + CliSyntax.PREFIX_WEEK + VALID_WEEK + " maybe";
 
         assertParseFailure(parser, userInput,
-                "Invalid attendance status. Use 'present' or 'absent'.");
+                "Invalid attendance status. Use 'present', 'absent', or 'unmark'.");
     }
 
     @Test

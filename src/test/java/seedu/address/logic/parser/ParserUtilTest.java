@@ -295,8 +295,10 @@ public class ParserUtilTest {
     public void parseAttendanceStatus_validValue_returnsAttendanceStatus() throws Exception {
         assertEquals(AttendanceStatus.PRESENT, ParserUtil.parseAttendanceStatus("present"));
         assertEquals(AttendanceStatus.ABSENT, ParserUtil.parseAttendanceStatus("absent"));
+        assertEquals(AttendanceStatus.UNMARK, ParserUtil.parseAttendanceStatus("unmark"));
         assertEquals(AttendanceStatus.PRESENT, ParserUtil.parseAttendanceStatus("Present"));
         assertEquals(AttendanceStatus.ABSENT, ParserUtil.parseAttendanceStatus("ABSENT"));
+        assertEquals(AttendanceStatus.UNMARK, ParserUtil.parseAttendanceStatus("UNMARK"));
     }
 
     @Test

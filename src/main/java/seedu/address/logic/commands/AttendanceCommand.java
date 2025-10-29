@@ -26,12 +26,12 @@ public class AttendanceCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Marks attendance for a student identified by the index number, student ID, or all students.\n"
-            + "Parameters: INDEX " + PREFIX_WEEK + "WEEK present|absent OR "
-            + PREFIX_STUDENT_ID + "STUDENT_ID " + PREFIX_WEEK + "WEEK present|absent OR "
-            + "all " + PREFIX_WEEK + "WEEK present|absent\n"
+            + "Parameters: INDEX " + PREFIX_WEEK + "WEEK present|absent|unmark OR "
+            + PREFIX_STUDENT_ID + "STUDENT_ID " + PREFIX_WEEK + "WEEK present|absent|unmark OR "
+            + "all " + PREFIX_WEEK + "WEEK present|absent|unmark\n"
             + "Example: " + COMMAND_WORD + " 1 " + PREFIX_WEEK + "1 present OR "
-            + COMMAND_WORD + " " + PREFIX_STUDENT_ID + "A0123456X " + PREFIX_WEEK + "1 present OR "
-            + COMMAND_WORD + " all " + PREFIX_WEEK + "1 present";
+            + COMMAND_WORD + " " + PREFIX_STUDENT_ID + "A0123456X " + PREFIX_WEEK + "1 absent OR "
+            + COMMAND_WORD + " all " + PREFIX_WEEK + "1 unmark";
 
     public static final String MESSAGE_MARK_ATTENDANCE_SUCCESS = "Marked attendance for %1$s: Week %2$s - %3$s";
     public static final String MESSAGE_MARK_ALL_SUCCESS = "Marked attendance for all students: "
@@ -115,9 +115,13 @@ public class AttendanceCommand extends Command {
      * Marks attendance for the given student and returns the command result.
      */
     private CommandResult markAttendanceForStudent(Model model, Person student) {
-        // Mark attendance for the student
-        AttendanceRecord updatedAttendanceRecord = student.getAttendanceRecord()
-                .markAttendance(week, status);
+        // Handle unmark operation differently
+        AttendanceRecord updatedAttendanceRecord;
+        if (status == AttendanceStatus.UNMARK) {
+            updatedAttendanceRecord = student.getAttendanceRecord().unmarkAttendance(week);
+        } else {
+            updatedAttendanceRecord = student.getAttendanceRecord().markAttendance(week, status);
+        }
 
         // Create updated person with new attendance record
         Person updatedStudent = new Person(
@@ -135,8 +139,11 @@ public class AttendanceCommand extends Command {
         // Update the student in the model
         model.setPerson(student, updatedStudent);
 
-        return new CommandResult(String.format(MESSAGE_MARK_ATTENDANCE_SUCCESS,
-                updatedStudent.getName(), week.value, status));
+        String message = status == AttendanceStatus.UNMARK
+                ? String.format("Unmarked attendance for %s: Week %s", updatedStudent.getName(), week.value)
+                : String.format(MESSAGE_MARK_ATTENDANCE_SUCCESS, updatedStudent.getName(), week.value, status);
+
+        return new CommandResult(message);
     }
 
     /**
@@ -147,9 +154,13 @@ public class AttendanceCommand extends Command {
         int markedCount = 0;
 
         for (Person student : allStudents) {
-            // Mark attendance for each student
-            AttendanceRecord updatedAttendanceRecord = student.getAttendanceRecord()
-                    .markAttendance(week, status);
+            // Handle unmark operation differently
+            AttendanceRecord updatedAttendanceRecord;
+            if (status == AttendanceStatus.UNMARK) {
+                updatedAttendanceRecord = student.getAttendanceRecord().unmarkAttendance(week);
+            } else {
+                updatedAttendanceRecord = student.getAttendanceRecord().markAttendance(week, status);
+            }
 
             // Create updated person with new attendance record
             Person updatedStudent = new Person(
@@ -169,8 +180,11 @@ public class AttendanceCommand extends Command {
             markedCount++;
         }
 
-        return new CommandResult(String.format(MESSAGE_MARK_ALL_SUCCESS,
-                week.value, status, markedCount));
+        String message = status == AttendanceStatus.UNMARK
+                ? String.format("Unmarked attendance for all students: Week %s (%d students)", week.value, markedCount)
+                : String.format(MESSAGE_MARK_ALL_SUCCESS, week.value, status, markedCount);
+
+        return new CommandResult(message);
     }
 
     @Override

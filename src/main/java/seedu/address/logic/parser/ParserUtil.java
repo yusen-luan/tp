@@ -252,7 +252,7 @@ public class ParserUtil {
         try {
             return AttendanceStatus.fromString(trimmedStatus);
         } catch (IllegalArgumentException e) {
-            throw new ParseException("Invalid attendance status. Use 'present' or 'absent'.");
+            throw new ParseException("Invalid attendance status. Use 'present', 'absent', or 'unmark'.");
         }
     }
 
