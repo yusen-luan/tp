@@ -59,6 +59,8 @@ public class AddCommandParser implements Parser<AddCommand> {
             for (String consultationString : argMultimap.getAllValues(PREFIX_CONSULTATION)) {
                 consultationList.add(new Consultation(ParserUtil.parseDateTime(consultationString)));
             }
+            // Remove duplicate consultations
+            consultationList = consultationList.stream().distinct().collect(java.util.stream.Collectors.toList());
         }
 
         Person person;

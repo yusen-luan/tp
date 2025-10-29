@@ -86,30 +86,32 @@ public class GradeCommandTest {
     }
 
     @Test
-    public void execute_duplicateGrade_throwsCommandException() {
+    public void execute_duplicateGrade_updatesGrade() throws Exception {
         Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
 
         // First, add a grade
         Set<Grade> initialGrades = new HashSet<>();
         initialGrades.add(new Grade("Midterm", "85"));
         GradeCommand firstGradeCommand = new GradeCommand(INDEX_FIRST_PERSON, initialGrades);
+        firstGradeCommand.execute(model);
 
-        try {
-            firstGradeCommand.execute(model);
-        } catch (Exception e) {
-            // Should not throw
-        }
+        // Verify the grade was added
+        Person updatedPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        assertTrue(updatedPerson.getGrades().stream()
+                .anyMatch(g -> g.assignmentName.equals("Midterm") && g.score.equals("85")));
 
-        // Try to add another grade with the same assignment name
+        // Try to add another grade with the same assignment name (should update)
         Set<Grade> duplicateGrades = new HashSet<>();
         duplicateGrades.add(new Grade("Midterm", "90"));
         GradeCommand secondGradeCommand = new GradeCommand(INDEX_FIRST_PERSON, duplicateGrades);
+        secondGradeCommand.execute(model);
 
-        // Get the updated person after first grade addition
-        Person updatedPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        String expectedMessage = String.format(GradeCommand.MESSAGE_DUPLICATE_GRADE,
-                Messages.formatStudentId(updatedPerson), "Midterm");
-        assertCommandFailure(secondGradeCommand, model, expectedMessage);
+        // Verify the grade was updated to 90, not 85
+        Person finalPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        assertTrue(finalPerson.getGrades().stream()
+                .anyMatch(g -> g.assignmentName.equals("Midterm") && g.score.equals("90")));
+        assertFalse(finalPerson.getGrades().stream()
+                .anyMatch(g -> g.assignmentName.equals("Midterm") && g.score.equals("85")));
     }
 
     @Test
