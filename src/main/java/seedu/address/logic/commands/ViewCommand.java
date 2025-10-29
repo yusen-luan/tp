@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
@@ -15,6 +16,7 @@ import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.attendance.AttendanceStatus;
 import seedu.address.model.attendance.Week;
+import seedu.address.model.consultation.Consultation;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 
@@ -160,6 +162,26 @@ public class ViewCommand extends Command {
                         sb.append("Week ").append(week.value).append(": ")
                                 .append(symbol).append(" ").append(statusText)
                                 .append("\n");
+                    });
+        }
+
+        // Consultations
+        sb.append("\n=== CONSULTATION RECORDS ===\n");
+        List<Consultation> consultations = person.getConsultations();
+
+        if (consultations == null || consultations.isEmpty()) {
+            sb.append("No consultations recorded yet.\n");
+        } else {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy h:mma");
+
+            consultations.stream()
+                    .sorted(Comparator.comparing(Consultation::getDateTime))
+                    .forEach(c -> {
+                        LocalDateTime dt = c.getDateTime();
+                        String formattedDateTime = dt.format(formatter)
+                                .replaceAll("\\s+", " ") // normalize spacing
+                                .trim();
+                        sb.append("• ").append(formattedDateTime).append("\n");
                     });
         }
 
