@@ -226,6 +226,21 @@ public class ParserUtilTest {
     }
 
     @Test
+    public void parseStudentId_lowercaseValue_returnsUppercaseStudentId() throws Exception {
+        // Lowercase input should be normalized to uppercase
+        StudentId expectedStudentId = new StudentId("A0123456X");
+        assertEquals(expectedStudentId, ParserUtil.parseStudentId("a0123456x"));
+    }
+
+    @Test
+    public void parseStudentId_mixedCaseValue_returnsUppercaseStudentId() throws Exception {
+        // Mixed case input should be normalized to uppercase
+        StudentId expectedStudentId = new StudentId("A0123456X");
+        assertEquals(expectedStudentId, ParserUtil.parseStudentId("a0123456X"));
+        assertEquals(expectedStudentId, ParserUtil.parseStudentId("A0123456x"));
+    }
+
+    @Test
     public void parseModuleCode_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> ParserUtil.parseModuleCode((String) null));
     }
