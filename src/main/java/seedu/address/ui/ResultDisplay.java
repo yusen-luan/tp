@@ -155,9 +155,6 @@ public class ResultDisplay extends UiPart<Region> {
         // Highlight module codes (CS2103T format)
         text = text.replaceAll("([A-Z]{2,3}\\d{4}[A-Z]?)", "<span class='module-code'>$1</span>");
 
-        // Highlight numbers (grades, counts)
-        text = text.replaceAll("\\b(\\d+)\\b", "<span class='number'>$1</span>");
-
         // Highlight tags in brackets
         text = text.replaceAll("\\[([^\\]]+)\\]", "<span class='tag'>[$1]</span>");
 
