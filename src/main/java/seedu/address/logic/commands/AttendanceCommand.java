@@ -28,10 +28,10 @@ public class AttendanceCommand extends Command {
             + ": Marks attendance for a student identified by the index number, student ID, or all students.\n"
             + "Parameters: INDEX " + PREFIX_WEEK + "WEEK present|absent OR "
             + PREFIX_STUDENT_ID + "STUDENT_ID " + PREFIX_WEEK + "WEEK present|absent OR "
-            + PREFIX_STUDENT_ID + "all " + PREFIX_WEEK + "WEEK present|absent\n"
+            + "all " + PREFIX_WEEK + "WEEK present|absent\n"
             + "Example: " + COMMAND_WORD + " 1 " + PREFIX_WEEK + "1 present OR "
             + COMMAND_WORD + " " + PREFIX_STUDENT_ID + "A0123456X " + PREFIX_WEEK + "1 present OR "
-            + COMMAND_WORD + " " + PREFIX_STUDENT_ID + "all " + PREFIX_WEEK + "1 present";
+            + COMMAND_WORD + " all " + PREFIX_WEEK + "1 present";
 
     public static final String MESSAGE_MARK_ATTENDANCE_SUCCESS = "Marked attendance for %1$s: Week %2$s - %3$s";
     public static final String MESSAGE_MARK_ALL_SUCCESS = "Marked attendance for all students: "

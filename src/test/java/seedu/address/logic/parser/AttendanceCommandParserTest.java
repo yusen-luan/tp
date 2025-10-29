@@ -110,14 +110,26 @@ public class AttendanceCommandParserTest {
 
     @Test
     public void parse_markAllFormat_success() {
-        String userInput = " " + CliSyntax.PREFIX_STUDENT_ID + "all "
-                + CliSyntax.PREFIX_WEEK + VALID_WEEK + " " + VALID_STATUS_PRESENT;
+        String userInput = " all " + CliSyntax.PREFIX_WEEK + VALID_WEEK + " " + VALID_STATUS_PRESENT;
 
         StudentId nullStudentId = null;
         AttendanceCommand expectedCommand = new AttendanceCommand(
                 nullStudentId,
                 new Week(Integer.parseInt(VALID_WEEK)),
                 AttendanceStatus.PRESENT);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_markAllFormatAbsent_success() {
+        String userInput = " all " + CliSyntax.PREFIX_WEEK + VALID_WEEK + " " + VALID_STATUS_ABSENT;
+
+        StudentId nullStudentId = null;
+        AttendanceCommand expectedCommand = new AttendanceCommand(
+                nullStudentId,
+                new Week(Integer.parseInt(VALID_WEEK)),
+                AttendanceStatus.ABSENT);
 
         assertParseSuccess(parser, userInput, expectedCommand);
     }

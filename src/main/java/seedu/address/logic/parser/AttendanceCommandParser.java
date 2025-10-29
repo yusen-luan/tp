@@ -24,16 +24,21 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
     public AttendanceCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_STUDENT_ID, PREFIX_WEEK);
 
+        // Check the preamble to determine the format
+        String preamble = argMultimap.getPreamble().trim().toLowerCase();
+
         // Check if student ID prefix is present
         if (argMultimap.getValue(PREFIX_STUDENT_ID).isPresent()) {
             return parseByStudentId(argMultimap);
+        } else if ("all".equals(preamble)) {
+            return parseMarkAll(argMultimap);
         } else {
             return parseByIndex(args, argMultimap);
         }
     }
 
     /**
-     * Parses the command by student ID (or "all").
+     * Parses the command by student ID.
      */
     private AttendanceCommand parseByStudentId(ArgumentMultimap argMultimap) throws ParseException {
         if (!argMultimap.getValue(PREFIX_WEEK).isPresent()) {
@@ -57,14 +62,36 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         Week week = ParserUtil.parseWeek(weekString);
         AttendanceStatus status = ParserUtil.parseAttendanceStatus(statusString);
 
-        // Check if this is a "mark all" command
-        if ("all".equalsIgnoreCase(studentIdString)) {
-            StudentId nullStudentId = null;
-            return new AttendanceCommand(nullStudentId, week, status); // null studentId indicates mark all
-        } else {
-            StudentId studentId = ParserUtil.parseStudentId(studentIdString);
-            return new AttendanceCommand(studentId, week, status);
+        StudentId studentId = ParserUtil.parseStudentId(studentIdString);
+        return new AttendanceCommand(studentId, week, status);
+    }
+
+    /**
+     * Parses the command to mark all students.
+     */
+    private AttendanceCommand parseMarkAll(ArgumentMultimap argMultimap) throws ParseException {
+        if (!argMultimap.getValue(PREFIX_WEEK).isPresent()) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE));
         }
+
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_WEEK);
+
+        String weekAndStatus = argMultimap.getValue(PREFIX_WEEK).get();
+
+        // Extract week and status from the week parameter (format: "w/1 present")
+        String[] parts = weekAndStatus.trim().split("\\s+", 2);
+        if (parts.length < 2) {
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AttendanceCommand.MESSAGE_USAGE));
+        }
+
+        String weekString = parts[0];
+        String statusString = parts[1];
+
+        Week week = ParserUtil.parseWeek(weekString);
+        AttendanceStatus status = ParserUtil.parseAttendanceStatus(statusString);
+
+        StudentId nullStudentId = null;
+        return new AttendanceCommand(nullStudentId, week, status); // null studentId indicates mark all
     }
 
     /**
