@@ -122,9 +122,11 @@ public class TagCommand extends Command {
         // Check if this is a student (has studentId but no phone/address)
         if (personToTag.getStudentId() != null && personToTag.getPhone() == null
                 && personToTag.getAddress() == null) {
-            // Use student constructor
+            // Use student constructor with all fields preserved
             return new Person(personToTag.getName(), personToTag.getStudentId(),
-                    personToTag.getEmail(), personToTag.getModuleCodes(), updatedTags, personToTag.getGrades());
+                    personToTag.getEmail(), personToTag.getModuleCodes(), updatedTags,
+                    personToTag.getAttendanceRecord(), personToTag.getGrades(),
+                    personToTag.getConsultations(), personToTag.getRemark());
         } else {
             // Use regular person constructor
             return new Person(personToTag.getName(), personToTag.getPhone(), personToTag.getEmail(),
