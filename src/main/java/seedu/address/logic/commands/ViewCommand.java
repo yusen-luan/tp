@@ -2,9 +2,11 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
@@ -113,6 +115,29 @@ public class ViewCommand extends Command {
                     .reduce((a, b) -> a + ", " + b)
                     .orElse("N/A");
             sb.append("Tags: ").append(tagsText).append("\n");
+        }
+
+        // Grades
+        if (!person.getGrades().isEmpty()) {
+            String gradesText = person.getGrades().stream()
+                    .sorted(Comparator.comparing(grade -> grade.assignmentName))
+                    .map(grade -> grade.toString())
+                    .reduce((a, b) -> a + ", " + b)
+                    .orElse("N/A");
+            sb.append("Grades: ").append(gradesText).append("\n");
+        }
+
+        // Consultations
+        if (person.getConsultations() != null && !person.getConsultations().isEmpty()) {
+            String consultationsText = person.getConsultations().stream()
+                    .map(c -> c.getDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm")))
+                    .collect(Collectors.joining(", "));
+            sb.append("Consultations: ").append(consultationsText).append("\n");
+        }
+
+        // Remark
+        if (person.getRemark() != null && !person.getRemark().value.isEmpty()) {
+            sb.append("Remark: ").append(person.getRemark().value).append("\n");
         }
 
         // Attendance record
