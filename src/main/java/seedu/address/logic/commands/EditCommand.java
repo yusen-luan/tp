@@ -37,14 +37,14 @@ import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.Tag;
 
 /**
- * Edits the details of an existing person in the address book.
+ * Edits the details of an existing student in TeachMate.
  */
 public class EditCommand extends Command {
 
     public static final String COMMAND_WORD = "edit";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the person identified "
-            + "by the index number used in the displayed person list. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the student identified "
+            + "by the index number used in the displayed student list. "
             + "Existing values will be overwritten by the input values.\n"
             + "Parameters: INDEX (must be a positive integer) "
             + "[" + PREFIX_NAME + "NAME] "
@@ -59,11 +59,11 @@ public class EditCommand extends Command {
             + PREFIX_PHONE + "91234567 "
             + PREFIX_EMAIL + "johndoe@example.com";
 
-    public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
+    public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Updated student: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
-    public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
+    public static final String MESSAGE_DUPLICATE_PERSON = "This student already exists in TeachMate.";
     public static final String MESSAGE_DUPLICATE_STUDENT_ID =
-            "A person with this student ID already exists in the address book.";
+            "Cannot update: Student ID %1$s is already assigned to another student.";
 
     private final Index index;
     private final EditPersonDescriptor editPersonDescriptor;
@@ -96,14 +96,16 @@ public class EditCommand extends Command {
         if (editedPerson.getStudentId() != null && personToEdit.getStudentId() != null) {
             if (!editedPerson.getStudentId().equals(personToEdit.getStudentId())) {
                 if (model.getPersonByStudentId(editedPerson.getStudentId()).isPresent()) {
-                    throw new CommandException(MESSAGE_DUPLICATE_STUDENT_ID);
+                    throw new CommandException(String.format(MESSAGE_DUPLICATE_STUDENT_ID,
+                            editedPerson.getStudentId()));
                 }
             }
         }
 
         model.setPerson(personToEdit, editedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-        return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
+        return new CommandResult(Messages.successMessage(String.format(MESSAGE_EDIT_PERSON_SUCCESS,
+                Messages.formatStudentId(editedPerson))));
     }
 
     /**

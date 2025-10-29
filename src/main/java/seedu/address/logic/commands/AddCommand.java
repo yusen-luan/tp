@@ -40,8 +40,9 @@ public class AddCommand extends Command {
             + PREFIX_CONSULTATION + "22 Oct 2025 14:00\n"
             + "Tag and Consultation are optional attributes.";
 
-    public static final String MESSAGE_SUCCESS = "New student added: %1$s";
-    public static final String MESSAGE_DUPLICATE_STUDENT_ID = "A student with this ID already exists in the system";
+    public static final String MESSAGE_SUCCESS = "Added student: %1$s";
+    public static final String MESSAGE_DUPLICATE_STUDENT_ID =
+            "Cannot add student: A student with ID %1$s already exists in TeachMate.";
 
     private final Person toAdd;
 
@@ -61,12 +62,13 @@ public class AddCommand extends Command {
         if (toAdd.getStudentId() != null) {
             var existingPerson = model.getPersonByStudentId(toAdd.getStudentId());
             if (existingPerson.isPresent()) {
-                throw new CommandException(MESSAGE_DUPLICATE_STUDENT_ID);
+                throw new CommandException(String.format(MESSAGE_DUPLICATE_STUDENT_ID, toAdd.getStudentId()));
             }
         }
 
         model.addPerson(toAdd);
-        return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
+        return new CommandResult(Messages.successMessage(String.format(MESSAGE_SUCCESS,
+                Messages.formatStudentId(toAdd))));
     }
 
     @Override

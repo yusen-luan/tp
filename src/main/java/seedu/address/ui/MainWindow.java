@@ -222,6 +222,9 @@ public class MainWindow extends UiPart<Stage> {
         stylesheets.add(themeFile);
         stylesheets.add(extensionsFile);
 
+        // Update ResultDisplay theme
+        resultDisplay.setTheme(isDarkTheme);
+
         logger.info("Switched to " + (isDarkTheme ? "dark" : "light") + " theme");
     }
 }

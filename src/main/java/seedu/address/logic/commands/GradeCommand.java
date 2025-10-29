@@ -17,14 +17,14 @@ import seedu.address.model.grade.Grade;
 import seedu.address.model.person.Person;
 
 /**
- * Adds grades to an existing student in the address book.
+ * Adds grades to an existing student in TeachMate.
  */
 public class GradeCommand extends Command {
 
     public static final String COMMAND_WORD = "grade";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds grades to the student identified "
-            + "by the index number used in the displayed person list. "
+            + "by the index number used in the displayed student list. "
             + "Grades will be added to the student's existing grades.\n"
             + "Parameters: INDEX (must be a positive integer) "
             + PREFIX_GRADE + "ASSIGNMENT_NAME:SCORE...\n"
@@ -32,10 +32,11 @@ public class GradeCommand extends Command {
             + PREFIX_GRADE + "Midterm:85 "
             + PREFIX_GRADE + "Assignment1:92";
 
-    public static final String MESSAGE_ADD_GRADE_SUCCESS = "Added grades to Student: %1$s";
+    public static final String MESSAGE_ADD_GRADE_SUCCESS = "Added %s to %s:\n%s";
     public static final String MESSAGE_NOT_STUDENT = "The person at the specified index is not a student. "
             + "Grades can only be added to students.";
-    public static final String MESSAGE_DUPLICATE_GRADE = "This student already has a grade for assignment: %1$s";
+    public static final String MESSAGE_DUPLICATE_GRADE =
+            "Cannot add grade: %s already has a grade for '%s'.";
 
     private final Index index;
     private final Set<Grade> gradesToAdd;
@@ -76,7 +77,8 @@ public class GradeCommand extends Command {
 
         for (Grade newGrade : gradesToAdd) {
             if (existingAssignments.contains(newGrade.assignmentName)) {
-                throw new CommandException(String.format(MESSAGE_DUPLICATE_GRADE, newGrade.assignmentName));
+                throw new CommandException(String.format(MESSAGE_DUPLICATE_GRADE,
+                        Messages.formatStudentId(personToEdit), newGrade.assignmentName));
             }
         }
 
@@ -84,7 +86,11 @@ public class GradeCommand extends Command {
 
         model.setPerson(personToEdit, gradedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-        return new CommandResult(String.format(MESSAGE_ADD_GRADE_SUCCESS, Messages.format(gradedPerson)));
+
+        String gradeCount = Messages.formatCount(gradesToAdd.size(), "grade");
+        String gradesFormatted = Messages.formatGrades(gradesToAdd);
+        return new CommandResult(Messages.successMessage(String.format(MESSAGE_ADD_GRADE_SUCCESS,
+                gradeCount, Messages.formatStudentId(gradedPerson), gradesFormatted)));
     }
 
     /**
