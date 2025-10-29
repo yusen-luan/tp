@@ -401,7 +401,7 @@ Format: `remark s/STUDENT_ID r/REMARK`
 * `REMARK` can contain any text including spaces and special characters
 * `REMARK` supports multi-line text for longer notes
 * The remark must not be blank (must contain at least one non-whitespace character)
-* If a remark already exists for the student, it will be replaced with the new remark
+* Existing remarks will be overwritten by the new remark (not cumulative)
 * The student must exist in TeachMate
 
 **Success message:** `Added remark to Student: [student details]`
