@@ -359,7 +359,8 @@ The `Week` class:
 - Implements proper equality for use as map keys
 
 The `AttendanceStatus` enum:
-- Two states: `PRESENT` and `ABSENT`
+- Three states: `PRESENT`, `ABSENT`, and `UNMARK`
+- `UNMARK` is a special status that removes an existing attendance record
 - Case-insensitive parsing from user input
 
 The `AttendanceCommand`:
@@ -367,7 +368,14 @@ The `AttendanceCommand`:
 - Supports bulk marking attendance for all students using `all` keyword
 - Takes week number and attendance status as parameters
 - Status must be specified after the week parameter
-- Creates updated `Person` objects with new attendance records
+- Supports unmarking attendance (removing records) with `unmark` status
+- Creates updated `Person` objects with modified attendance records
+
+The `AttendanceRecord` class:
+- Stores attendance using a `Map<Week, AttendanceStatus>` structure
+- Unmarked weeks are absent from the map (no entry = unmarked state)
+- `markAttendance()` adds or updates an entry in the map
+- `unmarkAttendance()` removes an entry from the map
 
 The `PersonCard` UI component:
 - Displays attendance visually in the student list using a grid of 13 rectangles (16x16 pixels each with rounded edges)
@@ -390,7 +398,7 @@ Given below is an example usage scenario and how the attendance marking mechanis
 - For `all` format: Detects `all` keyword in preamble
 - For student ID format: Extracts student ID (`A0123456X`) from `s/` prefix
 - Extracts week number (`1`) from `w/` prefix and validates it's between 1-13
-- Parses attendance status (`present`) from after the week parameter into `AttendanceStatus.PRESENT`
+- Parses attendance status (`present`, `absent`, or `unmark`) from after the week parameter into corresponding `AttendanceStatus`
 - Creates an `AttendanceCommand` with these parameters
 
 **Step 4.** When `AttendanceCommand#execute()` is called:
@@ -407,10 +415,11 @@ Given below is an example usage scenario and how the attendance marking mechanis
   - Counts number of students updated
 - For each student being marked:
   - Gets current `AttendanceRecord` from the student
-  - Calls `AttendanceRecord#markAttendance(week, status)` to get updated record
+  - If status is `UNMARK`: Calls `AttendanceRecord#unmarkAttendance(week)` to remove the record
+  - Otherwise: Calls `AttendanceRecord#markAttendance(week, status)` to add/update the record
   - Creates new `Person` object with updated attendance record
   - Calls `Model#setPerson()` to replace old person with updated person
-- Returns `CommandResult` with success message
+- Returns `CommandResult` with appropriate success message
 
 **Step 5.** The model persists the changes:
 - Updated person list triggers storage save
