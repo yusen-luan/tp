@@ -33,8 +33,8 @@ public class DeleteCommandTest {
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON);
 
-        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
-                Messages.format(personToDelete));
+        String expectedMessage = Messages.successMessage(String.format(
+                DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS, Messages.formatStudentId(personToDelete)));
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.deletePerson(personToDelete);
@@ -57,8 +57,8 @@ public class DeleteCommandTest {
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         DeleteCommand deleteCommand = new DeleteCommand(INDEX_FIRST_PERSON);
 
-        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
-                Messages.format(personToDelete));
+        String expectedMessage = Messages.successMessage(String.format(
+                DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS, Messages.formatStudentId(personToDelete)));
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.deletePerson(personToDelete);
@@ -157,8 +157,8 @@ public class DeleteCommandTest {
         StudentId targetStudentId = personToDelete.getStudentId();
         DeleteCommand deleteCommand = new DeleteCommand(targetStudentId);
 
-        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
-                Messages.format(personToDelete));
+        String expectedMessage = Messages.successMessage(String.format(
+                DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS, Messages.formatStudentId(personToDelete)));
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.deletePerson(personToDelete);
@@ -171,7 +171,8 @@ public class DeleteCommandTest {
         StudentId invalidStudentId = new StudentId("A9999999Z");
         DeleteCommand deleteCommand = new DeleteCommand(invalidStudentId);
 
-        assertCommandFailure(deleteCommand, model, DeleteCommand.MESSAGE_PERSON_NOT_FOUND);
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_PERSON_NOT_FOUND, invalidStudentId);
+        assertCommandFailure(deleteCommand, model, expectedMessage);
     }
 
     @Test
@@ -182,8 +183,8 @@ public class DeleteCommandTest {
         StudentId targetStudentId = personToDelete.getStudentId();
         DeleteCommand deleteCommand = new DeleteCommand(targetStudentId);
 
-        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
-                Messages.format(personToDelete));
+        String expectedMessage = Messages.successMessage(String.format(
+                DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS, Messages.formatStudentId(personToDelete)));
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.deletePerson(personToDelete);

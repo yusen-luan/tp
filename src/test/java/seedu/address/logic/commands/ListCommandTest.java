@@ -65,13 +65,17 @@ public class ListCommandTest {
 
     @Test
     public void execute_listIsNotFiltered_showsSameList() {
-        assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
+        int count = model.getFilteredPersonList().size();
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, count);
+        assertCommandSuccess(new ListCommand(), model, expectedMessage, expectedModel);
     }
 
     @Test
     public void execute_listIsFiltered_showsEverything() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
-        assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
+        int count = expectedModel.getFilteredPersonList().size();
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS, count);
+        assertCommandSuccess(new ListCommand(), model, expectedMessage, expectedModel);
     }
 
 
@@ -94,7 +98,8 @@ public class ListCommandTest {
                 .anyMatch(mc -> mc.equals(validModuleCode));
 
         expectedModel.updateFilteredPersonList(modulePredicate);
-        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS_MODULE, validModuleCode);
+        int count = expectedModel.getFilteredPersonList().size();
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS_MODULE, validModuleCode, count);
 
         assertCommandSuccess(listCommand, model, expectedMessage, expectedModel);
     }

@@ -41,8 +41,10 @@ public class GradeCommandTest {
 
         Person gradedPerson = new PersonBuilder(firstPerson).withGrades("Midterm:85").build();
 
-        String expectedMessage = String.format(GradeCommand.MESSAGE_ADD_GRADE_SUCCESS,
-                Messages.format(gradedPerson));
+        String gradeCount = Messages.formatCount(gradesToAdd.size(), "grade");
+        String gradesFormatted = Messages.formatGrades(gradesToAdd);
+        String expectedMessage = Messages.successMessage(String.format(GradeCommand.MESSAGE_ADD_GRADE_SUCCESS,
+                gradeCount, Messages.formatStudentId(gradedPerson), gradesFormatted));
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(firstPerson, gradedPerson);
@@ -61,8 +63,10 @@ public class GradeCommandTest {
 
         Person gradedPerson = new PersonBuilder(firstPerson).withGrades("Midterm:85", "Quiz1:90").build();
 
-        String expectedMessage = String.format(GradeCommand.MESSAGE_ADD_GRADE_SUCCESS,
-                Messages.format(gradedPerson));
+        String gradeCount = Messages.formatCount(gradesToAdd.size(), "grade");
+        String gradesFormatted = Messages.formatGrades(gradesToAdd);
+        String expectedMessage = Messages.successMessage(String.format(GradeCommand.MESSAGE_ADD_GRADE_SUCCESS,
+                gradeCount, Messages.formatStudentId(gradedPerson), gradesFormatted));
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(firstPerson, gradedPerson);
@@ -101,8 +105,11 @@ public class GradeCommandTest {
         duplicateGrades.add(new Grade("Midterm", "90"));
         GradeCommand secondGradeCommand = new GradeCommand(INDEX_FIRST_PERSON, duplicateGrades);
 
-        assertCommandFailure(secondGradeCommand, model,
-                String.format(GradeCommand.MESSAGE_DUPLICATE_GRADE, "Midterm"));
+        // Get the updated person after first grade addition
+        Person updatedPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        String expectedMessage = String.format(GradeCommand.MESSAGE_DUPLICATE_GRADE,
+                Messages.formatStudentId(updatedPerson), "Midterm");
+        assertCommandFailure(secondGradeCommand, model, expectedMessage);
     }
 
     @Test

@@ -11,21 +11,22 @@ import seedu.address.model.module.ModuleCode;
 import seedu.address.model.person.Person;
 
 /**
- * Lists all persons in the address book to the user.
+ * Lists all students in TeachMate to the user.
  */
 public class ListCommand extends Command {
 
     public static final String COMMAND_WORD = "list";
 
-    public static final String MESSAGE_SUCCESS = "Listed all students";
+    public static final String MESSAGE_SUCCESS = "Showing all students (%d total)";
 
-    public static final String MESSAGE_SUCCESS_MODULE = "Listed all students in module: %s";
+    public static final String MESSAGE_SUCCESS_MODULE = "Showing students in %s (%d found)";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Lists all students or filtered by module.\n"
             + "Format: " + COMMAND_WORD + " [m/MODULE_CODE]\n";
 
-    public static final String MESSAGE_NO_STUDENTS_FOUND = "No students found in this module: %s";
+    public static final String MESSAGE_NO_STUDENTS_FOUND =
+            "No students enrolled in %s. Use 'list' to see all students.";
 
     private final Optional<ModuleCode> moduleCode;
 
@@ -44,7 +45,8 @@ public class ListCommand extends Command {
 
         if (moduleCode.isEmpty()) {
             model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-            return new CommandResult(MESSAGE_SUCCESS);
+            int count = model.getFilteredPersonList().size();
+            return new CommandResult(String.format(MESSAGE_SUCCESS, count));
         }
 
         ModuleCode target = moduleCode.get();
@@ -54,10 +56,11 @@ public class ListCommand extends Command {
 
         model.updateFilteredPersonList(modulePredicate);
 
-        if (model.getFilteredPersonList().isEmpty()) {
+        int count = model.getFilteredPersonList().size();
+        if (count == 0) {
             return new CommandResult(String.format(MESSAGE_NO_STUDENTS_FOUND, target));
         } else {
-            return new CommandResult(String.format(MESSAGE_SUCCESS_MODULE, target));
+            return new CommandResult(String.format(MESSAGE_SUCCESS_MODULE, target, count));
         }
 
     }
