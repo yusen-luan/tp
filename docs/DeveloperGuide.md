@@ -417,7 +417,7 @@ Given below is an example usage scenario and how the attendance marking mechanis
 - Attendance data is serialized to JSON format
 - Data is written to disk automatically
 
-The following sequence diagram shows how an attendance marking operation works:
+The following sequence diagram shows how an attendance marking operation works for the index-based format. The flow for student ID-based (`attendance s/A0123456X w/1 present`) and mark all (`attendance all w/1 present`) formats follows a similar execution path, with the main difference being how the student(s) are identified.
 
 <puml src="diagrams/AttendanceSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `attendance 1 w/1 present` Command" />
 
