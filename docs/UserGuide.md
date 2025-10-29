@@ -253,7 +253,7 @@ Examples:
 
 Edits an existing student in TeachMate. You can edit students whether they have phone/address (legacy data) or only have student-specific fields.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]…​ [t/TAG]…​ [c/CONSULTATIONS]`
+Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]​ [t/TAG] [c/CONSULTATIONS] [g/ASSIGNMENT_NAME:SCORE] [w/WEEK_NUMBER:STATUS] [r/REMARK]`
 
 * Edits the student at the specified `INDEX`
 * The index refers to the index number shown in the displayed student list
@@ -265,6 +265,9 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/M
 * You can remove all tags by typing `t/` without specifying any tags
 * You can remove all module codes by typing `m/` without specifying any module codes
 * Editing consultations should still follow the same format as in the `add` command
+* **Editing grades:** Use `g/ASSIGNMENT_NAME:SCORE` to update an existing grade. The assignment must already exist for the student, otherwise an error will be shown.
+* **Editing attendance:** Use `w/WEEK_NUMBER:STATUS` to update attendance for a specific week (1-13). Status can be `present`, `absent`, or `unmark` (to remove the attendance record).
+* **Editing remarks:** Use `r/REMARK` to update the remark for a student.
 
 <box type="warning" seamless>
 
@@ -276,6 +279,11 @@ Examples:
 *  `edit 1 s/A9999999Z e/newemail@u.nus.edu` - Edits the student ID and email of the 1st student
 *  `edit 2 n/Jane Doe t/` - Edits the name of the 2nd student and clears all tags
 *  `edit 3 m/CS2103T m/CS2101` - Replaces all module codes with CS2103T and CS2101
+*  `edit 1 g/Midterm:90` - Updates the Midterm grade to 90 for the 1st student (assignment must already exist)
+*  `edit 2 w/5:present` - Marks the 2nd student as present for week 5
+*  `edit 3 w/3:absent` - Marks the 3rd student as absent for week 3
+*  `edit 4 w/7:unmark` - Removes the attendance record for week 7 for the 4th student
+*  `edit 1 r/Needs extra help with recursion` - Updates the remark for the 1st student
 
 ### Adding tags to a student : `tag`
 
@@ -418,12 +426,15 @@ Format: `filter t/TAG [t/MORE_TAGS]…​`
 
 * At least one tag must be provided
 * Only students who have **all** the specified tags will be shown (i.e. `AND` search)
-* Tags are case-sensitive and must match exactly
+* **Tag matching is case-insensitive** (e.g., `Friends` matches `friends`)
+* **Substring matching is supported** (e.g., `help` matches tags containing "help" like `needHelp`)
 * Tags must be alphanumeric (no spaces)
 
 Examples:
-* `filter t/friends` returns all students tagged with `friends`
+* `filter t/friends` returns all students tagged with `friends`, `Friends`, or `FRIENDS`
 * `filter t/struggling t/needsHelp` returns students who have both `struggling` and `needsHelp` tags
+* `filter t/help` returns students with tags like `needHelp`, `helpfulStudent`, or `help`
+* `filter t/FRIEND` returns students with tags like `friends`, `friendlyStudent`, or `bestFriend`
 
 ### Deleting a student : `delete`
 

@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import seedu.address.model.attendance.AttendanceRecord;
+import seedu.address.model.attendance.AttendanceStatus;
+import seedu.address.model.attendance.Week;
 import seedu.address.model.grade.Grade;
 import seedu.address.model.module.ModuleCode;
 import seedu.address.model.person.Address;
@@ -37,6 +39,7 @@ public class PersonBuilder {
     private Set<ModuleCode> moduleCodes;
     private Set<Grade> grades;
     private Remark remark;
+    private AttendanceRecord attendanceRecord;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -51,6 +54,7 @@ public class PersonBuilder {
         moduleCodes = new HashSet<>();
         grades = new HashSet<>();
         remark = null;
+        attendanceRecord = new AttendanceRecord();
     }
 
     /**
@@ -66,6 +70,7 @@ public class PersonBuilder {
         moduleCodes = new HashSet<>(personToCopy.getModuleCodes());
         grades = new HashSet<>(personToCopy.getGrades());
         remark = personToCopy.getRemark();
+        attendanceRecord = personToCopy.getAttendanceRecord();
     }
 
     /**
@@ -170,6 +175,33 @@ public class PersonBuilder {
     }
 
     /**
+     * Adds or updates a {@code Grade} for the {@code Person} that we are building.
+     */
+    public PersonBuilder withGrade(String assignmentName, String score) {
+        // Remove existing grade with same assignment name
+        this.grades.removeIf(g -> g.assignmentName.equals(assignmentName));
+        // Add new grade
+        this.grades.add(new Grade(assignmentName, score));
+        return this;
+    }
+
+    /**
+     * Marks attendance for a specific week.
+     */
+    public PersonBuilder withAttendance(Week week, AttendanceStatus status) {
+        this.attendanceRecord = this.attendanceRecord.markAttendance(week, status);
+        return this;
+    }
+
+    /**
+     * Unmarks attendance for a specific week.
+     */
+    public PersonBuilder withUnmarkedAttendance(Week week) {
+        this.attendanceRecord = this.attendanceRecord.unmarkAttendance(week);
+        return this;
+    }
+
+    /**
      * Builds a {@code Person} from the current builder state.
      * Uses the appropriate constructor based on which fields are set.
      */
@@ -177,7 +209,7 @@ public class PersonBuilder {
         // If studentId is set but phone or address is null, build as a student (without phone/address)
         if (studentId != null && (phone == null || address == null)) {
             return new Person(name, studentId, email, moduleCodes, tags,
-                    new AttendanceRecord(), grades, new ArrayList<>(), remark);
+                    attendanceRecord, grades, new ArrayList<>(), remark);
         }
         // If both phone and address are set, use the full constructor
         if (phone != null && address != null) {
