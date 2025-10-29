@@ -33,9 +33,9 @@ public class AddCommandIntegrationTest {
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.addPerson(validPerson);
 
-        assertCommandSuccess(new AddCommand(validPerson), model,
-                String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
-                expectedModel);
+        String expectedMessage = Messages.successMessage(String.format(AddCommand.MESSAGE_SUCCESS,
+                Messages.formatStudentId(validPerson)));
+        assertCommandSuccess(new AddCommand(validPerson), model, expectedMessage, expectedModel);
     }
 
     @Test
@@ -47,8 +47,9 @@ public class AddCommandIntegrationTest {
                 .withStudentId(personInList.getStudentId().value)
                 .withEmail("different@example.com")
                 .build();
-        assertCommandFailure(new AddCommand(personWithDuplicateId), model,
-                AddCommand.MESSAGE_DUPLICATE_STUDENT_ID);
+        String expectedMessage = String.format(AddCommand.MESSAGE_DUPLICATE_STUDENT_ID,
+                personInList.getStudentId());
+        assertCommandFailure(new AddCommand(personWithDuplicateId), model, expectedMessage);
     }
 
 }

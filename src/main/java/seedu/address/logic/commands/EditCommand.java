@@ -4,11 +4,14 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONSULTATION;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_GRADE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MODULE_CODE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_REMARK;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENT_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_WEEK;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import java.util.Collections;
@@ -24,6 +27,9 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.attendance.Attendance;
+import seedu.address.model.attendance.AttendanceRecord;
+import seedu.address.model.attendance.AttendanceStatus;
 import seedu.address.model.consultation.Consultation;
 import seedu.address.model.grade.Grade;
 import seedu.address.model.module.ModuleCode;
@@ -37,14 +43,14 @@ import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.Tag;
 
 /**
- * Edits the details of an existing person in the address book.
+ * Edits the details of an existing student in TeachMate.
  */
 public class EditCommand extends Command {
 
     public static final String COMMAND_WORD = "edit";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the person identified "
-            + "by the index number used in the displayed person list. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the student identified "
+            + "by the index number used in the displayed student list. "
             + "Existing values will be overwritten by the input values.\n"
             + "Parameters: INDEX (must be a positive integer) "
             + "[" + PREFIX_NAME + "NAME] "
@@ -55,15 +61,20 @@ public class EditCommand extends Command {
             + "[" + PREFIX_MODULE_CODE + "MODULE CODE] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "[" + PREFIX_CONSULTATION + "CONSULTATION]...\n"
+            + "[" + PREFIX_GRADE + "ASSIGNMENT_NAME:SCORE] "
+            + "[" + PREFIX_WEEK + "WEEK_NUMBER:STATUS] "
+            + "[" + PREFIX_REMARK + "REMARK]\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_PHONE + "91234567 "
             + PREFIX_EMAIL + "johndoe@example.com";
 
-    public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
+    public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Updated student: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
-    public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
+    public static final String MESSAGE_DUPLICATE_PERSON = "This student already exists in TeachMate.";
     public static final String MESSAGE_DUPLICATE_STUDENT_ID =
-            "A person with this student ID already exists in the address book.";
+            "Cannot update: Student ID %1$s is already assigned to another student.";
+    public static final String MESSAGE_GRADE_NOT_FOUND =
+            "Cannot update grade: Assignment '%1$s' not found for this student.";
 
     private final Index index;
     private final EditPersonDescriptor editPersonDescriptor;
@@ -96,21 +107,24 @@ public class EditCommand extends Command {
         if (editedPerson.getStudentId() != null && personToEdit.getStudentId() != null) {
             if (!editedPerson.getStudentId().equals(personToEdit.getStudentId())) {
                 if (model.getPersonByStudentId(editedPerson.getStudentId()).isPresent()) {
-                    throw new CommandException(MESSAGE_DUPLICATE_STUDENT_ID);
+                    throw new CommandException(String.format(MESSAGE_DUPLICATE_STUDENT_ID,
+                            editedPerson.getStudentId()));
                 }
             }
         }
 
         model.setPerson(personToEdit, editedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-        return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
+        return new CommandResult(Messages.successMessage(String.format(MESSAGE_EDIT_PERSON_SUCCESS,
+                Messages.formatStudentId(editedPerson))));
     }
 
     /**
      * Creates and returns a {@code Person} with the details of {@code personToEdit}
      * edited with {@code editPersonDescriptor}.
      */
-    private static Person createEditedPerson(Person personToEdit, EditPersonDescriptor editPersonDescriptor) {
+    private static Person createEditedPerson(Person personToEdit, EditPersonDescriptor editPersonDescriptor)
+            throws CommandException {
         assert personToEdit != null;
 
         Name updatedName = editPersonDescriptor.getName().orElse(personToEdit.getName());
@@ -123,15 +137,47 @@ public class EditCommand extends Command {
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
         List<Consultation> updatedConsultations =
                 editPersonDescriptor.getConsultations().orElse(personToEdit.getConsultations());
-        Set<Grade> updatedGrades = personToEdit.getGrades(); // Keep existing grades when editing
-        Remark updatedRemark = personToEdit.getRemark(); // Keep existing remark when editing
+
+        // Handle grade update
+        Set<Grade> updatedGrades = new HashSet<>(personToEdit.getGrades());
+        if (editPersonDescriptor.getGrade().isPresent()) {
+            Grade gradeToUpdate = editPersonDescriptor.getGrade().get();
+            // Find and remove the existing grade with the same assignment name
+            boolean gradeFound = false;
+            for (Grade existingGrade : updatedGrades) {
+                if (existingGrade.assignmentName.equals(gradeToUpdate.assignmentName)) {
+                    updatedGrades.remove(existingGrade);
+                    gradeFound = true;
+                    break;
+                }
+            }
+            if (!gradeFound) {
+                throw new CommandException(String.format(MESSAGE_GRADE_NOT_FOUND, gradeToUpdate.assignmentName));
+            }
+            updatedGrades.add(gradeToUpdate);
+        }
+
+        // Handle attendance update
+        AttendanceRecord updatedAttendanceRecord = personToEdit.getAttendanceRecord();
+        if (editPersonDescriptor.getAttendance().isPresent()) {
+            Attendance attendanceToUpdate = editPersonDescriptor.getAttendance().get();
+            if (attendanceToUpdate.getStatus() == AttendanceStatus.UNMARK) {
+                updatedAttendanceRecord = updatedAttendanceRecord.unmarkAttendance(attendanceToUpdate.getWeek());
+            } else {
+                updatedAttendanceRecord = updatedAttendanceRecord.markAttendance(
+                        attendanceToUpdate.getWeek(), attendanceToUpdate.getStatus());
+            }
+        }
+
+        // Handle remark update
+        Remark updatedRemark = editPersonDescriptor.getRemark().orElse(personToEdit.getRemark());
 
         // Check if this is a student (has studentId but no phone/address)
         if (updatedStudentId != null && updatedPhone == null && updatedAddress == null) {
             // Use student constructor
             return new Person(updatedName, updatedStudentId,
-                    updatedEmail, updatedModuleCodes, updatedTags, null, updatedGrades, updatedConsultations,
-                    updatedRemark);
+                    updatedEmail, updatedModuleCodes, updatedTags, updatedAttendanceRecord, updatedGrades,
+                    updatedConsultations, updatedRemark);
         } else {
             // Use regular person constructor
             return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
@@ -176,6 +222,9 @@ public class EditCommand extends Command {
         private Set<ModuleCode> moduleCodes;
         private Set<Tag> tags;
         private List<Consultation> consultations;
+        private Grade grade;
+        private Attendance attendance;
+        private Remark remark;
 
         public EditPersonDescriptor() {}
 
@@ -192,14 +241,17 @@ public class EditCommand extends Command {
             setStudentId(toCopy.studentId);
             setModuleCodes(toCopy.moduleCodes);
             setConsultations(toCopy.consultations);
+            setGrade(toCopy.grade);
+            setAttendance(toCopy.attendance);
+            setRemark(toCopy.remark);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(
-                    name, phone, email, address, tags, studentId, moduleCodes, consultations);
+            return CollectionUtil.isAnyNonNull(name, phone, email, address, tags, studentId, moduleCodes,
+                    consultations, grade, attendance, remark);
         }
 
         public void setName(Name name) {
@@ -273,6 +325,30 @@ public class EditCommand extends Command {
 
         public void setConsultations(List<Consultation> consultations) {
             this.consultations = consultations;
+        }
+
+        public Optional<Grade> getGrade() {
+            return Optional.ofNullable(grade);
+        }
+
+        public void setGrade(Grade grade) {
+            this.grade = grade;
+        }
+
+        public Optional<Attendance> getAttendance() {
+            return Optional.ofNullable(attendance);
+        }
+
+        public void setAttendance(Attendance attendance) {
+            this.attendance = attendance;
+        }
+
+        public Optional<Remark> getRemark() {
+            return Optional.ofNullable(remark);
+        }
+
+        public void setRemark(Remark remark) {
+            this.remark = remark;
         }
 
         @Override

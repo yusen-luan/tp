@@ -131,9 +131,11 @@ public class UntagCommand extends Command {
         // Check if this is a student (has studentId but no phone/address)
         if (personToUntag.getStudentId() != null && personToUntag.getPhone() == null
                 && personToUntag.getAddress() == null) {
-            // Use student constructor
+            // Use student constructor with all fields preserved
             return new Person(personToUntag.getName(), personToUntag.getStudentId(),
-                    personToUntag.getEmail(), personToUntag.getModuleCodes(), updatedTags, personToUntag.getGrades());
+                    personToUntag.getEmail(), personToUntag.getModuleCodes(), updatedTags,
+                    personToUntag.getAttendanceRecord(), personToUntag.getGrades(),
+                    personToUntag.getConsultations(), personToUntag.getRemark());
         } else {
             // Use regular person constructor
             return new Person(personToUntag.getName(), personToUntag.getPhone(), personToUntag.getEmail(),

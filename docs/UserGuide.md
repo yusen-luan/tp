@@ -176,7 +176,22 @@ The view command displays comprehensive information in two sections:
    * Weeks are displayed in ascending order (Week 1, Week 2, etc.)
    * If no attendance has been recorded yet, displays: "No attendance recorded yet."
 
-**Success message:** `Viewing student: [name]`
+**Success message:**
+```
+=== STUDENT DETAILS ===
+Name: [name]
+Student ID: [student ID]
+Email: [email]
+Modules: [module codes]
+Tags: [tags]
+Grades: [grades]
+Consultations: [consultation dates]
+Remark: [remark]
+
+=== ATTENDANCE RECORD ===
+Week [number]: [symbol] [status]
+...
+```
 
 **Error messages:**
 * If the index is invalid: `The student index provided is invalid`
@@ -210,23 +225,30 @@ Week 3: ✓ Present
 
 Marks attendance for a student for a specific week.
 
-Format: `attendance s/STUDENT_ID w/WEEK present|absent` or `attendance s/all w/WEEK present|absent`
+Format: `attendance INDEX w/WEEK present|absent|unmark` or `attendance s/STUDENT_ID w/WEEK present|absent|unmark` or `attendance all w/WEEK present|absent|unmark`
 
-* Marks attendance for the student with the specified `STUDENT_ID` or all students
+* Marks attendance for the student at the specified `INDEX`, with the specified `STUDENT_ID`, or all students
+* `INDEX` refers to the index number shown in the displayed student list (must be a positive integer)
 * `WEEK` must be a number between 1 and 13 (inclusive), representing the teaching week
-* `present|absent` specifies whether the student was present or absent (case-insensitive)
-* Use `s/all` to mark all students at once for bulk operations
+* `present|absent|unmark` specifies the attendance status (case-insensitive):
+  - `present`: Mark as present
+  - `absent`: Mark as absent
+  - `unmark`: Remove attendance record (return to unmarked state)
+* The status must come **after** the week parameter
+* Use `all` (without `s/` prefix) to mark all students at once for bulk operations
 * The student must exist in TeachMate
 * Marking attendance for the same week again will update the previous record
+* Using `unmark` on an already unmarked week has no effect
 
 **Success message:**
-* Individual: `Marked attendance for [name]: Week [week] - [status]`
-* All students: `Marked attendance for all students: Week [week] - [status] ([count] students)`
+* Individual: `Marked attendance for [name]: Week [week] - [status]` or `Unmarked attendance for [name]: Week [week]`
+* All students: `Marked attendance for all students: Week [week] - [status] ([count] students)` or `Unmarked attendance for all students: Week [week] ([count] students)`
 
 **Error messages:**
+* If the index is invalid: `The student index provided is invalid`
 * If the student ID is not found: `No student found with ID: [ID]`
 * If the week is invalid: `Week should be a number between 1 and 13 (inclusive)`
-* If the status is invalid: `Invalid attendance status. Use 'present' or 'absent'.`
+* If the status is invalid: `Invalid attendance status. Use 'present', 'absent', or 'unmark'.`
 
 <box type="tip" seamless>
 
@@ -234,19 +256,27 @@ Format: `attendance s/STUDENT_ID w/WEEK present|absent` or `attendance s/all w/W
 * Attendance can be viewed in detail using the `view` command, which shows week-by-week records
 * When marking all students, the command affects every student in TeachMate regardless of the current filtered list
 * Present attendance is marked with ✓ and absent with ✗ in the attendance record
+* Unmarked attendance appears as grey boxes in the UI (no record)
+* Using index is faster when working with the displayed list
+* Use `unmark` to correct mistakes or reset attendance for a specific week
 </box>
 
 Examples:
+* `attendance 1 w/1 present` - Marks the first student in the list as present for week 1
+* `attendance 2 w/2 absent` - Marks the second student in the list as absent for week 2
+* `attendance 1 w/1 unmark` - Unmarks attendance for the first student for week 1
 * `attendance s/A0123456X w/1 present` - Marks student A0123456X as present for week 1
 * `attendance s/A0123456X w/2 absent` - Marks student A0123456X as absent for week 2
-* `attendance s/all w/1 present` - Marks all students as present for week 1
-* `attendance s/all w/2 absent` - Marks all students as absent for week 2
+* `attendance s/A0123456X w/2 unmark` - Unmarks attendance for student A0123456X for week 2
+* `attendance all w/1 present` - Marks all students as present for week 1
+* `attendance all w/2 absent` - Marks all students as absent for week 2
+* `attendance all w/3 unmark` - Unmarks attendance for all students for week 3
 
 ### Editing a student : `edit`
 
 Edits an existing student in TeachMate. You can edit students whether they have phone/address (legacy data) or only have student-specific fields.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]…​ [t/TAG]…​ [c/CONSULTATIONS]`
+Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]​ [t/TAG] [c/CONSULTATIONS] [g/ASSIGNMENT_NAME:SCORE] [w/WEEK_NUMBER:STATUS] [r/REMARK]`
 
 * Edits the student at the specified `INDEX`
 * The index refers to the index number shown in the displayed student list
@@ -258,6 +288,9 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/M
 * You can remove all tags by typing `t/` without specifying any tags
 * You can remove all module codes by typing `m/` without specifying any module codes
 * Editing consultations should still follow the same format as in the `add` command
+* **Editing grades:** Use `g/ASSIGNMENT_NAME:SCORE` to update an existing grade. The assignment must already exist for the student, otherwise an error will be shown.
+* **Editing attendance:** Use `w/WEEK_NUMBER:STATUS` to update attendance for a specific week (1-13). Status can be `present`, `absent`, or `unmark` (to remove the attendance record).
+* **Editing remarks:** Use `r/REMARK` to update the remark for a student.
 
 <box type="warning" seamless>
 
@@ -269,6 +302,11 @@ Examples:
 *  `edit 1 s/A9999999Z e/newemail@u.nus.edu` - Edits the student ID and email of the 1st student
 *  `edit 2 n/Jane Doe t/` - Edits the name of the 2nd student and clears all tags
 *  `edit 3 m/CS2103T m/CS2101` - Replaces all module codes with CS2103T and CS2101
+*  `edit 1 g/Midterm:90` - Updates the Midterm grade to 90 for the 1st student (assignment must already exist)
+*  `edit 2 w/5:present` - Marks the 2nd student as present for week 5
+*  `edit 3 w/3:absent` - Marks the 3rd student as absent for week 3
+*  `edit 4 w/7:unmark` - Removes the attendance record for week 7 for the 4th student
+*  `edit 1 r/Needs extra help with recursion` - Updates the remark for the 1st student
 
 ### Adding tags to a student : `tag`
 
@@ -352,6 +390,40 @@ Examples:
 * `grade 2 g/Quiz1:90 g/Assignment1:88` - Adds two grades to the 2nd student
 * `grade 3 g/Final Exam:92` - Adds a grade for "Final Exam" to the 3rd student
 
+### Adding remarks to a student : `remark`
+
+Adds or updates a personalized remark for an existing student in TeachMate.
+
+Format: `remark s/STUDENT_ID r/REMARK`
+
+* Adds or updates a remark for the student with the specified `STUDENT_ID`
+* Student ID must match the format A followed by 7 digits and 1 uppercase letter
+* `REMARK` can contain any text including spaces and special characters
+* `REMARK` supports multi-line text for longer notes
+* The remark must not be blank (must contain at least one non-whitespace character)
+* If a remark already exists for the student, it will be replaced with the new remark
+* The student must exist in TeachMate
+
+**Success message:** `Added remark to Student: [student details]`
+
+**Error messages:**
+* If the student ID is not found: `No student found with ID: [ID]`
+* If the remark is blank: `Remarks should not be blank`
+
+<box type="tip" seamless>
+
+**Tips:**
+* Use remarks to record personalized notes about each student (e.g., learning preferences, areas of difficulty, progress notes)
+* Remarks are displayed in the student card view with a 📝 icon
+* To view all details including remarks, use the student card in the list view
+* Remarks are automatically saved and will persist across application restarts
+</box>
+
+Examples:
+* `remark s/A0123456X r/Needs extra help with OOP concepts` - Adds a remark for student A0123456X
+* `remark s/A0234567Y r/Excellent participation in tutorials` - Adds a remark for student A0234567Y
+* `remark s/A0345678Z r/Struggling with time management. Recommended office hours on Fridays.` - Adds a multi-line remark
+
 ### Locating students by name: `find`
 
 Finds students whose names contain any of the given keywords.
@@ -377,12 +449,15 @@ Format: `filter t/TAG [t/MORE_TAGS]…​`
 
 * At least one tag must be provided
 * Only students who have **all** the specified tags will be shown (i.e. `AND` search)
-* Tags are case-sensitive and must match exactly
+* **Tag matching is case-insensitive** (e.g., `Friends` matches `friends`)
+* **Substring matching is supported** (e.g., `help` matches tags containing "help" like `needHelp`)
 * Tags must be alphanumeric (no spaces)
 
 Examples:
-* `filter t/friends` returns all students tagged with `friends`
+* `filter t/friends` returns all students tagged with `friends`, `Friends`, or `FRIENDS`
 * `filter t/struggling t/needsHelp` returns students who have both `struggling` and `needsHelp` tags
+* `filter t/help` returns students with tags like `needHelp`, `helpfulStudent`, or `help`
+* `filter t/FRIEND` returns students with tags like `friends`, `friendlyStudent`, or `bestFriend`
 
 ### Deleting a student : `delete`
 
@@ -480,9 +555,10 @@ Furthermore, certain edits can cause TeachMate to behave in unexpected ways (e.g
 | **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find John Jane`                                                                                                                |
 | **Grade**  | `grade INDEX g/ASSIGNMENT_NAME:SCORE [g/ASSIGNMENT_NAME:SCORE]…​`<br> e.g., `grade 1 g/Midterm:85 g/Quiz1:90`                                                            |
 | **List**   | `list` or `list m/MODULE_CODE`<br> e.g., `list m/CS2103T`                                                                                                                |
+| **Remark** | `remark s/STUDENT_ID r/REMARK`<br> e.g., `remark s/A0123456X r/Needs extra help with OOP concepts`                                                                       |
 | **Tag**    | `tag INDEX t/TAG [t/TAG]…​` or `tag s/STUDENT_ID t/TAG [t/TAG]…​`<br> e.g., `tag 1 t/Struggling t/Inactive` or `tag s/A0291772W t/Excelling`                            |
 | **Untag**  | `untag INDEX t/TAG [t/TAG]…​` or `untag s/STUDENT_ID t/TAG [t/TAG]…​`<br> e.g., `untag 1 t/Struggling` or `untag s/A0291772W t/Inactive`                                |
 | **View**   | `view INDEX` or `view s/STUDENT_ID`<br> e.g., `view 1` or `view s/A0123456X`                                                                                             |
-| **Attendance** | `attendance s/STUDENT_ID w/WEEK present|absent` or `attendance s/all w/WEEK present|absent`<br> e.g., `attendance s/A0123456X w/1 present` or `attendance s/all w/1 present` |
+| **Attendance** | `attendance INDEX w/WEEK present|absent|unmark` or `attendance s/STUDENT_ID w/WEEK present|absent|unmark` or `attendance all w/WEEK present|absent|unmark`<br> e.g., `attendance 1 w/1 present` or `attendance s/A0123456X w/1 unmark` or `attendance all w/1 absent` |
 | **Help**   | `help`                                                                                                                                                                    |
 | **Exit**   | `exit`                                                                                                                                                                    |

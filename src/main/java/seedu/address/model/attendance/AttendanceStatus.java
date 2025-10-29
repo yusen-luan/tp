@@ -4,10 +4,12 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Represents the attendance status of a student for a specific week.
+ * UNMARK is a special status used to remove an existing attendance record.
  */
 public enum AttendanceStatus {
     PRESENT("present"),
-    ABSENT("absent");
+    ABSENT("absent"),
+    UNMARK("unmark"); // Special status to remove attendance record
 
     public final String value;
 

@@ -359,14 +359,23 @@ The `Week` class:
 - Implements proper equality for use as map keys
 
 The `AttendanceStatus` enum:
-- Two states: `PRESENT` and `ABSENT`
+- Three states: `PRESENT`, `ABSENT`, and `UNMARK`
+- `UNMARK` is a special status that removes an existing attendance record
 - Case-insensitive parsing from user input
 
 The `AttendanceCommand`:
-- Supports marking attendance for individual students by student ID
-- Supports bulk marking attendance for all students using `s/all`
+- Supports marking attendance for individual students by index or student ID
+- Supports bulk marking attendance for all students using `all` keyword
 - Takes week number and attendance status as parameters
-- Creates updated `Person` objects with new attendance records
+- Status must be specified after the week parameter
+- Supports unmarking attendance (removing records) with `unmark` status
+- Creates updated `Person` objects with modified attendance records
+
+The `AttendanceRecord` class:
+- Stores attendance using a `Map<Week, AttendanceStatus>` structure
+- Unmarked weeks are absent from the map (no entry = unmarked state)
+- `markAttendance()` adds or updates an entry in the map
+- `unmarkAttendance()` removes an entry from the map
 
 The `PersonCard` UI component:
 - Displays attendance visually in the student list using a grid of 13 rectangles (16x16 pixels each with rounded edges)
@@ -379,39 +388,47 @@ The `PersonCard` UI component:
 
 Given below is an example usage scenario and how the attendance marking mechanism behaves.
 
-**Step 1.** The user executes `attendance s/A0123456X w/1 present` to mark a student present for week 1.
+**Step 1.** The user executes `attendance 1 w/1 present` to mark the first student in the displayed list as present for week 1.
 
 **Step 2.** The command is parsed by `AddressBookParser`, which identifies it as an attendance command and creates an `AttendanceCommandParser`.
 
 **Step 3.** `AttendanceCommandParser` parses the arguments:
-- Extracts student ID (`A0123456X`) or detects `all` keyword
-- Extracts week number (`1`) and validates it's between 1-13
-- Parses attendance status (`present`) into `AttendanceStatus.PRESENT`
+- Checks the preamble to determine the format (index, `all` keyword, or student ID with prefix)
+- For index format: Extracts index (`1`) from preamble
+- For `all` format: Detects `all` keyword in preamble
+- For student ID format: Extracts student ID (`A0123456X`) from `s/` prefix
+- Extracts week number (`1`) from `w/` prefix and validates it's between 1-13
+- Parses attendance status (`present`, `absent`, or `unmark`) from after the week parameter into corresponding `AttendanceStatus`
 - Creates an `AttendanceCommand` with these parameters
 
 **Step 4.** When `AttendanceCommand#execute()` is called:
-- Determines if single student or all students should be marked
-- For single student:
+- Determines whether to mark by index, by student ID, or all students
+- For marking by index:
+  - Retrieves the filtered person list from `Model`
+  - Gets the student at the specified index
+  - Throws `CommandException` if index is out of bounds
+- For marking by student ID:
   - Calls `Model#findPersonByStudentId()` to locate the student
   - Throws `CommandException` if student not found
+- For marking all students:
+  - Iterates through all students in address book
+  - Counts number of students updated
+- For each student being marked:
   - Gets current `AttendanceRecord` from the student
-  - Calls `AttendanceRecord#markAttendance(week, status)` to get updated record
+  - If status is `UNMARK`: Calls `AttendanceRecord#unmarkAttendance(week)` to remove the record
+  - Otherwise: Calls `AttendanceRecord#markAttendance(week, status)` to add/update the record
   - Creates new `Person` object with updated attendance record
   - Calls `Model#setPerson()` to replace old person with updated person
-- For all students:
-  - Iterates through all students in address book
-  - Updates each student's attendance record similarly
-  - Counts number of students updated
-- Returns `CommandResult` with success message
+- Returns `CommandResult` with appropriate success message
 
 **Step 5.** The model persists the changes:
 - Updated person list triggers storage save
 - Attendance data is serialized to JSON format
 - Data is written to disk automatically
 
-The following sequence diagram shows how an attendance marking operation works:
+The following sequence diagram shows how an attendance marking operation works for the index-based format (`attendance 1 w/1 present`). The flow for student ID-based (`attendance s/A0123456X w/1 present`) and mark all (`attendance all w/1 present`) formats follows a similar execution path, with the main difference being how the student(s) are identified.
 
-<puml src="diagrams/AttendanceSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `attendance s/A0123456X w/1 present` Command" />
+<puml src="diagrams/AttendanceSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `attendance 1 w/1 present` Command" />
 
 #### Design Considerations
 
@@ -435,15 +452,35 @@ The following sequence diagram shows how an attendance marking operation works:
   * Pros: More efficient for frequent updates. No need to recreate objects. Direct modification of state.
   * Cons: Risk of unintended side effects. Thread safety concerns. Harder to track state changes. Inconsistent with existing codebase patterns.
 
+**Aspect: Student identification methods**
+
+* **Alternative 1 (current choice):** Support index, student ID, and `all` keyword
+  * Pros: Flexible for different workflows. Index is fastest for visible students. Student ID works when student not in filtered list. `all` keyword saves time for bulk operations. Consistent with other commands like `delete` and `view`.
+  * Cons: More complex parsing logic. Need to distinguish between numeric index and `all` keyword. Multiple constructors in `AttendanceCommand`.
+
+* **Alternative 2:** Only support student ID-based marking
+  * Pros: Simpler parsing logic. Single identification method. No ambiguity in command format.
+  * Cons: Less convenient. Requires memorizing or looking up student IDs. Cannot leverage displayed list. Slower for bulk operations.
+
 **Aspect: Bulk attendance marking**
 
-* **Alternative 1 (current choice):** Support `s/all` to mark all students
-  * Pros: Very convenient for TAs marking full-class attendance. Saves time when all students share same status. Single command instead of N commands.
-  * Cons: Requires special parsing logic for "all" keyword. All-or-nothing operation (cannot mark most students one way, exceptions another way). Risk of accidental bulk operations.
+* **Alternative 1 (current choice):** Support `all` keyword (without prefix) to mark all students
+  * Pros: Very convenient for TAs marking full-class attendance. Saves time when all students share same status. Single command instead of N commands. Clean syntax without prefix clutter.
+  * Cons: Requires special parsing logic to distinguish `all` from numeric index. All-or-nothing operation (cannot mark most students one way, exceptions another way). Risk of accidental bulk operations.
 
 * **Alternative 2:** Require individual marking for each student
   * Pros: More explicit, less risk of mistakes. Simpler parsing logic. Forces TAs to verify each student.
   * Cons: Tedious for large classes. Time-consuming when most students have same status. Many repetitive commands.
+
+**Aspect: Status parameter position**
+
+* **Alternative 1 (current choice):** Status must come after week parameter (`w/1 present`)
+  * Pros: Clear and consistent command structure. Status is visually grouped with week. Easier to parse - no ambiguity about parameter order. Natural reading flow (week then status).
+  * Cons: Slightly longer to type. Cannot put status at the beginning for emphasis.
+
+* **Alternative 2:** Allow flexible status positioning (before or after week)
+  * Pros: More flexibility for users. Can emphasize status by putting it first.
+  * Cons: More complex parsing logic. Ambiguous command structure. Harder to document and explain. Can lead to user confusion about accepted formats.
 
 **Aspect: Week number validation**
 
@@ -537,6 +574,94 @@ The following sequence diagram shows how the grade operation works:
   * Pros: More flexible for internal use and testing. Can create temporary Grade objects during processing.
   * Cons: Risk of invalid grades propagating through the system. Validation logic scattered across multiple parsers.
 
+### Consultation Feature
+
+#### Implementation
+
+The consultation feature allows teaching assistants to record and view student consultation sessions as part of each student’s profile. Unlike other standalone commands, consultations are implemented as an **attribute of each student**, and can be added or modified **only through the `add` or `edit` commands**.
+
+Consultations are stored within each `Person` object as a list of `Consultation` instances, each representing a single consultation date and time.
+
+**Key Components:**
+
+The `Consultation` class:
+- Represents an individual consultation with a `LocalDateTime` attribute
+- Provides accessor and formatting methods to return a readable date/time string
+- Supports multiple date/time input formats for user convenience
+
+The `AddCommand` and `EditCommand` classes:
+- Allow consultations to be provided as part of the `c/` prefix when adding or editing a student
+- Construct or update a `Person` object that includes the parsed consultations
+- Ensure that consultation data is properly stored, persisted, and displayed
+
+The `AddCommandParser` and `EditCommandParser` classes:
+- Extract and validate all consultation values provided using the `c/` prefix
+- Support multiple datetime input formats (e.g., `dd/MM/yyyy HH:mm`, `yyyy-MM-dd HH:mm`, etc.)
+- Create corresponding `Consultation` objects and include them when constructing the `Person` to be added or edited
+
+#### Execution Flow
+
+Given below is an example usage scenario and how the consultation mechanism behaves during both add and edit operations.
+
+**Step 1.** The user executes either:
+- `add n/John Doe s/A0123456X e/john@u.nus.edu m/CS2103T c/22-10-2025 15:30`, or
+- `edit 1 c/25-10-2025 14:00`  
+  to add or update a student’s consultation record.
+
+**Step 2.** The command is parsed by `AddressBookParser`, which identifies the command type (`add` or `edit`) and creates the respective command parser.
+
+**Step 3.** The parser (`AddCommandParser` or `EditCommandParser`) processes the input:
+- Extracts consultation values from each `c/` prefix
+- Validates and parses them into `LocalDateTime` objects using multiple supported formats
+- Creates a list of `Consultation` objects
+
+**Step 4.** During command execution:
+- The `AddCommand` constructs a new `Person` with the consultations included as part of their attributes
+- The `EditCommand` retrieves the target `Person`, replaces their existing consultations with the new list, and updates the model
+- Both commands call `Model#setPerson()` to commit the change
+
+**Step 5.** The updated `Person` (with consultations) is persisted to storage and reflected in the UI.  
+Consultation details can then be viewed through the `view` command, which displays all recorded consultations for that student in the result panel.
+
+The following sequence diagram shows how consultations are processed as part of the add and edit workflows:
+
+<puml src="diagrams/ConsultationSequenceDiagram.puml" alt="ConsultationSequenceDiagram" />
+
+#### Design Considerations
+
+**Aspect: Integration within `add` and `edit` commands vs standalone `consult` command**
+
+* **Alternative 1 (current choice):** Integrate consultation handling within existing `add` and `edit` commands
+    * Pros: Keeps the command set simple and intuitive — no need for an additional `consult` command. Ensures that all student-related data (attendance, consultations, grades) are managed consistently within a single workflow. Prevents duplicate logic for modifying the same `Person` object.
+    * Cons: Less explicit — users cannot add a consultation directly without editing the student. Parsing logic for `add` and `edit` becomes more complex as new optional fields are introduced.
+
+* **Alternative 2:** Implement a dedicated `consult` command for adding consultations
+    * Pros: Clear separation of concerns. Easier to track when consultations are added. Provides finer-grained control for managing consultation records.
+    * Cons: Adds a new command and parser, increasing system complexity. Introduces overlapping functionality with `edit`. Users would need to remember and use multiple commands to update the same student record.
+
+---
+
+**Aspect: Consultation data structure**
+
+* **Alternative 1 (current choice):** Store consultations as a list of `Consultation` objects within `Person`
+    * Pros: Maintains a one-to-many relationship (one student → many consultations). Easy to extend in the future (e.g., add notes or duration fields). Keeps related data encapsulated within the `Person` model.
+    * Cons: Slightly larger memory footprint per student. Requires additional serialization logic for saving and loading lists of consultations.
+
+* **Alternative 2:** Store consultations as a simple formatted `String` within `Person`
+    * Pros: Simpler to implement and serialize. Minimal model changes required.
+    * Cons: Harder to validate and manipulate programmatically. Loses type safety and flexibility for future enhancements.
+
+---
+
+**Aspect: Datetime input format**
+
+* **Alternative 1 (current choice):** Accept multiple datetime formats for user flexibility
+    * Pros: Improves user experience by accommodating a variety of date/time input styles. Reduces likelihood of input errors due to format mismatch.
+    * Cons: Increases parser complexity — more code paths to validate and test. Slightly higher chance of ambiguity between formats.
+
+* **Alternative 2:** Enforce a single strict datetime format (e.g., `yyyy-MM-dd HH:mm`)
+    * Pros: Simpler parsing logic and clearer documentation. Ensures data consistency across all entries.
+    * Cons: Less user-friendly; rejects valid but differently formatted datetimes. May frustrate users unfamiliar with the required format.
 
 --------------------------------------------------------------------------------------------------------------------
 

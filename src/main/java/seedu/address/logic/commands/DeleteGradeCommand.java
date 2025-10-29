@@ -102,7 +102,8 @@ public class DeleteGradeCommand extends Command {
         // Use student constructor if phone/address are null
         if (person.getPhone() == null || person.getAddress() == null) {
             return new Person(person.getName(), person.getStudentId(), person.getEmail(),
-                    person.getModuleCodes(), person.getTags(), updatedGrades);
+                    person.getModuleCodes(), person.getTags(), person.getAttendanceRecord(),
+                    updatedGrades, person.getConsultations(), person.getRemark());
         } else {
             return new Person(person.getName(), person.getPhone(), person.getEmail(),
                     person.getAddress(), person.getTags(), person.getStudentId(),

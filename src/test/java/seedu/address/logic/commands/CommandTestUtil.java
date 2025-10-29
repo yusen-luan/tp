@@ -4,11 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_GRADE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MODULE_CODE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_REMARK;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENT_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_WEEK;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.util.ArrayList;
@@ -42,6 +45,13 @@ public class CommandTestUtil {
     public static final String VALID_TAG_FRIEND = "friend";
     public static final String VALID_MODULE_CODE_AMY = "CS2103T";
     public static final String VALID_MODULE_CODE_BOB = "CS2101";
+    public static final String VALID_GRADE_ASSIGNMENT = "Midterm";
+    public static final String VALID_GRADE_SCORE = "85";
+    public static final String VALID_GRADE = VALID_GRADE_ASSIGNMENT + ":" + VALID_GRADE_SCORE;
+    public static final String VALID_ATTENDANCE_WEEK = "5";
+    public static final String VALID_ATTENDANCE_STATUS = "present";
+    public static final String VALID_ATTENDANCE = VALID_ATTENDANCE_WEEK + ":" + VALID_ATTENDANCE_STATUS;
+    public static final String VALID_REMARK = "Good student";
 
     public static final String NAME_DESC_AMY = " " + PREFIX_NAME + VALID_NAME_AMY;
     public static final String NAME_DESC_BOB = " " + PREFIX_NAME + VALID_NAME_BOB;
@@ -57,6 +67,9 @@ public class CommandTestUtil {
     public static final String TAG_DESC_HUSBAND = " " + PREFIX_TAG + VALID_TAG_HUSBAND;
     public static final String MODULE_CODE_DESC_AMY = " " + PREFIX_MODULE_CODE + VALID_MODULE_CODE_AMY;
     public static final String MODULE_CODE_DESC_BOB = " " + PREFIX_MODULE_CODE + VALID_MODULE_CODE_BOB;
+    public static final String GRADE_DESC = " " + PREFIX_GRADE + VALID_GRADE;
+    public static final String ATTENDANCE_DESC = " " + PREFIX_WEEK + VALID_ATTENDANCE;
+    public static final String REMARK_DESC = " " + PREFIX_REMARK + VALID_REMARK;
 
     public static final String INVALID_NAME_DESC = " " + PREFIX_NAME + "James&"; // '&' not allowed in names
     public static final String INVALID_PHONE_DESC = " " + PREFIX_PHONE + "911a"; // 'a' not allowed in phones
@@ -65,6 +78,10 @@ public class CommandTestUtil {
     public static final String INVALID_STUDENT_ID_DESC = " " + PREFIX_STUDENT_ID + "B1234567X"; // must start with 'A'
     public static final String INVALID_MODULE_CODE_DESC = " " + PREFIX_MODULE_CODE + "CS210"; // wrong format
     public static final String INVALID_TAG_DESC = " " + PREFIX_TAG + "hubby*"; // '*' not allowed in tags
+    public static final String INVALID_GRADE_DESC = " " + PREFIX_GRADE + "Midterm:200"; // score > 100
+    public static final String INVALID_ATTENDANCE_WEEK_DESC = " " + PREFIX_WEEK + "15:present"; // week > 13
+    public static final String INVALID_ATTENDANCE_STATUS_DESC = " " + PREFIX_WEEK + "5:maybe"; // invalid status
+    public static final String INVALID_REMARK_DESC = " " + PREFIX_REMARK; // empty remark
 
     public static final String PREAMBLE_WHITESPACE = "\t  \r  \n";
     public static final String PREAMBLE_NON_EMPTY = "NonEmptyPreamble";

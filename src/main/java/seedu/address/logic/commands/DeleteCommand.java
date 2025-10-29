@@ -15,19 +15,20 @@ import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 
 /**
- * Deletes a person identified using it's displayed index from the address book.
+ * Deletes a student identified using the displayed index from TeachMate.
  */
 public class DeleteCommand extends Command {
 
     public static final String COMMAND_WORD = "delete";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
-            + ": Deletes the person identified by the index number or student ID.\n"
+            + ": Deletes the student identified by the index number or student ID.\n"
             + "Parameters: INDEX (must be a positive integer) or " + PREFIX_STUDENT_ID + "STUDENT_ID\n"
             + "Example: " + COMMAND_WORD + " 1 or " + COMMAND_WORD + " " + PREFIX_STUDENT_ID + "A0123456X";
 
-    public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
-    public static final String MESSAGE_PERSON_NOT_FOUND = "No person found with the specified student ID.";
+    public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted student: %1$s";
+    public static final String MESSAGE_PERSON_NOT_FOUND =
+            "No student found with student ID %1$s. Use 'list' to see all students.";
 
     private final Index targetIndex;
     private final StudentId targetStudentId;
@@ -58,7 +59,7 @@ public class DeleteCommand extends Command {
             // Delete by student ID
             Optional<Person> personOptional = model.getPersonByStudentId(targetStudentId);
             if (personOptional.isEmpty()) {
-                throw new CommandException(MESSAGE_PERSON_NOT_FOUND);
+                throw new CommandException(String.format(MESSAGE_PERSON_NOT_FOUND, targetStudentId));
             }
             personToDelete = personOptional.get();
         } else {
@@ -71,7 +72,8 @@ public class DeleteCommand extends Command {
         }
 
         model.deletePerson(personToDelete);
-        return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
+        return new CommandResult(Messages.successMessage(String.format(MESSAGE_DELETE_PERSON_SUCCESS,
+                Messages.formatStudentId(personToDelete))));
     }
 
     @Override

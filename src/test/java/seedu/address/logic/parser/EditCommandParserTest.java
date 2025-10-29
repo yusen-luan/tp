@@ -3,17 +3,24 @@ package seedu.address.logic.parser;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.ATTENDANCE_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.GRADE_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_ADDRESS_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_ATTENDANCE_STATUS_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_ATTENDANCE_WEEK_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_EMAIL_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_GRADE_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_PHONE_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_REMARK_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.MODULE_CODE_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.REMARK_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.STUDENT_ID_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
@@ -22,6 +29,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_REMARK;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
@@ -40,10 +48,15 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
+import seedu.address.model.attendance.Attendance;
+import seedu.address.model.attendance.AttendanceStatus;
+import seedu.address.model.attendance.Week;
+import seedu.address.model.grade.Grade;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Remark;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 
@@ -175,6 +188,25 @@ public class EditCommandParserTest {
         descriptor = new EditPersonDescriptorBuilder().withModuleCodes("CS2103T").build();
         expectedCommand = new EditCommand(targetIndex, descriptor);
         assertParseSuccess(parser, userInput, expectedCommand);
+
+        // grade
+        userInput = targetIndex.getOneBased() + GRADE_DESC;
+        descriptor = new EditPersonDescriptorBuilder().withGrade(new Grade("Midterm", "85")).build();
+        expectedCommand = new EditCommand(targetIndex, descriptor);
+        assertParseSuccess(parser, userInput, expectedCommand);
+
+        // attendance
+        userInput = targetIndex.getOneBased() + ATTENDANCE_DESC;
+        descriptor = new EditPersonDescriptorBuilder()
+                .withAttendance(new Attendance(new Week(5), AttendanceStatus.PRESENT)).build();
+        expectedCommand = new EditCommand(targetIndex, descriptor);
+        assertParseSuccess(parser, userInput, expectedCommand);
+
+        // remark
+        userInput = targetIndex.getOneBased() + REMARK_DESC;
+        descriptor = new EditPersonDescriptorBuilder().withRemark(new Remark(VALID_REMARK)).build();
+        expectedCommand = new EditCommand(targetIndex, descriptor);
+        assertParseSuccess(parser, userInput, expectedCommand);
     }
 
     @Test
@@ -218,5 +250,27 @@ public class EditCommandParserTest {
         EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
 
         assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_invalidGrade_failure() {
+        // score > 100
+        assertParseFailure(parser, "1" + INVALID_GRADE_DESC, Grade.MESSAGE_CONSTRAINTS);
+    }
+
+    @Test
+    public void parse_invalidAttendance_failure() {
+        // week > 13
+        assertParseFailure(parser, "1" + INVALID_ATTENDANCE_WEEK_DESC, Week.MESSAGE_CONSTRAINTS);
+
+        // invalid status
+        assertParseFailure(parser, "1" + INVALID_ATTENDANCE_STATUS_DESC,
+                "Invalid attendance status. Use 'present', 'absent', or 'unmark'.");
+    }
+
+    @Test
+    public void parse_invalidRemark_failure() {
+        // empty remark
+        assertParseFailure(parser, "1" + INVALID_REMARK_DESC, Remark.MESSAGE_CONSTRAINTS);
     }
 }

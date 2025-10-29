@@ -41,8 +41,9 @@ public class AddCommandTest {
 
         CommandResult commandResult = new AddCommand(validPerson).execute(modelStub);
 
-        assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
-                commandResult.getFeedbackToUser());
+        String expectedMessage = Messages.successMessage(String.format(AddCommand.MESSAGE_SUCCESS,
+                Messages.formatStudentId(validPerson)));
+        assertEquals(expectedMessage, commandResult.getFeedbackToUser());
         assertEquals(Arrays.asList(validPerson), modelStub.personsAdded);
     }
 
@@ -55,10 +56,12 @@ public class AddCommandTest {
         CommandResult commandResult1 = new AddCommand(person1).execute(modelStub);
         CommandResult commandResult2 = new AddCommand(person2).execute(modelStub);
 
-        assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(person1)),
-                commandResult1.getFeedbackToUser());
-        assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(person2)),
-                commandResult2.getFeedbackToUser());
+        String expectedMessage1 = Messages.successMessage(String.format(AddCommand.MESSAGE_SUCCESS,
+                Messages.formatStudentId(person1)));
+        String expectedMessage2 = Messages.successMessage(String.format(AddCommand.MESSAGE_SUCCESS,
+                Messages.formatStudentId(person2)));
+        assertEquals(expectedMessage1, commandResult1.getFeedbackToUser());
+        assertEquals(expectedMessage2, commandResult2.getFeedbackToUser());
         assertEquals(Arrays.asList(person1, person2), modelStub.personsAdded);
     }
 
@@ -68,7 +71,9 @@ public class AddCommandTest {
         AddCommand addCommand = new AddCommand(validPerson);
         ModelStub modelStub = new ModelStubWithStudentId(validPerson.getStudentId());
 
-        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_STUDENT_ID, () ->
+        String expectedMessage = String.format(AddCommand.MESSAGE_DUPLICATE_STUDENT_ID,
+                validPerson.getStudentId());
+        assertThrows(CommandException.class, expectedMessage, () ->
                 addCommand.execute(modelStub));
     }
 
