@@ -116,31 +116,19 @@ public class ResultDisplay extends UiPart<Region> {
             }
 
             // Add bullet points for list items
-            if (line.matches("^[\\d]+\\..*")) {
-                // Numbered list
-                formatted.append("  ").append(line).append("\n");
-            } else if (line.startsWith("-") || line.startsWith("*")) {
-                // Bullet list
-                formatted.append("  ").append(line).append("\n");
-            } else if (line.contains(":")
-                    && !line.matches(".*\\d+:\\d+.*") // ignore times like 2:00 or 14:30
-                    && !line.trim().startsWith("•")) {
-                // Key-value pairs - make them stand out
-                String[] parts = line.split(":", 2);
-                if (parts.length == 2) {
-                    formatted.append("▸ ").append(parts[0].trim()).append(":\n");
-                    formatted.append("  ").append(parts[1].trim()).append("\n");
-                } else {
-                    formatted.append("  ").append(line).append("\n");
+            if (line.matches("^[\\d]+\\..*") || line.startsWith("-") || line.startsWith("*")) {
+                // List item
+                if (!content.toString().contains("<ul>") || content.toString().endsWith("</ul>")) {
+                    content.append("<ul class='bullet-list'>");
                 }
-                content.append("<li>").append(escapeHtml(line.substring(1).trim())).append("</li>");
+                content.append("<li>").append(escapeHtml(line.replaceFirst("^[-*\\d+.]\\s*", ""))).append("</li>");
             } else {
                 if (content.toString().endsWith("</li>")) {
                     content.append("</ul>");
                 }
 
-                String formatted = highlightImportantParts(line);
-                content.append("<p>").append(formatted).append("</p>");
+                String highlighted = highlightImportantParts(line);
+                content.append("<p>").append(highlighted).append("</p>");
             }
         }
 

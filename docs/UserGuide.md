@@ -159,7 +159,7 @@ Format:
 
 **What will be displayed:**
 
-The view command displays comprehensive information in two sections:
+The view command displays comprehensive information in three sections:
 
 1. **Student Details:**
    * Full name
@@ -167,6 +167,8 @@ The view command displays comprehensive information in two sections:
    * Email address
    * All enrolled module codes (comma-separated)
    * Tags (if any, comma-separated)
+   * Grades (if any, in format "assignment: score")
+   * Remark (if any)
 
 2. **Attendance Record:**
    * Week-by-week attendance status for all recorded weeks
@@ -176,7 +178,13 @@ The view command displays comprehensive information in two sections:
    * Weeks are displayed in ascending order (Week 1, Week 2, etc.)
    * If no attendance has been recorded yet, displays: "No attendance recorded yet."
 
-**Success message:**
+3. **Consultation Records:**
+   * All scheduled consultation sessions with date and time
+   * Displayed in chronological order
+   * Format: "• [date] [time]" (e.g., "• 26 Oct 2025 4:00pm")
+   * If no consultations are scheduled, displays: "No consultations recorded yet."
+
+**Output format:**
 ```
 === STUDENT DETAILS ===
 Name: [name]
@@ -185,11 +193,14 @@ Email: [email]
 Modules: [module codes]
 Tags: [tags]
 Grades: [grades]
-Consultations: [consultation dates]
 Remark: [remark]
 
 === ATTENDANCE RECORD ===
 Week [number]: [symbol] [status]
+...
+
+=== CONSULTATION RECORDS ===
+• [consultation date and time]
 ...
 ```
 
@@ -214,11 +225,17 @@ Student ID: A0123456X
 Email: johnd@u.nus.edu
 Modules: CS2103T, CS2101
 Tags: struggling, needsHelp
+Grades: Midterm: 85, Quiz1: 90
+Remark: Very active in class discussions
 
 === ATTENDANCE RECORD ===
 Week 1: ✓ Present
 Week 2: ✗ Absent
 Week 3: ✓ Present
+
+=== CONSULTATION RECORDS ===
+• 26 Oct 2025 4:00pm
+• 03 Nov 2025 2:30pm
 ```
 
 ### Marking attendance : `attendance`
