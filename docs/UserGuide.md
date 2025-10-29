@@ -202,11 +202,13 @@ Week 3: ✓ Present
 
 Marks attendance for a student for a specific week.
 
-Format: `attendance s/STUDENT_ID w/WEEK present|absent` or `attendance s/all w/WEEK present|absent`
+Format: `attendance INDEX w/WEEK present|absent` or `attendance s/STUDENT_ID w/WEEK present|absent` or `attendance s/all w/WEEK present|absent`
 
-* Marks attendance for the student with the specified `STUDENT_ID` or all students
+* Marks attendance for the student at the specified `INDEX`, with the specified `STUDENT_ID`, or all students
+* `INDEX` refers to the index number shown in the displayed student list (must be a positive integer)
 * `WEEK` must be a number between 1 and 13 (inclusive), representing the teaching week
 * `present|absent` specifies whether the student was present or absent (case-insensitive)
+* The status (`present` or `absent`) must come **after** the week parameter
 * Use `s/all` to mark all students at once for bulk operations
 * The student must exist in TeachMate
 * Marking attendance for the same week again will update the previous record
@@ -216,6 +218,7 @@ Format: `attendance s/STUDENT_ID w/WEEK present|absent` or `attendance s/all w/W
 * All students: `Marked attendance for all students: Week [week] - [status] ([count] students)`
 
 **Error messages:**
+* If the index is invalid: `The person index provided is invalid`
 * If the student ID is not found: `No student found with ID: [ID]`
 * If the week is invalid: `Week should be a number between 1 and 13 (inclusive)`
 * If the status is invalid: `Invalid attendance status. Use 'present' or 'absent'.`
@@ -226,9 +229,12 @@ Format: `attendance s/STUDENT_ID w/WEEK present|absent` or `attendance s/all w/W
 * Attendance can be viewed in detail using the `view` command, which shows week-by-week records
 * When marking all students, the command affects every student in TeachMate regardless of the current filtered list
 * Present attendance is marked with ✓ and absent with ✗ in the attendance record
+* Using index is faster when working with the displayed list
 </box>
 
 Examples:
+* `attendance 1 w/1 present` - Marks the first student in the list as present for week 1
+* `attendance 2 w/2 absent` - Marks the second student in the list as absent for week 2
 * `attendance s/A0123456X w/1 present` - Marks student A0123456X as present for week 1
 * `attendance s/A0123456X w/2 absent` - Marks student A0123456X as absent for week 2
 * `attendance s/all w/1 present` - Marks all students as present for week 1
@@ -510,6 +516,6 @@ Furthermore, certain edits can cause TeachMate to behave in unexpected ways (e.g
 | **Tag**    | `tag INDEX t/TAG [t/TAG]…​` or `tag s/STUDENT_ID t/TAG [t/TAG]…​`<br> e.g., `tag 1 t/Struggling t/Inactive` or `tag s/A0291772W t/Excelling`                            |
 | **Untag**  | `untag INDEX t/TAG [t/TAG]…​` or `untag s/STUDENT_ID t/TAG [t/TAG]…​`<br> e.g., `untag 1 t/Struggling` or `untag s/A0291772W t/Inactive`                                |
 | **View**   | `view INDEX` or `view s/STUDENT_ID`<br> e.g., `view 1` or `view s/A0123456X`                                                                                             |
-| **Attendance** | `attendance s/STUDENT_ID w/WEEK present|absent` or `attendance s/all w/WEEK present|absent`<br> e.g., `attendance s/A0123456X w/1 present` or `attendance s/all w/1 present` |
+| **Attendance** | `attendance INDEX w/WEEK present|absent` or `attendance s/STUDENT_ID w/WEEK present|absent` or `attendance s/all w/WEEK present|absent`<br> e.g., `attendance 1 w/1 present` or `attendance s/A0123456X w/1 present` or `attendance s/all w/1 present` |
 | **Help**   | `help`                                                                                                                                                                    |
 | **Exit**   | `exit`                                                                                                                                                                    |
