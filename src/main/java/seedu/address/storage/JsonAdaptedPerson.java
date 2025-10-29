@@ -19,6 +19,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Remark;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.tag.Tag;
 
@@ -39,6 +40,7 @@ class JsonAdaptedPerson {
     private final List<JsonAdaptedAttendance> attendances;
     private final List<JsonAdaptedGrade> grades;
     private final List<JsonAdaptedConsultation> consultations;
+    private final String remark;
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
@@ -52,7 +54,8 @@ class JsonAdaptedPerson {
             @JsonProperty("tags") List<JsonAdaptedTag> tags,
             @JsonProperty("attendances") List<JsonAdaptedAttendance> attendances,
             @JsonProperty("grades") List<JsonAdaptedGrade> grades,
-            @JsonProperty("consultations") List<JsonAdaptedConsultation> consultations) {
+            @JsonProperty("consultations") List<JsonAdaptedConsultation> consultations,
+            @JsonProperty("remark") String remark) {
         this.name = name;
         this.phone = phone;
         this.email = email;
@@ -63,6 +66,7 @@ class JsonAdaptedPerson {
         this.attendances = attendances != null ? new ArrayList<>(attendances) : new ArrayList<>();
         this.grades = grades != null ? new ArrayList<>(grades) : new ArrayList<>();
         this.consultations = consultations != null ? new ArrayList<>(consultations) : new ArrayList<>();
+        this.remark = remark;
     }
 
     /**
@@ -89,6 +93,7 @@ class JsonAdaptedPerson {
         consultations = source.getConsultations().stream()
                 .map(JsonAdaptedConsultation::new)
                 .collect(Collectors.toList());
+        remark = source.getRemark() != null ? source.getRemark().value : null;
     }
 
     /**
@@ -158,9 +163,20 @@ class JsonAdaptedPerson {
                 );
             }
 
+            // Parse remark
+            final Remark modelRemark;
+            if (remark != null && !remark.isEmpty()) {
+                if (!Remark.isValidRemark(remark)) {
+                    throw new IllegalValueException(Remark.MESSAGE_CONSTRAINTS);
+                }
+                modelRemark = new Remark(remark);
+            } else {
+                modelRemark = null;
+            }
+
             // Use student constructor (without phone/address)
             return new Person(modelName, modelStudentId, modelEmail, modelModuleCodes,
-                    modelTags, modelAttendanceRecord, modelGrades, personConsultations);
+                    modelTags, modelAttendanceRecord, modelGrades, personConsultations, modelRemark);
         }
 
         // Otherwise, create a regular person (with phone and address)

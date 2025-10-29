@@ -7,11 +7,13 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
@@ -51,19 +53,30 @@
           </padding>
         </StackPane>
 
-        <StackPane VBox.vgrow="NEVER" fx:id="resultDisplayPlaceholder" styleClass="pane-with-border"
-                   minHeight="180" prefHeight="180" maxHeight="225">
-          <padding>
-            <Insets top="12" right="20" bottom="12" left="20" />
-          </padding>
-        </StackPane>
+        <GridPane VBox.vgrow="ALWAYS" alignment="TOP_LEFT" styleClass="content-row">
+          <columnConstraints>
+            <ColumnConstraints percentWidth="65" />
+            <ColumnConstraints percentWidth="35" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints vgrow="ALWAYS" />
+          </rowConstraints>
 
-        <VBox fx:id="personList" styleClass="pane-with-border" minWidth="400" prefWidth="600" VBox.vgrow="ALWAYS">
-          <padding>
-            <Insets top="16" right="20" bottom="16" left="20" />
-          </padding>
-          <StackPane fx:id="personListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
-        </VBox>
+          <VBox GridPane.rowIndex="0" GridPane.columnIndex="0" fx:id="personList" styleClass="pane-with-border"
+                minWidth="400" prefWidth="600" VBox.vgrow="ALWAYS" GridPane.vgrow="ALWAYS" GridPane.valignment="TOP">
+            <padding>
+              <Insets top="0" right="8" bottom="16" left="8" />
+            </padding>
+            <StackPane fx:id="personListPanelPlaceholder" VBox.vgrow="ALWAYS" />
+          </VBox>
+
+          <StackPane GridPane.rowIndex="0" GridPane.columnIndex="1" fx:id="resultDisplayPlaceholder"
+                     styleClass="pane-with-border" GridPane.vgrow="ALWAYS" GridPane.valignment="TOP">
+            <padding>
+              <Insets top="16" right="12" bottom="16" left="8" />
+            </padding>
+          </StackPane>
+        </GridPane>
 
         <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER" />
       </VBox>

@@ -67,7 +67,7 @@ public class AddCommandParser implements Parser<AddCommand> {
                     new AttendanceRecord(), new HashSet<>());
         } else {
             person = new Person(name, studentId, email, moduleCodeList, tagList,
-                    null, new HashSet<>(), consultationList);
+                    null, new HashSet<>(), consultationList, null);
         }
 
         return new AddCommand(person);

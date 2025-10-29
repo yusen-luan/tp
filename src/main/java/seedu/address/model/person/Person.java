@@ -30,6 +30,7 @@ public class Person {
     private final Set<ModuleCode> moduleCodes = new HashSet<>();
     // Data fields
     private final Address address;
+    private final Remark remark;
     private final List<Consultation> consultations;
     private final Set<Tag> tags = new HashSet<>();
     private final AttendanceRecord attendanceRecord;
@@ -55,6 +56,7 @@ public class Person {
         if (grades != null) {
             this.grades.addAll(grades);
         }
+        this.remark = null;
     }
 
     /**
@@ -77,6 +79,7 @@ public class Person {
         if (grades != null) {
             this.grades.addAll(grades);
         }
+        this.remark = null;
     }
 
     /**
@@ -92,6 +95,7 @@ public class Person {
         this.studentId = null;
         this.attendanceRecord = new AttendanceRecord();
         this.consultations = new ArrayList<>();
+        this.remark = null;
     }
 
     /**
@@ -112,6 +116,7 @@ public class Person {
             this.grades.addAll(grades);
         }
         this.consultations = new ArrayList<>();
+        this.remark = null;
     }
 
     /**
@@ -129,6 +134,7 @@ public class Person {
         this.tags.addAll(tags);
         this.attendanceRecord = attendanceRecord != null ? attendanceRecord : new AttendanceRecord();
         this.consultations = new ArrayList<>();
+        this.remark = null;
     }
 
     /**
@@ -150,6 +156,7 @@ public class Person {
             this.grades.addAll(grades);
         }
         this.consultations = new ArrayList<>();
+        this.remark = null;
     }
 
     /**
@@ -157,7 +164,7 @@ public class Person {
      */
     public Person(Name name, StudentId studentId, Email email,
                   Set<ModuleCode> moduleCodes, Set<Tag> tags, AttendanceRecord attendanceRecord,
-                  Set<Grade> grades, List<Consultation> consultations) {
+                  Set<Grade> grades, List<Consultation> consultations, Remark remark) {
         requireAllNonNull(name, studentId, email, moduleCodes, tags, grades, consultations);
         this.name = name;
         this.studentId = studentId;
@@ -169,6 +176,7 @@ public class Person {
         this.tags.addAll(tags);
         this.grades.addAll(grades);
         this.attendanceRecord = attendanceRecord != null ? attendanceRecord : new AttendanceRecord();
+        this.remark = remark;
     }
 
     public Name getName() {
@@ -232,6 +240,13 @@ public class Person {
     }
 
     /**
+     * Returns the remark for this person.
+     */
+    public Remark getRemark() {
+        return remark;
+    }
+
+    /**
      * Returns true if both persons have the same name.
      * This defines a weaker notion of equality between two persons.
      */
@@ -269,14 +284,15 @@ public class Person {
                 && moduleCodes.equals(otherPerson.moduleCodes)
                 && attendanceRecord.equals(otherPerson.attendanceRecord)
                 && Objects.equals(consultations, otherPerson.consultations)
-                && grades.equals(otherPerson.grades);
+                && grades.equals(otherPerson.grades)
+                && Objects.equals(remark, otherPerson.remark);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
         return Objects.hash(name, phone, email, address, tags, studentId, moduleCodes, attendanceRecord,
-                consultations, grades);
+                consultations, grades, remark);
     }
 
     @Override
@@ -292,6 +308,7 @@ public class Person {
                 .add("attendanceRecord", attendanceRecord)
                 .add("consultations", consultations)
                 .add("grades", grades)
+                .add("remark", remark)
                 .toString();
     }
 

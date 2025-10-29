@@ -303,19 +303,7 @@ Given below is an example usage scenario and how the view mechanism behaves.
 
 The following sequence diagram shows how a view operation works:
 
-```
-User -> UI: view 1
-UI -> LogicManager: execute("view 1")
-LogicManager -> AddressBookParser: parseCommand("view 1")
-AddressBookParser -> ViewCommandParser: parse("1")
-ViewCommandParser -> ViewCommand: new ViewCommand(Index)
-ViewCommand -> Model: getFilteredPersonList()
-ViewCommand -> Model: updateFilteredPersonList(predicate)
-ViewCommand -> ViewCommand: createDetailedViewMessage(person)
-ViewCommand --> LogicManager: CommandResult
-LogicManager --> UI: CommandResult
-UI -> User: Display detailed view
-```
+<puml src="diagrams/ViewSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `view 1` Command" />
 
 #### Design Considerations
 
@@ -423,22 +411,7 @@ Given below is an example usage scenario and how the attendance marking mechanis
 
 The following sequence diagram shows how an attendance marking operation works:
 
-```
-User -> UI: attendance s/A0123456X w/1 present
-UI -> LogicManager: execute("attendance s/A0123456X w/1 present")
-LogicManager -> AddressBookParser: parseCommand("attendance s/A0123456X w/1 present")
-AddressBookParser -> AttendanceCommandParser: parse("s/A0123456X w/1 present")
-AttendanceCommandParser -> AttendanceCommand: new AttendanceCommand(studentId, week, status)
-AttendanceCommand -> Model: findPersonByStudentId(studentId)
-Model --> AttendanceCommand: person
-AttendanceCommand -> AttendanceRecord: markAttendance(week, status)
-AttendanceRecord --> AttendanceCommand: updatedRecord
-AttendanceCommand -> Person: new Person(..., updatedRecord)
-AttendanceCommand -> Model: setPerson(oldPerson, newPerson)
-AttendanceCommand --> LogicManager: CommandResult
-LogicManager --> UI: CommandResult
-UI -> User: Success message
-```
+<puml src="diagrams/AttendanceSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `attendance s/A0123456X w/1 present` Command" />
 
 #### Design Considerations
 
@@ -564,6 +537,94 @@ The following sequence diagram shows how the grade operation works:
   * Pros: More flexible for internal use and testing. Can create temporary Grade objects during processing.
   * Cons: Risk of invalid grades propagating through the system. Validation logic scattered across multiple parsers.
 
+### Consultation Feature
+
+#### Implementation
+
+The consultation feature allows teaching assistants to record and view student consultation sessions as part of each student’s profile. Unlike other standalone commands, consultations are implemented as an **attribute of each student**, and can be added or modified **only through the `add` or `edit` commands**.
+
+Consultations are stored within each `Person` object as a list of `Consultation` instances, each representing a single consultation date and time.
+
+**Key Components:**
+
+The `Consultation` class:
+- Represents an individual consultation with a `LocalDateTime` attribute
+- Provides accessor and formatting methods to return a readable date/time string
+- Supports multiple date/time input formats for user convenience
+
+The `AddCommand` and `EditCommand` classes:
+- Allow consultations to be provided as part of the `c/` prefix when adding or editing a student
+- Construct or update a `Person` object that includes the parsed consultations
+- Ensure that consultation data is properly stored, persisted, and displayed
+
+The `AddCommandParser` and `EditCommandParser` classes:
+- Extract and validate all consultation values provided using the `c/` prefix
+- Support multiple datetime input formats (e.g., `dd/MM/yyyy HH:mm`, `yyyy-MM-dd HH:mm`, etc.)
+- Create corresponding `Consultation` objects and include them when constructing the `Person` to be added or edited
+
+#### Execution Flow
+
+Given below is an example usage scenario and how the consultation mechanism behaves during both add and edit operations.
+
+**Step 1.** The user executes either:
+- `add n/John Doe s/A0123456X e/john@u.nus.edu m/CS2103T c/22-10-2025 15:30`, or
+- `edit 1 c/25-10-2025 14:00`  
+  to add or update a student’s consultation record.
+
+**Step 2.** The command is parsed by `AddressBookParser`, which identifies the command type (`add` or `edit`) and creates the respective command parser.
+
+**Step 3.** The parser (`AddCommandParser` or `EditCommandParser`) processes the input:
+- Extracts consultation values from each `c/` prefix
+- Validates and parses them into `LocalDateTime` objects using multiple supported formats
+- Creates a list of `Consultation` objects
+
+**Step 4.** During command execution:
+- The `AddCommand` constructs a new `Person` with the consultations included as part of their attributes
+- The `EditCommand` retrieves the target `Person`, replaces their existing consultations with the new list, and updates the model
+- Both commands call `Model#setPerson()` to commit the change
+
+**Step 5.** The updated `Person` (with consultations) is persisted to storage and reflected in the UI.  
+Consultation details can then be viewed through the `view` command, which displays all recorded consultations for that student in the result panel.
+
+The following sequence diagram shows how consultations are processed as part of the add and edit workflows:
+
+<puml src="diagrams/ConsultationSequenceDiagram.puml" alt="ConsultationSequenceDiagram" />
+
+#### Design Considerations
+
+**Aspect: Integration within `add` and `edit` commands vs standalone `consult` command**
+
+* **Alternative 1 (current choice):** Integrate consultation handling within existing `add` and `edit` commands
+    * Pros: Keeps the command set simple and intuitive — no need for an additional `consult` command. Ensures that all student-related data (attendance, consultations, grades) are managed consistently within a single workflow. Prevents duplicate logic for modifying the same `Person` object.
+    * Cons: Less explicit — users cannot add a consultation directly without editing the student. Parsing logic for `add` and `edit` becomes more complex as new optional fields are introduced.
+
+* **Alternative 2:** Implement a dedicated `consult` command for adding consultations
+    * Pros: Clear separation of concerns. Easier to track when consultations are added. Provides finer-grained control for managing consultation records.
+    * Cons: Adds a new command and parser, increasing system complexity. Introduces overlapping functionality with `edit`. Users would need to remember and use multiple commands to update the same student record.
+
+---
+
+**Aspect: Consultation data structure**
+
+* **Alternative 1 (current choice):** Store consultations as a list of `Consultation` objects within `Person`
+    * Pros: Maintains a one-to-many relationship (one student → many consultations). Easy to extend in the future (e.g., add notes or duration fields). Keeps related data encapsulated within the `Person` model.
+    * Cons: Slightly larger memory footprint per student. Requires additional serialization logic for saving and loading lists of consultations.
+
+* **Alternative 2:** Store consultations as a simple formatted `String` within `Person`
+    * Pros: Simpler to implement and serialize. Minimal model changes required.
+    * Cons: Harder to validate and manipulate programmatically. Loses type safety and flexibility for future enhancements.
+
+---
+
+**Aspect: Datetime input format**
+
+* **Alternative 1 (current choice):** Accept multiple datetime formats for user flexibility
+    * Pros: Improves user experience by accommodating a variety of date/time input styles. Reduces likelihood of input errors due to format mismatch.
+    * Cons: Increases parser complexity — more code paths to validate and test. Slightly higher chance of ambiguity between formats.
+
+* **Alternative 2:** Enforce a single strict datetime format (e.g., `yyyy-MM-dd HH:mm`)
+    * Pros: Simpler parsing logic and clearer documentation. Ensures data consistency across all entries.
+    * Cons: Less user-friendly; rejects valid but differently formatted datetimes. May frustrate users unfamiliar with the required format.
 
 --------------------------------------------------------------------------------------------------------------------
 
