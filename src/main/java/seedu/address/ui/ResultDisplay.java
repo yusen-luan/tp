@@ -115,14 +115,17 @@ public class ResultDisplay extends UiPart<Region> {
                 continue;
             }
 
-            // Add bullet points for list items
+            // Handle list items (numbered, bullet, or bullet point)
             if (line.matches("^[\\d]+\\..*") || line.startsWith("-") || line.startsWith("*")) {
-                // List item
-                if (!content.toString().contains("<ul>") || content.toString().endsWith("</ul>")) {
+                // List item - ensure ul tag is open
+                if (!content.toString().contains("<ul") || content.toString().endsWith("</ul>")) {
                     content.append("<ul class='bullet-list'>");
                 }
-                content.append("<li>").append(escapeHtml(line.replaceFirst("^[-*\\d+.]\\s*", ""))).append("</li>");
+                // Remove the list marker and add as list item
+                String listContent = line.replaceFirst("^[-*\\d+.]\\s*", "");
+                content.append("<li>").append(escapeHtml(listContent)).append("</li>");
             } else {
+                // Close any open list before adding non-list content
                 if (content.toString().endsWith("</li>")) {
                     content.append("</ul>");
                 }

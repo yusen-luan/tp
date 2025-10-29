@@ -23,20 +23,21 @@ public class GradeCommand extends Command {
 
     public static final String COMMAND_WORD = "grade";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds grades to the student identified "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds or updates grades for the student identified "
             + "by the index number used in the displayed student list. "
-            + "Grades will be added to the student's existing grades.\n"
+            + "If a grade for an assignment already exists (case-insensitive), it will be updated.\n"
             + "Parameters: INDEX (must be a positive integer) "
             + PREFIX_GRADE + "ASSIGNMENT_NAME:SCORE...\n"
+            + "Note: SCORE must be a number between 0 and 100.\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_GRADE + "Midterm:85 "
             + PREFIX_GRADE + "Assignment1:92";
 
     public static final String MESSAGE_ADD_GRADE_SUCCESS = "Added %s to %s:\n%s";
+    public static final String MESSAGE_UPDATE_GRADE_SUCCESS = "Updated %s for %s:\n%s";
+    public static final String MESSAGE_MIXED_GRADE_SUCCESS = "Added %s and updated %s for %s:\n%s";
     public static final String MESSAGE_NOT_STUDENT = "The person at the specified index is not a student. "
             + "Grades can only be added to students.";
-    public static final String MESSAGE_DUPLICATE_GRADE =
-            "Cannot add grade: %s already has a grade for '%s'.";
 
     private final Index index;
     private final Set<Grade> gradesToAdd;
@@ -69,16 +70,22 @@ public class GradeCommand extends Command {
             throw new CommandException(MESSAGE_NOT_STUDENT);
         }
 
-        // Check for duplicate grades (same assignment name)
-        Set<String> existingAssignments = new HashSet<>();
-        for (Grade existingGrade : personToEdit.getGrades()) {
-            existingAssignments.add(existingGrade.assignmentName);
-        }
+        // Separate new grades into those that add new assignments vs update existing ones
+        Set<Grade> toAdd = new HashSet<>();
+        Set<Grade> toUpdate = new HashSet<>();
 
         for (Grade newGrade : gradesToAdd) {
-            if (existingAssignments.contains(newGrade.assignmentName)) {
-                throw new CommandException(String.format(MESSAGE_DUPLICATE_GRADE,
-                        Messages.formatStudentId(personToEdit), newGrade.assignmentName));
+            boolean isUpdate = false;
+            for (Grade existingGrade : personToEdit.getGrades()) {
+                // Case-insensitive comparison for assignment names
+                if (existingGrade.assignmentName.equalsIgnoreCase(newGrade.assignmentName)) {
+                    toUpdate.add(newGrade);
+                    isUpdate = true;
+                    break;
+                }
+            }
+            if (!isUpdate) {
+                toAdd.add(newGrade);
             }
         }
 
@@ -87,19 +94,48 @@ public class GradeCommand extends Command {
         model.setPerson(personToEdit, gradedPerson);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
 
-        String gradeCount = Messages.formatCount(gradesToAdd.size(), "grade");
+        // Generate appropriate success message
         String gradesFormatted = Messages.formatGrades(gradesToAdd);
-        return new CommandResult(Messages.successMessage(String.format(MESSAGE_ADD_GRADE_SUCCESS,
-                gradeCount, Messages.formatStudentId(gradedPerson), gradesFormatted)));
+        if (!toAdd.isEmpty() && !toUpdate.isEmpty()) {
+            String addCount = Messages.formatCount(toAdd.size(), "grade");
+            String updateCount = Messages.formatCount(toUpdate.size(), "grade");
+            return new CommandResult(Messages.successMessage(String.format(MESSAGE_MIXED_GRADE_SUCCESS,
+                    addCount, updateCount, Messages.formatStudentId(gradedPerson), gradesFormatted)));
+        } else if (!toUpdate.isEmpty()) {
+            String updateCount = Messages.formatCount(toUpdate.size(), "grade");
+            return new CommandResult(Messages.successMessage(String.format(MESSAGE_UPDATE_GRADE_SUCCESS,
+                    updateCount, Messages.formatStudentId(gradedPerson), gradesFormatted)));
+        } else {
+            String addCount = Messages.formatCount(toAdd.size(), "grade");
+            return new CommandResult(Messages.successMessage(String.format(MESSAGE_ADD_GRADE_SUCCESS,
+                    addCount, Messages.formatStudentId(gradedPerson), gradesFormatted)));
+        }
     }
 
     /**
-     * Creates and returns a {@code Person} with the grades added.
+     * Creates and returns a {@code Person} with the grades added or updated.
+     * If a grade for the same assignment (case-insensitive) already exists, it will be replaced.
      */
     private static Person createGradedPerson(Person personToEdit, Set<Grade> gradesToAdd) {
         assert personToEdit != null;
 
-        Set<Grade> updatedGrades = new HashSet<>(personToEdit.getGrades());
+        Set<Grade> updatedGrades = new HashSet<>();
+
+        // Add existing grades, but skip any that will be updated (case-insensitive check)
+        for (Grade existingGrade : personToEdit.getGrades()) {
+            boolean willBeUpdated = false;
+            for (Grade newGrade : gradesToAdd) {
+                if (existingGrade.assignmentName.equalsIgnoreCase(newGrade.assignmentName)) {
+                    willBeUpdated = true;
+                    break;
+                }
+            }
+            if (!willBeUpdated) {
+                updatedGrades.add(existingGrade);
+            }
+        }
+
+        // Add all new grades (including updates)
         updatedGrades.addAll(gradesToAdd);
 
         // Create a new person with the updated grades

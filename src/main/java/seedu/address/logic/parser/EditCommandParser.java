@@ -86,6 +86,8 @@ public class EditCommandParser implements Parser<EditCommand> {
             for (String consultationString : argMultimap.getAllValues(PREFIX_CONSULTATION)) {
                 consultations.add(new Consultation(ParserUtil.parseDateTime(consultationString)));
             }
+            // Remove duplicate consultations
+            consultations = consultations.stream().distinct().collect(java.util.stream.Collectors.toList());
             editPersonDescriptor.setConsultations(consultations);
         }
         if (argMultimap.getValue(PREFIX_GRADE).isPresent()) {
