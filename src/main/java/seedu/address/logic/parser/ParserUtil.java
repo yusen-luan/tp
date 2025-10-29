@@ -120,12 +120,13 @@ public class ParserUtil {
     /**
      * Parses a {@code String studentId} into a {@code StudentId}.
      * Leading and trailing whitespaces will be trimmed.
+     * Student ID is normalized to uppercase to allow case-insensitive input.
      *
      * @throws ParseException if the given {@code studentId} is invalid.
      */
     public static StudentId parseStudentId(String studentId) throws ParseException {
         requireNonNull(studentId);
-        String trimmedStudentId = studentId.trim();
+        String trimmedStudentId = studentId.trim().toUpperCase();
         if (!StudentId.isValidStudentId(trimmedStudentId)) {
             throw new ParseException(StudentId.MESSAGE_CONSTRAINTS);
         }
@@ -251,7 +252,7 @@ public class ParserUtil {
         try {
             return AttendanceStatus.fromString(trimmedStatus);
         } catch (IllegalArgumentException e) {
-            throw new ParseException("Invalid attendance status. Use 'present' or 'absent'.");
+            throw new ParseException("Invalid attendance status. Use 'present', 'absent', or 'unmark'.");
         }
     }
 

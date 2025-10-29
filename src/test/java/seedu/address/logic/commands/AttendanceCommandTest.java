@@ -4,9 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
+import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.commons.core.index.Index;
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
@@ -38,7 +42,8 @@ public class AttendanceCommandTest {
         Week week = new Week(1);
         AttendanceStatus status = AttendanceStatus.PRESENT;
 
-        AttendanceCommand command = new AttendanceCommand(null, week, status);
+        StudentId nullStudentId = null;
+        AttendanceCommand command = new AttendanceCommand(nullStudentId, week, status);
         // Test that the command was created successfully
         assertTrue(command instanceof AttendanceCommand);
     }
@@ -87,7 +92,8 @@ public class AttendanceCommandTest {
 
         Week week = new Week(1);
         AttendanceStatus status = AttendanceStatus.PRESENT;
-        AttendanceCommand command = new AttendanceCommand(null, week, status);
+        StudentId nullStudentId = null;
+        AttendanceCommand command = new AttendanceCommand(nullStudentId, week, status);
 
         CommandResult result = command.execute(model);
 
@@ -135,6 +141,52 @@ public class AttendanceCommandTest {
     }
 
     @Test
+    public void constructor_indexBasedCommand_success() {
+        Index index = INDEX_FIRST_PERSON;
+        Week week = new Week(1);
+        AttendanceStatus status = AttendanceStatus.PRESENT;
+
+        AttendanceCommand command = new AttendanceCommand(index, week, status);
+        // Test that the command was created successfully
+        assertTrue(command instanceof AttendanceCommand);
+    }
+
+    @Test
+    public void execute_markByIndex_success() throws Exception {
+        Person student = new PersonBuilder()
+                .withName("John Doe")
+                .withStudentId("A0123456X")
+                .withEmail("john@u.nus.edu")
+                .withModuleCodes("CS2103T")
+                .build();
+        model.addPerson(student);
+
+        Week week = new Week(1);
+        AttendanceStatus status = AttendanceStatus.PRESENT;
+        AttendanceCommand command = new AttendanceCommand(INDEX_FIRST_PERSON, week, status);
+
+        CommandResult result = command.execute(model);
+
+        assertEquals(String.format(AttendanceCommand.MESSAGE_MARK_ATTENDANCE_SUCCESS,
+                student.getName(), week.value, status), result.getFeedbackToUser());
+
+        // Verify attendance was marked
+        Person updatedStudent = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        assertEquals(AttendanceStatus.PRESENT, updatedStudent.getAttendanceRecord().getAllAttendances().get(week));
+    }
+
+    @Test
+    public void execute_invalidIndex_throwsCommandException() {
+        Week week = new Week(1);
+        AttendanceStatus status = AttendanceStatus.PRESENT;
+        Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
+        AttendanceCommand command = new AttendanceCommand(outOfBoundIndex, week, status);
+
+        assertThrows(CommandException.class, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX, ()
+                -> command.execute(model));
+    }
+
+    @Test
     public void equals() {
         StudentId studentId1 = new StudentId("A0123456X");
         StudentId studentId2 = new StudentId("A1234567Y");
@@ -148,7 +200,13 @@ public class AttendanceCommandTest {
         AttendanceCommand command3 = new AttendanceCommand(studentId2, week1, status1);
         AttendanceCommand command4 = new AttendanceCommand(studentId1, week2, status1);
         AttendanceCommand command5 = new AttendanceCommand(studentId1, week1, status2);
-        AttendanceCommand command6 = new AttendanceCommand(null, week1, status1);
+        StudentId nullStudentId = null;
+        AttendanceCommand command6 = new AttendanceCommand(nullStudentId, week1, status1);
+
+        // Index-based commands
+        AttendanceCommand command7 = new AttendanceCommand(INDEX_FIRST_PERSON, week1, status1);
+        AttendanceCommand command8 = new AttendanceCommand(INDEX_FIRST_PERSON, week1, status1);
+        AttendanceCommand command9 = new AttendanceCommand(INDEX_SECOND_PERSON, week1, status1);
 
         // Same object
         assertTrue(command1.equals(command1));
@@ -167,6 +225,15 @@ public class AttendanceCommandTest {
 
         // One null student ID
         assertFalse(command1.equals(command6));
+
+        // Index-based: same parameters
+        assertTrue(command7.equals(command8));
+
+        // Index-based: different index
+        assertFalse(command7.equals(command9));
+
+        // Index-based vs student ID-based
+        assertFalse(command1.equals(command7));
 
         // Different type
         assertFalse(command1.equals(week1));
@@ -192,7 +259,8 @@ public class AttendanceCommandTest {
     public void toString_markAll() {
         Week week = new Week(1);
         AttendanceStatus status = AttendanceStatus.PRESENT;
-        AttendanceCommand command = new AttendanceCommand(null, week, status);
+        StudentId nullStudentId = null;
+        AttendanceCommand command = new AttendanceCommand(nullStudentId, week, status);
 
         String actual = command.toString();
         assertTrue(actual.contains("targetStudentId=null"));

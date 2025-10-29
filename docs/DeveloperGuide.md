@@ -359,14 +359,23 @@ The `Week` class:
 - Implements proper equality for use as map keys
 
 The `AttendanceStatus` enum:
-- Two states: `PRESENT` and `ABSENT`
+- Three states: `PRESENT`, `ABSENT`, and `UNMARK`
+- `UNMARK` is a special status that removes an existing attendance record
 - Case-insensitive parsing from user input
 
 The `AttendanceCommand`:
-- Supports marking attendance for individual students by student ID
-- Supports bulk marking attendance for all students using `s/all`
+- Supports marking attendance for individual students by index or student ID
+- Supports bulk marking attendance for all students using `all` keyword
 - Takes week number and attendance status as parameters
-- Creates updated `Person` objects with new attendance records
+- Status must be specified after the week parameter
+- Supports unmarking attendance (removing records) with `unmark` status
+- Creates updated `Person` objects with modified attendance records
+
+The `AttendanceRecord` class:
+- Stores attendance using a `Map<Week, AttendanceStatus>` structure
+- Unmarked weeks are absent from the map (no entry = unmarked state)
+- `markAttendance()` adds or updates an entry in the map
+- `unmarkAttendance()` removes an entry from the map
 
 The `PersonCard` UI component:
 - Displays attendance visually in the student list using a grid of 13 rectangles (16x16 pixels each with rounded edges)
@@ -379,39 +388,47 @@ The `PersonCard` UI component:
 
 Given below is an example usage scenario and how the attendance marking mechanism behaves.
 
-**Step 1.** The user executes `attendance s/A0123456X w/1 present` to mark a student present for week 1.
+**Step 1.** The user executes `attendance 1 w/1 present` to mark the first student in the displayed list as present for week 1.
 
 **Step 2.** The command is parsed by `AddressBookParser`, which identifies it as an attendance command and creates an `AttendanceCommandParser`.
 
 **Step 3.** `AttendanceCommandParser` parses the arguments:
-- Extracts student ID (`A0123456X`) or detects `all` keyword
-- Extracts week number (`1`) and validates it's between 1-13
-- Parses attendance status (`present`) into `AttendanceStatus.PRESENT`
+- Checks the preamble to determine the format (index, `all` keyword, or student ID with prefix)
+- For index format: Extracts index (`1`) from preamble
+- For `all` format: Detects `all` keyword in preamble
+- For student ID format: Extracts student ID (`A0123456X`) from `s/` prefix
+- Extracts week number (`1`) from `w/` prefix and validates it's between 1-13
+- Parses attendance status (`present`, `absent`, or `unmark`) from after the week parameter into corresponding `AttendanceStatus`
 - Creates an `AttendanceCommand` with these parameters
 
 **Step 4.** When `AttendanceCommand#execute()` is called:
-- Determines if single student or all students should be marked
-- For single student:
+- Determines whether to mark by index, by student ID, or all students
+- For marking by index:
+  - Retrieves the filtered person list from `Model`
+  - Gets the student at the specified index
+  - Throws `CommandException` if index is out of bounds
+- For marking by student ID:
   - Calls `Model#findPersonByStudentId()` to locate the student
   - Throws `CommandException` if student not found
+- For marking all students:
+  - Iterates through all students in address book
+  - Counts number of students updated
+- For each student being marked:
   - Gets current `AttendanceRecord` from the student
-  - Calls `AttendanceRecord#markAttendance(week, status)` to get updated record
+  - If status is `UNMARK`: Calls `AttendanceRecord#unmarkAttendance(week)` to remove the record
+  - Otherwise: Calls `AttendanceRecord#markAttendance(week, status)` to add/update the record
   - Creates new `Person` object with updated attendance record
   - Calls `Model#setPerson()` to replace old person with updated person
-- For all students:
-  - Iterates through all students in address book
-  - Updates each student's attendance record similarly
-  - Counts number of students updated
-- Returns `CommandResult` with success message
+- Returns `CommandResult` with appropriate success message
 
 **Step 5.** The model persists the changes:
 - Updated person list triggers storage save
 - Attendance data is serialized to JSON format
 - Data is written to disk automatically
 
-The following sequence diagram shows how an attendance marking operation works:
+The following sequence diagram shows how an attendance marking operation works for the index-based format (`attendance 1 w/1 present`). The flow for student ID-based (`attendance s/A0123456X w/1 present`) and mark all (`attendance all w/1 present`) formats follows a similar execution path, with the main difference being how the student(s) are identified.
 
-<puml src="diagrams/AttendanceSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `attendance s/A0123456X w/1 present` Command" />
+<puml src="diagrams/AttendanceSequenceDiagram.puml" alt="Interactions Inside the Logic Component for the `attendance 1 w/1 present` Command" />
 
 #### Design Considerations
 
@@ -435,15 +452,35 @@ The following sequence diagram shows how an attendance marking operation works:
   * Pros: More efficient for frequent updates. No need to recreate objects. Direct modification of state.
   * Cons: Risk of unintended side effects. Thread safety concerns. Harder to track state changes. Inconsistent with existing codebase patterns.
 
+**Aspect: Student identification methods**
+
+* **Alternative 1 (current choice):** Support index, student ID, and `all` keyword
+  * Pros: Flexible for different workflows. Index is fastest for visible students. Student ID works when student not in filtered list. `all` keyword saves time for bulk operations. Consistent with other commands like `delete` and `view`.
+  * Cons: More complex parsing logic. Need to distinguish between numeric index and `all` keyword. Multiple constructors in `AttendanceCommand`.
+
+* **Alternative 2:** Only support student ID-based marking
+  * Pros: Simpler parsing logic. Single identification method. No ambiguity in command format.
+  * Cons: Less convenient. Requires memorizing or looking up student IDs. Cannot leverage displayed list. Slower for bulk operations.
+
 **Aspect: Bulk attendance marking**
 
-* **Alternative 1 (current choice):** Support `s/all` to mark all students
-  * Pros: Very convenient for TAs marking full-class attendance. Saves time when all students share same status. Single command instead of N commands.
-  * Cons: Requires special parsing logic for "all" keyword. All-or-nothing operation (cannot mark most students one way, exceptions another way). Risk of accidental bulk operations.
+* **Alternative 1 (current choice):** Support `all` keyword (without prefix) to mark all students
+  * Pros: Very convenient for TAs marking full-class attendance. Saves time when all students share same status. Single command instead of N commands. Clean syntax without prefix clutter.
+  * Cons: Requires special parsing logic to distinguish `all` from numeric index. All-or-nothing operation (cannot mark most students one way, exceptions another way). Risk of accidental bulk operations.
 
 * **Alternative 2:** Require individual marking for each student
   * Pros: More explicit, less risk of mistakes. Simpler parsing logic. Forces TAs to verify each student.
   * Cons: Tedious for large classes. Time-consuming when most students have same status. Many repetitive commands.
+
+**Aspect: Status parameter position**
+
+* **Alternative 1 (current choice):** Status must come after week parameter (`w/1 present`)
+  * Pros: Clear and consistent command structure. Status is visually grouped with week. Easier to parse - no ambiguity about parameter order. Natural reading flow (week then status).
+  * Cons: Slightly longer to type. Cannot put status at the beginning for emphasis.
+
+* **Alternative 2:** Allow flexible status positioning (before or after week)
+  * Pros: More flexibility for users. Can emphasize status by putting it first.
+  * Cons: More complex parsing logic. Ambiguous command structure. Harder to document and explain. Can lead to user confusion about accepted formats.
 
 **Aspect: Week number validation**
 

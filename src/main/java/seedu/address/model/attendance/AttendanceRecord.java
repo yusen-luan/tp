@@ -51,6 +51,20 @@ public class AttendanceRecord {
     }
 
     /**
+     * Unmarks attendance for a specific week, removing any existing record.
+     *
+     * @param week The week to unmark attendance for.
+     * @return A new AttendanceRecord with the attendance removed for the specified week.
+     */
+    public AttendanceRecord unmarkAttendance(Week week) {
+        requireNonNull(week);
+
+        Map<Week, AttendanceStatus> newMap = new HashMap<>(attendanceMap);
+        newMap.remove(week); // Remove the entry to return to unmarked state
+        return new AttendanceRecord(newMap);
+    }
+
+    /**
      * Gets the attendance status for a specific week.
      *
      * @param week The week to get attendance for.
