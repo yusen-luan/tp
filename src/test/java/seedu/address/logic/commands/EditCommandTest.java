@@ -24,7 +24,12 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.attendance.Attendance;
+import seedu.address.model.attendance.AttendanceStatus;
+import seedu.address.model.attendance.Week;
+import seedu.address.model.grade.Grade;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.Remark;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 
@@ -219,6 +224,140 @@ public class EditCommandTest {
         String expected = EditCommand.class.getCanonicalName() + "{index=" + index + ", editPersonDescriptor="
                 + editPersonDescriptor + "}";
         assertEquals(expected, editCommand.toString());
+    }
+
+    @Test
+    public void execute_gradeFieldSpecified_success() {
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+
+        // Only test if person has student ID (students can have grades)
+        if (firstPerson.getStudentId() != null && !firstPerson.getGrades().isEmpty()) {
+            // Get an existing grade to update
+            Grade existingGrade = firstPerson.getGrades().iterator().next();
+            Grade updatedGrade = new Grade(existingGrade.assignmentName, "95");
+
+            EditPersonDescriptor descriptor = new EditPersonDescriptor();
+            descriptor.setGrade(updatedGrade);
+            EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
+
+            PersonBuilder personBuilder = new PersonBuilder(firstPerson);
+            Person editedPerson = personBuilder.withGrade(updatedGrade.assignmentName, updatedGrade.score).build();
+
+            String expectedMessage = Messages.successMessage(String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS,
+                    Messages.formatStudentId(editedPerson)));
+
+            Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+            expectedModel.setPerson(firstPerson, editedPerson);
+
+            assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
+        }
+    }
+
+    @Test
+    public void execute_gradeNotFound_failure() {
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+
+        // Only test if person has student ID (students can have grades)
+        if (firstPerson.getStudentId() != null) {
+            Grade nonExistentGrade = new Grade("NonExistentAssignment", "85");
+
+            EditPersonDescriptor descriptor = new EditPersonDescriptor();
+            descriptor.setGrade(nonExistentGrade);
+            EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
+
+            String expectedMessage = String.format(EditCommand.MESSAGE_GRADE_NOT_FOUND, "NonExistentAssignment");
+            assertCommandFailure(editCommand, model, expectedMessage);
+        }
+    }
+
+    @Test
+    public void execute_attendanceFieldSpecified_success() {
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+
+        // Only test if person has student ID (students can have attendance)
+        if (firstPerson.getStudentId() != null) {
+            Week week = new Week(5);
+            AttendanceStatus status = AttendanceStatus.PRESENT;
+            Attendance attendance = new Attendance(week, status);
+
+            EditPersonDescriptor descriptor = new EditPersonDescriptor();
+            descriptor.setAttendance(attendance);
+            EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
+
+            PersonBuilder personBuilder = new PersonBuilder(firstPerson);
+            Person editedPerson = personBuilder.withAttendance(week, status).build();
+
+            String expectedMessage = Messages.successMessage(String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS,
+                    Messages.formatStudentId(editedPerson)));
+
+            Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+            expectedModel.setPerson(firstPerson, editedPerson);
+
+            assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
+        }
+    }
+
+    @Test
+    public void execute_attendanceUnmarkSpecified_success() {
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+
+        // Only test if person has student ID and has some attendance
+        if (firstPerson.getStudentId() != null) {
+            // First mark attendance
+            Week week = new Week(3);
+            AttendanceStatus markStatus = AttendanceStatus.PRESENT;
+            Attendance markAttendance = new Attendance(week, markStatus);
+
+            EditPersonDescriptor markDescriptor = new EditPersonDescriptor();
+            markDescriptor.setAttendance(markAttendance);
+            EditCommand markCommand = new EditCommand(INDEX_FIRST_PERSON, markDescriptor);
+
+            try {
+                markCommand.execute(model);
+            } catch (Exception e) {
+                // Ignore if marking fails
+            }
+
+            // Then unmark
+            Attendance unmarkAttendance = new Attendance(week, AttendanceStatus.UNMARK);
+            EditPersonDescriptor unmarkDescriptor = new EditPersonDescriptor();
+            unmarkDescriptor.setAttendance(unmarkAttendance);
+            EditCommand unmarkCommand = new EditCommand(INDEX_FIRST_PERSON, unmarkDescriptor);
+
+            PersonBuilder personBuilder = new PersonBuilder(model.getFilteredPersonList()
+                    .get(INDEX_FIRST_PERSON.getZeroBased()));
+            Person editedPerson = personBuilder.withUnmarkedAttendance(week).build();
+
+            String expectedMessage = Messages.successMessage(String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS,
+                    Messages.formatStudentId(editedPerson)));
+
+            Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+            expectedModel.setPerson(model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased()),
+                    editedPerson);
+
+            assertCommandSuccess(unmarkCommand, model, expectedMessage, expectedModel);
+        }
+    }
+
+    @Test
+    public void execute_remarkFieldSpecified_success() {
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+
+        Remark remark = new Remark("Excellent student");
+        EditPersonDescriptor descriptor = new EditPersonDescriptor();
+        descriptor.setRemark(remark);
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
+
+        PersonBuilder personBuilder = new PersonBuilder(firstPerson);
+        Person editedPerson = personBuilder.withRemark("Excellent student").build();
+
+        String expectedMessage = Messages.successMessage(String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS,
+                Messages.formatStudentId(editedPerson)));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setPerson(firstPerson, editedPerson);
+
+        assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
     }
 
 }
