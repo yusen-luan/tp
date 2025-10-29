@@ -1,0 +1,108 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":AttendanceCommandParser" as AttendanceCommandParser LOGIC_COLOR
+participant "a:AttendanceCommand" as AttendanceCommand LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":Model" as Model MODEL_COLOR
+participant "person:Person" as Person MODEL_COLOR
+participant "record:AttendanceRecord" as AttendanceRecord MODEL_COLOR
+end box
+
+[-> LogicManager : execute("attendance 1 w/1 present")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("attendance 1 w/1 present")
+activate AddressBookParser
+
+create AttendanceCommandParser
+AddressBookParser -> AttendanceCommandParser
+activate AttendanceCommandParser
+
+AttendanceCommandParser --> AddressBookParser
+deactivate AttendanceCommandParser
+
+AddressBookParser -> AttendanceCommandParser : parse(" 1 w/1 present")
+activate AttendanceCommandParser
+
+note right of AttendanceCommandParser
+  Parses:
+  - Index: 1
+  - Week: 1
+  - Status: present
+end note
+
+create AttendanceCommand
+AttendanceCommandParser -> AttendanceCommand : new AttendanceCommand(index, week, status)
+activate AttendanceCommand
+
+AttendanceCommand --> AttendanceCommandParser : a
+deactivate AttendanceCommand
+
+AttendanceCommandParser --> AddressBookParser : a
+deactivate AttendanceCommandParser
+'Hidden arrow to position the destroy marker below the end of the activation bar.
+AttendanceCommandParser -[hidden]-> AddressBookParser
+destroy AttendanceCommandParser
+
+AddressBookParser --> LogicManager : a
+deactivate AddressBookParser
+
+LogicManager -> AttendanceCommand : execute(model)
+activate AttendanceCommand
+
+AttendanceCommand -> Model : getFilteredPersonList()
+activate Model
+
+Model --> AttendanceCommand : list
+deactivate Model
+
+note right of AttendanceCommand
+  Gets person at index 0
+  from the filtered list
+end note
+
+AttendanceCommand -> Person : getAttendanceRecord()
+activate Person
+
+Person --> AttendanceCommand : record
+deactivate Person
+
+AttendanceCommand -> AttendanceRecord : markAttendance(week, status)
+activate AttendanceRecord
+
+AttendanceRecord --> AttendanceCommand : updatedRecord
+note right: Returns new\nAttendanceRecord\n(immutable)
+deactivate AttendanceRecord
+
+note right of AttendanceCommand
+  Creates new Person with
+  updated AttendanceRecord
+end note
+
+AttendanceCommand -> Model : setPerson(person, updatedPerson)
+activate Model
+
+Model --> AttendanceCommand
+deactivate Model
+
+create CommandResult
+AttendanceCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> AttendanceCommand : r
+deactivate CommandResult
+
+AttendanceCommand --> LogicManager : r
+deactivate AttendanceCommand
+
+[<-- LogicManager
+deactivate LogicManager
+@enduml
