@@ -16,6 +16,9 @@ public class ResultDisplay extends UiPart<Region> {
     @FXML
     private WebView resultDisplay;
 
+    private boolean isDarkTheme = true;
+    private String lastMessage = "";
+
     /**
      * Creates a ResultDisplay with GitHub-style HTML formatting support.
      */
@@ -26,10 +29,23 @@ public class ResultDisplay extends UiPart<Region> {
     }
 
     /**
+     * Sets the theme for the result display.
+     * @param isDark true for dark theme, false for light theme
+     */
+    public void setTheme(boolean isDark) {
+        this.isDarkTheme = isDark;
+        // Refresh the display with new theme
+        if (!lastMessage.isEmpty()) {
+            setFeedbackToUser(lastMessage);
+        }
+    }
+
+    /**
      * Sets the feedback message with GitHub-style rich HTML formatting.
      */
     public void setFeedbackToUser(String feedbackToUser) {
         requireNonNull(feedbackToUser);
+        this.lastMessage = feedbackToUser;
         String html = convertToHtml(feedbackToUser);
         resultDisplay.getEngine().loadContent(html);
     }
@@ -166,33 +182,44 @@ public class ResultDisplay extends UiPart<Region> {
     }
 
     /**
-     * Returns GitHub-style CSS for rich message formatting.
+     * Returns GitHub-style CSS for rich message formatting based on current theme.
      */
     private String getGitHubStyleCss() {
+        if (isDarkTheme) {
+            return getDarkThemeStyles();
+        } else {
+            return getLightThemeStyles();
+        }
+    }
+
+    /**
+     * Returns dark theme styles.
+     */
+    private String getDarkThemeStyles() {
         return "body { "
                 + "margin: 0; "
-                + "padding: 8px; "
+                + "padding: 10px; "
                 + "font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', "
                 + "'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif; "
-                + "font-size: 13px; "
-                + "line-height: 1.5; "
+                + "font-size: 15px; "
+                + "line-height: 1.6; "
                 + "color: rgba(255, 255, 255, 0.92); "
-                + "background: transparent; "
+                + "background-color: rgba(28, 28, 30, 0.95); "
                 + "} "
                 + ".message-container { "
                 + "border-radius: 12px; "
-                + "border: 1px solid rgba(255, 255, 255, 0.1); "
-                + "background: rgba(28, 28, 30, 0.6); "
+                + "border: 1px solid rgba(255, 255, 255, 0.12); "
+                + "background: rgba(44, 44, 46, 0.7); "
                 + "overflow: hidden; "
-                + "box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); "
+                + "box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5); "
                 + "} "
                 + ".message-header { "
-                + "padding: 10px 14px; "
+                + "padding: 12px 16px; "
                 + "font-weight: 600; "
-                + "font-size: 14px; "
+                + "font-size: 16px; "
                 + "display: flex; "
                 + "align-items: center; "
-                + "gap: 6px; "
+                + "gap: 8px; "
                 + "border-bottom: 1px solid rgba(255, 255, 255, 0.08); "
                 + "} "
                 + ".success-header { "
@@ -204,40 +231,40 @@ public class ResultDisplay extends UiPart<Region> {
                 + "color: #ffffff; "
                 + "} "
                 + ".icon { "
-                + "font-size: 16px; "
+                + "font-size: 18px; "
                 + "} "
                 + ".message-body { "
-                + "padding: 12px 14px; "
+                + "padding: 14px 16px; "
                 + "} "
                 + "p { "
-                + "margin: 0 0 8px 0; "
+                + "margin: 0 0 10px 0; "
                 + "} "
                 + "p:last-child { "
                 + "margin-bottom: 0; "
                 + "} "
                 + ".bullet-list { "
-                + "margin: 6px 0; "
-                + "padding-left: 20px; "
+                + "margin: 8px 0; "
+                + "padding-left: 24px; "
                 + "} "
                 + ".bullet-list li { "
-                + "margin: 4px 0; "
+                + "margin: 6px 0; "
                 + "} "
                 + ".student-id { "
                 + "font-weight: 600; "
                 + "color: #0A84FF; "
                 + "font-family: 'SF Mono', Monaco, 'Cascadia Code', Consolas, monospace; "
-                + "font-size: 12px; "
-                + "background: rgba(10, 132, 255, 0.15); "
-                + "padding: 2px 5px; "
+                + "font-size: 14px; "
+                + "background: rgba(10, 132, 255, 0.2); "
+                + "padding: 3px 6px; "
                 + "border-radius: 4px; "
                 + "} "
                 + ".module-code { "
                 + "font-weight: 600; "
-                + "color: #AF52DE; "
+                + "color: #BF5AF2; "
                 + "font-family: 'SF Mono', Monaco, 'Cascadia Code', Consolas, monospace; "
-                + "font-size: 12px; "
-                + "background: rgba(175, 82, 222, 0.15); "
-                + "padding: 2px 5px; "
+                + "font-size: 14px; "
+                + "background: rgba(191, 90, 242, 0.2); "
+                + "padding: 3px 6px; "
                 + "border-radius: 4px; "
                 + "} "
                 + ".number { "
@@ -246,14 +273,106 @@ public class ResultDisplay extends UiPart<Region> {
                 + "} "
                 + ".tag { "
                 + "display: inline-block; "
-                + "padding: 2px 7px; "
-                + "margin: 0 3px; "
-                + "font-size: 11px; "
+                + "padding: 3px 9px; "
+                + "margin: 0 4px; "
+                + "font-size: 13px; "
                 + "font-weight: 500; "
-                + "background: rgba(10, 132, 255, 0.15); "
+                + "background: rgba(10, 132, 255, 0.2); "
                 + "color: #0A84FF; "
-                + "border-radius: 10px; "
-                + "border: 1px solid rgba(10, 132, 255, 0.3); "
+                + "border-radius: 12px; "
+                + "border: 1px solid rgba(10, 132, 255, 0.4); "
+                + "}";
+    }
+
+    /**
+     * Returns light theme styles.
+     */
+    private String getLightThemeStyles() {
+        return "body { "
+                + "margin: 0; "
+                + "padding: 10px; "
+                + "font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', "
+                + "'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif; "
+                + "font-size: 15px; "
+                + "line-height: 1.6; "
+                + "color: rgba(0, 0, 0, 0.87); "
+                + "background-color: #f5f5f7; "
+                + "} "
+                + ".message-container { "
+                + "border-radius: 12px; "
+                + "border: 1px solid rgba(0, 0, 0, 0.12); "
+                + "background: #ffffff; "
+                + "overflow: hidden; "
+                + "box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); "
+                + "} "
+                + ".message-header { "
+                + "padding: 12px 16px; "
+                + "font-weight: 600; "
+                + "font-size: 16px; "
+                + "display: flex; "
+                + "align-items: center; "
+                + "gap: 8px; "
+                + "border-bottom: 1px solid rgba(0, 0, 0, 0.08); "
+                + "} "
+                + ".success-header { "
+                + "background: linear-gradient(135deg, #34C759 0%, #30D158 100%); "
+                + "color: #ffffff; "
+                + "} "
+                + ".error-header { "
+                + "background: linear-gradient(135deg, #FF3B30 0%, #FF6961 100%); "
+                + "color: #ffffff; "
+                + "} "
+                + ".icon { "
+                + "font-size: 18px; "
+                + "} "
+                + ".message-body { "
+                + "padding: 14px 16px; "
+                + "} "
+                + "p { "
+                + "margin: 0 0 10px 0; "
+                + "} "
+                + "p:last-child { "
+                + "margin-bottom: 0; "
+                + "} "
+                + ".bullet-list { "
+                + "margin: 8px 0; "
+                + "padding-left: 24px; "
+                + "} "
+                + ".bullet-list li { "
+                + "margin: 6px 0; "
+                + "} "
+                + ".student-id { "
+                + "font-weight: 600; "
+                + "color: #007AFF; "
+                + "font-family: 'SF Mono', Monaco, 'Cascadia Code', Consolas, monospace; "
+                + "font-size: 14px; "
+                + "background: rgba(0, 122, 255, 0.12); "
+                + "padding: 3px 6px; "
+                + "border-radius: 4px; "
+                + "} "
+                + ".module-code { "
+                + "font-weight: 600; "
+                + "color: #AF52DE; "
+                + "font-family: 'SF Mono', Monaco, 'Cascadia Code', Consolas, monospace; "
+                + "font-size: 14px; "
+                + "background: rgba(175, 82, 222, 0.12); "
+                + "padding: 3px 6px; "
+                + "border-radius: 4px; "
+                + "} "
+                + ".number { "
+                + "font-weight: 600; "
+                + "color: #5AC8FA; "
+                + "} "
+                + ".tag { "
+                + "display: inline-block; "
+                + "padding: 3px 9px; "
+                + "margin: 0 4px; "
+                + "font-size: 13px; "
+                + "font-weight: 500; "
+                + "background: rgba(0, 122, 255, 0.12); "
+                + "color: #007AFF; "
+                + "border-radius: 12px; "
+                + "border: 1px solid rgba(0, 122, 255, 0.3); "
                 + "}";
     }
 
