@@ -168,7 +168,22 @@ The view command displays comprehensive information in two sections:
    * Weeks are displayed in ascending order (Week 1, Week 2, etc.)
    * If no attendance has been recorded yet, displays: "No attendance recorded yet."
 
-**Success message:** `Viewing student: [name]`
+**Success message:**
+```
+=== STUDENT DETAILS ===
+Name: [name]
+Student ID: [student ID]
+Email: [email]
+Modules: [module codes]
+Tags: [tags]
+Grades: [grades]
+Consultations: [consultation dates]
+Remark: [remark]
+
+=== ATTENDANCE RECORD ===
+Week [number]: [symbol] [status]
+...
+```
 
 **Error messages:**
 * If the index is invalid: `The student index provided is invalid`
@@ -222,7 +237,7 @@ Format: `attendance INDEX w/WEEK present|absent|unmark` or `attendance s/STUDENT
 * All students: `Marked attendance for all students: Week [week] - [status] ([count] students)` or `Unmarked attendance for all students: Week [week] ([count] students)`
 
 **Error messages:**
-* If the index is invalid: `The person index provided is invalid`
+* If the index is invalid: `The student index provided is invalid`
 * If the student ID is not found: `No student found with ID: [ID]`
 * If the week is invalid: `Week should be a number between 1 and 13 (inclusive)`
 * If the status is invalid: `Invalid attendance status. Use 'present', 'absent', or 'unmark'.`
