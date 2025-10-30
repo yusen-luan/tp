@@ -13,7 +13,8 @@
 
 ## **Acknowledgements**
 
-_{ list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the original source as well }_
+* This project is based on the AddressBook-Level3 project created by the [SE-EDU initiative](https://se-education.org).
+* Libraries used: [JavaFX](https://openjfx.io/), [Jackson](https://github.com/FasterXML/jackson), [JUnit5](https://github.com/junit-team/junit5)
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -531,6 +532,78 @@ The following sequence diagram shows how the grade operation works:
   * Pros: More flexible for internal use and testing. Can create temporary Grade objects during processing.
   * Cons: Risk of invalid grades propagating through the system. Validation logic scattered across multiple parsers.
 
+### Delete Grade Feature
+
+#### Implementation
+
+The delete grade feature allows teaching assistants to remove specific grades from students. It is implemented through the `DeleteGradeCommand` command class and `DeleteGradeCommandParser` parser class.
+
+**Key Components:**
+
+The `DeleteGradeCommand`:
+- Takes an index and one or more assignment names in the format `g/ASSIGNMENT_NAME`
+- Finds the person at the specified index in the filtered person list
+- Validates that all specified assignment names exist for the student
+- Creates a new `Person` object with the specified grades removed (defensive copying)
+- Only allows deleting grades from students (persons with StudentId)
+- Assignment name matching is case-sensitive (exact match required)
+
+The `DeleteGradeCommandParser`:
+- Parses user input in the format `deletegrade INDEX g/ASSIGNMENT_NAME [g/ASSIGNMENT_NAME]...`
+- Extracts the index and validates it is a positive integer
+- Extracts all assignment names from `g/` prefixes
+- Creates a `DeleteGradeCommand` with the validated index and set of assignment names
+
+**Execution Flow:**
+
+Given below is an example usage scenario and how the delete grade mechanism behaves.
+
+**Step 1.** The user executes `deletegrade 1 g/Midterm` to delete the "Midterm" grade from the 1st student.
+
+**Step 2.** The command is parsed by `AddressBookParser`, which identifies it as a deletegrade command and creates a `DeleteGradeCommandParser`.
+
+**Step 3.** `DeleteGradeCommandParser` parses the arguments:
+- Extracts the index (1)
+- Extracts assignment name(s) from `g/` prefix ("Midterm")
+- Validates at least one assignment name is provided
+- Creates a `DeleteGradeCommand` with the index and set of assignment names
+
+**Step 4.** When `DeleteGradeCommand#execute()` is called:
+- Gets the person at index 1 from the filtered person list using `Model#getFilteredPersonList()`
+- Validates the person has a StudentId (only students can have grades deleted)
+- Checks that all specified assignment names exist in the student's grades
+- Throws `CommandException` with message "Grade not found for assignment: [NAME]" if any assignment doesn't exist
+- Creates a new `Person` with specified grades removed via `createPersonWithDeletedGrades()`
+- Updates the model with `Model#setPerson(personToEdit, updatedPerson)`
+- Returns a `CommandResult` with success message
+
+**Step 5.** The `createPersonWithDeletedGrades()` helper method:
+- Creates a new set of grades excluding the specified assignment names
+- Constructs a new `Person` object preserving all other fields
+- Returns the updated person object
+
+#### Design Considerations
+
+**Aspect: Assignment name matching**
+
+* **Alternative 1 (current choice):** Case-sensitive exact matching
+  * Pros: Unambiguous - user must specify exact assignment name. Prevents accidental deletion of wrong grades. Consistent with file system conventions.
+  * Cons: Less user-friendly if user doesn't remember exact capitalization. Requires checking exact name first (via view command).
+
+* **Alternative 2:** Case-insensitive matching
+  * Pros: More flexible and user-friendly. Consistent with grade update behavior.
+  * Cons: Could lead to accidental deletions if multiple assignments have similar names with different cases. Less explicit about which grade is being deleted.
+
+**Aspect: Validation timing**
+
+* **Alternative 1 (current choice):** Validate all assignment names exist before deleting any
+  * Pros: Atomic operation - either all grades deleted or none. Prevents partial deletions on error. Clear error message identifies missing assignment.
+  * Cons: Cannot delete subset of grades if one name is invalid.
+
+* **Alternative 2:** Delete valid assignments, skip invalid ones
+  * Pros: More forgiving - deletes what it can. User doesn't have to retry entire command.
+  * Cons: Unclear behavior - some grades deleted, some not. Harder to track what was actually deleted. Less predictable.
+
 ### Consultation Feature
 
 #### Implementation
@@ -967,7 +1040,7 @@ testers are expected to do more *exploratory* testing.
 
    1. Download the jar file and copy into an empty folder
 
-   1. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
+   1. Double-click the jar file Expected: Shows the GUI with a set of sample students. The window size may not be optimum.
 
 1. Saving window preferences
 
@@ -1021,6 +1094,52 @@ testers are expected to do more *exploratory* testing.
 
    1. Other incorrect remark commands to try: `remark`, `remark A0123456X r/test` (missing s/ prefix), `remark s/INVALID r/test` (invalid student ID format)<br>
       Expected: Similar error messages indicating the specific validation failure.
+
+### Adding and deleting grades
+
+1. Adding grades to a student
+
+   1. Prerequisites: List all students using the `list` command. At least one student in the list.
+
+   1. Test case: `grade 1 g/Midterm:85`<br>
+      Expected: Grade "Midterm: 85" is added to the 1st student. Success message shows the student name and added grade.
+
+   1. Test case: `grade 1 g/Quiz1:90 g/Assignment1:88`<br>
+      Expected: Both grades are added to the 1st student. Success message shows both grades were added.
+
+   1. Test case: `grade 1 g/Midterm:95` (where "Midterm" grade already exists with score 85)<br>
+      Expected: Existing "Midterm" grade is updated to 95. Success message indicates grade was updated.
+
+   1. Test case: `grade 1 g/MIDTERM:90` (where "Midterm" grade exists - case-insensitive test)<br>
+      Expected: Existing "Midterm" grade is updated to 90 (case-insensitive match). Success message indicates grade was updated.
+
+   1. Test case: `grade 1 g/Final:101`<br>
+      Expected: No grade is added. Error message shows "Grades should be a number between 0 and 100".
+
+   1. Test case: `grade 1 g/:85` (missing assignment name)<br>
+      Expected: No grade is added. Error message shows "Assignment name should not be blank".
+
+   1. Test case: `grade 0 g/Midterm:85`<br>
+      Expected: No grade is added. Error message shows invalid index.
+
+2. Deleting grades from a student
+
+   1. Prerequisites: Student at index 1 has grades for "Midterm" and "Quiz1".
+
+   1. Test case: `deletegrade 1 g/Midterm`<br>
+      Expected: "Midterm" grade is deleted from the 1st student. Success message shows "Deleted grades from Student: [student name]".
+
+   1. Test case: `deletegrade 1 g/Quiz1 g/Assignment1` (where only "Quiz1" exists)<br>
+      Expected: No grades are deleted. Error message shows "Grade not found for assignment: Assignment1".
+
+   1. Test case: `deletegrade 1 g/midterm` (where "Midterm" grade exists - case-sensitive test)<br>
+      Expected: No grades are deleted. Error message shows "Grade not found for assignment: midterm" (case-sensitive matching).
+
+   1. Test case: `deletegrade 0 g/Midterm`<br>
+      Expected: No grade is deleted. Error message shows invalid index.
+
+   1. Test case: `deletegrade 1` (missing grade prefix)<br>
+      Expected: No grade is deleted. Error message shows invalid command format with usage instructions.
 
 ### Saving data
 
