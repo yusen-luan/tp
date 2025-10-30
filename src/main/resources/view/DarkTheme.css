@@ -488,6 +488,18 @@
     -fx-effect: dropshadow(gaussian, rgba(175, 82, 222, 0.5), 10, 0, 0, 3);
 }
 
+#grades .placeholder-text {
+    -fx-font-family: -apple-system, "SF Pro Text", sans-serif !important;
+    -fx-font-size: 12pt !important;
+    -fx-text-fill: #ffffff !important;
+    -fx-font-weight: 500 !important;
+    -fx-background-color: transparent !important;
+    -fx-padding: 0 !important;
+    -fx-border-radius: 0 !important;
+    -fx-background-radius: 0 !important;
+    -fx-effect: none !important;
+}
+
 /* ==================== MODULE CODES - iOS INFO BADGES ==================== */
 #moduleCodes {
     -fx-hgap: 8;
