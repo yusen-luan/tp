@@ -1051,22 +1051,71 @@ testers are expected to do more *exploratory* testing.
 
 1. _{ more test cases …​ }_
 
-### Deleting a person
+### Adding a student
 
-1. Deleting a person while all persons are being shown
+1. Adding a new student to TeachMate
 
-   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
+   1. Prerequisites: Application is running with sample data loaded.
+
+   1. Test case: `add n/John Tan s/A0123456X e/johntan@u.nus.edu m/CS2103T m/CS2101`<br>
+      Expected: New student "John Tan" is added with ID A0123456X. Success message shows the added student details. Student appears in the list.
+
+   1. Test case: `add n/Mary Lee s/A0123456X e/mary@u.nus.edu m/CS2103T` (duplicate student ID)<br>
+      Expected: No student is added. Error message indicates student with this ID already exists.
+
+   1. Test case: `add n/Jane s/A1234567B e/invalid-email m/CS2103T` (invalid email)<br>
+      Expected: No student is added. Error message shows email validation requirements.
+
+   1. Test case: `add n/Bob s/INVALID e/bob@u.nus.edu m/CS2103T` (invalid student ID format)<br>
+      Expected: No student is added. Error message shows student ID format requirements.
+
+### Editing a student
+
+1. Editing student details
+
+   1. Prerequisites: List all students using `list`. At least one student in the list.
+
+   1. Test case: `edit 1 e/newemail@u.nus.edu`<br>
+      Expected: Email of 1st student is updated. Success message shows updated details.
+
+   1. Test case: `edit 1 m/CS2103T m/CS2101` (replacing modules)<br>
+      Expected: Modules of 1st student are replaced with CS2103T and CS2101. Previous modules are removed.
+
+   1. Test case: `edit 0 n/Test` (invalid index)<br>
+      Expected: No student is edited. Error message shows invalid index.
+
+### Deleting a student
+
+1. Deleting a student from TeachMate
+
+   1. Prerequisites: List all students using `list`. Multiple students in the list.
 
    1. Test case: `delete 1`<br>
-      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+      Expected: First student is deleted from the list. Success message shows the deleted student's details.
 
    1. Test case: `delete 0`<br>
-      Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
+      Expected: No student is deleted. Error message shows invalid index.
 
-   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
-      Expected: Similar to previous.
+   1. Test case: `delete x` (where x is larger than the list size)<br>
+      Expected: No student is deleted. Error message shows invalid index.
 
-1. _{ more test cases …​ }_
+### Viewing a student
+
+1. Viewing detailed information about a student
+
+   1. Prerequisites: At least one student in the list.
+
+   1. Test case: `view 1`<br>
+      Expected: Detailed information for the 1st student is displayed in the result panel, including attendance history. The list filters to show only this student.
+
+   1. Test case: `view s/A0123456X` (viewing by student ID)<br>
+      Expected: Student with ID A0123456X is displayed with full details. List filters to show only this student.
+
+   1. Test case: `view s/A9999999Z` (non-existent student ID)<br>
+      Expected: Error message shows "No student found with student ID: A9999999Z".
+
+   1. Test case: `view 0`<br>
+      Expected: Error message shows invalid index.
 
 ### Adding a remark to a student
 
@@ -1095,11 +1144,35 @@ testers are expected to do more *exploratory* testing.
    1. Other incorrect remark commands to try: `remark`, `remark A0123456X r/test` (missing s/ prefix), `remark s/INVALID r/test` (invalid student ID format)<br>
       Expected: Similar error messages indicating the specific validation failure.
 
-### Adding and deleting grades
+### Managing attendance
 
-1. Adding grades to a student
+1. Marking attendance for students
 
-   1. Prerequisites: List all students using the `list` command. At least one student in the list.
+   1. Prerequisites: At least one student in the list.
+
+   1. Test case: `attendance 1 w/1 present`<br>
+      Expected: Attendance for week 1 is marked as present for the 1st student. Success message confirms the update. Attendance grid in student card shows green for week 1.
+
+   1. Test case: `attendance s/A0123456X w/2 absent`<br>
+      Expected: Attendance for week 2 is marked as absent for student with ID A0123456X. Attendance grid shows red for week 2.
+
+   1. Test case: `attendance all w/3 present`<br>
+      Expected: Attendance for week 3 is marked as present for all students. Success message shows number of students updated.
+
+   1. Test case: `attendance 1 w/1 unmark` (where week 1 attendance exists)<br>
+      Expected: Attendance record for week 1 is removed for the 1st student. Attendance grid shows grey for week 1.
+
+   1. Test case: `attendance 1 w/14 present` (invalid week number)<br>
+      Expected: No attendance is marked. Error message shows week must be between 1 and 13.
+
+   1. Test case: `attendance 0 w/1 present`<br>
+      Expected: No attendance is marked. Error message shows invalid index.
+
+### Managing grades
+
+1. Adding and updating grades
+
+   1. Prerequisites: At least one student in the list.
 
    1. Test case: `grade 1 g/Midterm:85`<br>
       Expected: Grade "Midterm: 85" is added to the 1st student. Success message shows the student name and added grade.
@@ -1107,11 +1180,11 @@ testers are expected to do more *exploratory* testing.
    1. Test case: `grade 1 g/Quiz1:90 g/Assignment1:88`<br>
       Expected: Both grades are added to the 1st student. Success message shows both grades were added.
 
-   1. Test case: `grade 1 g/Midterm:95` (where "Midterm" grade already exists with score 85)<br>
+   1. Test case: `grade 1 g/Midterm:95` (where "Midterm" grade already exists)<br>
       Expected: Existing "Midterm" grade is updated to 95. Success message indicates grade was updated.
 
-   1. Test case: `grade 1 g/MIDTERM:90` (where "Midterm" grade exists - case-insensitive test)<br>
-      Expected: Existing "Midterm" grade is updated to 90 (case-insensitive match). Success message indicates grade was updated.
+   1. Test case: `grade 1 g/MIDTERM:90` (case-insensitive update test)<br>
+      Expected: Existing "Midterm" grade is updated to 90. Case-insensitive matching succeeds.
 
    1. Test case: `grade 1 g/Final:101`<br>
       Expected: No grade is added. Error message shows "Grades should be a number between 0 and 100".
@@ -1119,33 +1192,96 @@ testers are expected to do more *exploratory* testing.
    1. Test case: `grade 1 g/:85` (missing assignment name)<br>
       Expected: No grade is added. Error message shows "Assignment name should not be blank".
 
-   1. Test case: `grade 0 g/Midterm:85`<br>
-      Expected: No grade is added. Error message shows invalid index.
-
 2. Deleting grades from a student
 
    1. Prerequisites: Student at index 1 has grades for "Midterm" and "Quiz1".
 
    1. Test case: `deletegrade 1 g/Midterm`<br>
-      Expected: "Midterm" grade is deleted from the 1st student. Success message shows "Deleted grades from Student: [student name]".
+      Expected: "Midterm" grade is deleted from the 1st student. Success message confirms deletion.
 
    1. Test case: `deletegrade 1 g/Quiz1 g/Assignment1` (where only "Quiz1" exists)<br>
       Expected: No grades are deleted. Error message shows "Grade not found for assignment: Assignment1".
 
-   1. Test case: `deletegrade 1 g/midterm` (where "Midterm" grade exists - case-sensitive test)<br>
-      Expected: No grades are deleted. Error message shows "Grade not found for assignment: midterm" (case-sensitive matching).
-
-   1. Test case: `deletegrade 0 g/Midterm`<br>
-      Expected: No grade is deleted. Error message shows invalid index.
+   1. Test case: `deletegrade 1 g/midterm` (case-sensitive test)<br>
+      Expected: No grades are deleted. Error message shows "Grade not found for assignment: midterm".
 
    1. Test case: `deletegrade 1` (missing grade prefix)<br>
       Expected: No grade is deleted. Error message shows invalid command format with usage instructions.
+
+### Managing tags
+
+1. Adding and removing tags
+
+   1. Prerequisites: At least one student in the list.
+
+   1. Test case: `tag 1 t/Struggling t/NeedsHelp`<br>
+      Expected: Tags "Struggling" and "NeedsHelp" are added to the 1st student. Success message shows updated tags.
+
+   1. Test case: `tag s/A0123456X t/Excelling`<br>
+      Expected: Tag "Excelling" is added to student with ID A0123456X.
+
+   1. Test case: `untag 1 t/Struggling`<br>
+      Expected: Tag "Struggling" is removed from the 1st student. Success message confirms removal.
+
+   1. Test case: `tag 1 t/ExistingTag` (where tag already exists)<br>
+      Expected: Tag is not duplicated. Success message may indicate tag already exists.
+
+### Finding and filtering students
+
+1. Searching for students
+
+   1. Prerequisites: Multiple students in the list with different names and tags.
+
+   1. Test case: `find John`<br>
+      Expected: List shows only students with "John" in their name. Number of matching students displayed in result message.
+
+   1. Test case: `find alex david` (multiple keywords)<br>
+      Expected: List shows students with "alex" OR "david" in their names.
+
+   1. Test case: `filter t/Struggling`<br>
+      Expected: List shows only students tagged with "Struggling".
+
+   1. Test case: `filter t/Struggling t/NeedsHelp`<br>
+      Expected: List shows only students with BOTH "Struggling" AND "NeedsHelp" tags.
+
+   1. Test case: `list`<br>
+      Expected: All students are displayed again, removing any filters.
 
 ### Saving data
 
 1. Dealing with missing/corrupted data files
 
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
+   1. Test case: Delete the data file at `[JAR file location]/data/addressbook.json` and restart the application.<br>
+      Expected: Application starts with sample data loaded.
 
-1. _{ more test cases …​ }_
+   1. Test case: Edit the data file to add an invalid student ID (e.g., change "A0123456X" to "INVALID"), then restart the application.<br>
+      Expected: Application starts with an empty student list, discarding the corrupted data.
+
+   1. Test case: Edit the data file to make it invalid JSON (e.g., remove a closing brace), then restart the application.<br>
+      Expected: Application starts with an empty student list.
+
+--------------------------------------------------------------------------------------------------------------------
+
+## **Appendix: Planned Enhancements**
+
+Team size: 5
+
+1. **Make grade assignment name matching consistent between grade and deletegrade commands**: Currently, the `grade` command uses case-insensitive matching (e.g., "midterm" matches "Midterm"), while `deletegrade` uses case-sensitive matching. We plan to make both commands use case-insensitive matching for consistency. This will allow users to delete grades without remembering the exact capitalization, matching the update behavior.
+
+2. **Add validation for past consultation dates**: Currently, the system accepts any valid date/time format for consultations, including dates in the past. We plan to add a warning message when users add consultations with past dates to help prevent data entry errors. The format will be: "Warning: The consultation date [date] is in the past. Do you want to continue? (y/n)".
+
+3. **Improve duplicate consultation handling**: Currently, duplicate consultations are silently removed using `.distinct()`. We plan to show a warning message when duplicate consultations are detected in the input: "Duplicate consultation detected: [date/time]. Only one instance will be added."
+
+4. **Enhance find command to support partial matching**: Currently, `find` only matches complete words (e.g., "find alex" won't match "Alexander"). We plan to support partial matching so that "find alex" will also match "Alexander" and "Alexandria", making the search more user-friendly.
+
+5. **Add confirmation prompt for bulk attendance operations**: Currently, `attendance all w/1 present` marks attendance for all students without confirmation. We plan to add a confirmation prompt showing the number of students affected: "This will mark attendance for [N] students. Confirm? (y/n)".
+
+6. **Improve error message specificity for invalid module codes**: Currently, invalid module codes show a generic "Module codes should be alphanumeric" message. We plan to make this more specific by showing the exact format requirements: "Module code must be 2-3 uppercase letters followed by 4 digits and an optional letter (e.g., CS2103T, MA1521)".
+
+7. **Add ability to clear all consultations for a student**: Currently, there's no direct way to remove all consultations from a student without using the edit command and omitting the `c/` prefix. We plan to add support for `edit INDEX c/` (empty consultation prefix) to explicitly clear all consultations.
+
+8. **Enhance grade display sorting**: Currently, grades are displayed sorted alphabetically by assignment name. We plan to add an optional sort order preference (alphabetical or by date added) that users can set, allowing TAs to see the most recent grades first if preferred.
+
+9. **Add validation for duplicate module codes in add/edit commands**: Currently, users can add the same module code multiple times (e.g., `m/CS2103T m/CS2103T`). We plan to detect and prevent duplicate module codes with an error message: "Duplicate module code detected: [code]. Each module should only be listed once."
+
 
