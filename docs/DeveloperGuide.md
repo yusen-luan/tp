@@ -1560,3 +1560,95 @@ Team size: 5
 9. **Add validation for duplicate module codes in add/edit commands**: Currently, users can add the same module code multiple times (e.g., `m/CS2103T m/CS2103T`). We plan to detect and prevent duplicate module codes with an error message: "Duplicate module code detected: [code]. Each module should only be listed once."
 
 
+1. _{ more test cases …​ }_
+
+--------------------------------------------------------------------------------------------------------------------
+
+## **Appendix: Effort**
+
+### Difficulty Level and Challenges
+
+TeachMate presented moderate-to-high difficulty compared to AB3 due to several key expansions:
+
+**Multiple Entity Types and Relationships:**
+While AB3 deals with a single `Person` entity, TeachMate manages multiple interconnected entities:
+- **Person** with student-specific fields (StudentId, ModuleCode, Grades, AttendanceRecord, Consultations, Remarks)
+- **AttendanceRecord** with Week and AttendanceStatus mappings
+- **Grade** with assignment tracking
+- **Consultation** with datetime parsing supporting multiple formats
+- **Remark** with multi-line text support
+
+This required careful design of object relationships, defensive copying strategies, and comprehensive JSON serialization/deserialization logic.
+
+**Complex Command Variations:**
+Several commands required significant extensions beyond AB3's simple CRUD operations:
+- **Attendance command:** Supports three identification methods (index, student ID, and bulk "all" keyword) with week-based tracking
+- **View command:** Dual lookup methods (index and student ID) with formatted multi-section output
+- **Tag/Untag commands:** Support both index and student ID lookup with additive/subtractive operations
+- **Remark command:** Multi-line text validation using DOTALL regex mode
+- **List command:** Enhanced with module-based filtering
+
+**UI Complexity:**
+The UI required substantial enhancements beyond AB3:
+- **Attendance visualization:** 13-week grid display with color-coded rectangles (grey/green/red) per student card
+- **Multi-field display:** Cards show modules, grades, consultations, attendance, tags, and remarks with appropriate icons
+- **Text wrapping:** Support for multi-line remarks with proper layout
+- **Dual themes:** Maintained both light and dark theme compatibility across all new UI elements
+
+### Effort Required
+
+**Implementation Effort:**
+- **Attendance system:** ~15 hours (model classes, three command variations, UI grid visualization, comprehensive testing)
+- **Grade system:** ~8 hours (Grade model, validation, duplicate checking, UI styling)
+- **Consultation system:** ~10 hours (datetime parsing with 4 format support, integration with add/edit commands)
+- **Remark system:** ~12 hours (multi-line support, parser, UI display, documentation)
+- **View command:** ~6 hours (dual lookup, formatted output, integration with attendance display)
+- **Tag/Untag enhancements:** ~5 hours (dual lookup methods, validation)
+- **UI enhancements:** ~20 hours (attendance grid, icon layout, multi-field cards, theme compatibility)
+- **Testing and bug fixes:** ~25 hours (unit tests, integration tests, manual testing, bug resolution)
+- **Documentation:** ~15 hours (User Guide, Developer Guide, diagrams, use cases)
+
+**Total estimated effort:** ~116 person-hours
+
+### Reuse and Libraries
+
+**JavaFX Framework:**
+We reused JavaFX for UI components (Labels, HBoxes, VBoxes, GridPanes). This saved approximately 30-40 hours that would have been spent implementing custom UI rendering. Our main effort was in:
+- Layout design in FXML files (PersonListCard.fxml, PersonCard.java)
+- CSS styling for new components (LightTheme.css, DarkTheme.css)
+- Binding UI to model data
+
+**Jackson JSON Library:**
+Reused Jackson for JSON serialization/deserialization. This saved ~10 hours of manual JSON handling. Our adaptation work is in:
+- JsonAdaptedPerson.java: Extended to handle all new fields (attendance, grades, consultations, remarks)
+- Added validation logic for deserialization of complex types
+- Null-safety handling for optional fields
+
+**Java Time API:**
+Used `java.time.LocalDateTime` for consultation datetime handling. Saved ~5 hours compared to implementing custom date/time logic. Adaptation in:
+- Consultation.java: Multiple format parsing using DateTimeFormatter
+- Support for 4 different datetime input formats for user convenience
+
+**AB3 Foundation:**
+Built upon AB3's architecture (Model-View-Controller, Command pattern, Parser framework). This provided solid foundation saving ~40 hours. Major adaptations:
+- Extended Command pattern with 8+ new command types
+- Enhanced Model with new entity types and relationships
+- Expanded Storage layer for complex object serialization
+
+**Total effort saved through reuse:** ~85-95 hours (~45% of total development time)
+
+### Achievements
+
+1. **Comprehensive TA Management System:** Successfully transformed AB3 from a simple contact manager into a full-featured teaching assistant tool with attendance tracking, grade management, consultation scheduling, and student notes.
+
+2. **Robust Multi-format Support:** Implemented flexible datetime parsing, multi-line text support, and various command format variations that significantly improve user experience.
+
+3. **Rich Visual Feedback:** Created an intuitive UI with color-coded attendance grids, icon-based layouts, and clear visual hierarchy that allows TAs to quickly scan and assess student information.
+
+4. **Extensive Documentation:** Produced comprehensive User Guide and Developer Guide with UML diagrams, use cases, design rationales, and manual testing instructions.
+
+5. **High Test Coverage:** Maintained code quality with extensive unit and integration tests across all new features.
+
+6. **Scalability:** Designed architecture to handle up to 1000 students and 10 modules as per NFRs, with efficient filtering and lookup operations.
+
+The project successfully met all functional and non-functional requirements while maintaining code quality, documentation standards, and usability principles.
