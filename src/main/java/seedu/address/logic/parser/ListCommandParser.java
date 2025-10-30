@@ -30,10 +30,7 @@ public class ListCommandParser implements Parser<ListCommand> {
             return new ListCommand();
         }
 
-        String moduleCode = argMultimap.getValue(PREFIX_MODULE_CODE).get().trim().toUpperCase();
-
-        System.out.println("Checking validity for: " + moduleCode);
-        System.out.println("Is valid? " + ModuleCode.isValidModuleCode(moduleCode));
+        String moduleCode = argMultimap.getValue(PREFIX_MODULE_CODE).get().trim();
 
 
         if (!ModuleCode.isValidModuleCode(moduleCode)) {
