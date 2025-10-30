@@ -29,8 +29,8 @@ public class RemarkCommand extends Command {
             + PREFIX_STUDENT_ID + "A0123456X "
             + PREFIX_REMARK + "Needs help with OOP concepts";
 
-    public static final String MESSAGE_ADD_REMARK_SUCCESS = "Added remark to Student: %1$s";
-    public static final String MESSAGE_DELETE_REMARK_SUCCESS = "Removed remark from Student: %1$s";
+    public static final String MESSAGE_ADD_REMARK_SUCCESS = "✓ Added remark to Student: %1$s";
+    public static final String MESSAGE_DELETE_REMARK_SUCCESS = "✓ Removed remark from Student: %1$s";
     public static final String MESSAGE_STUDENT_NOT_FOUND = "No student found with student ID: %1$s";
 
     private final StudentId studentId;

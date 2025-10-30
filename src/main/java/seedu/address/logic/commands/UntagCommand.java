@@ -35,7 +35,7 @@ public class UntagCommand extends Command {
             + "Example: " + COMMAND_WORD + " " + PREFIX_STUDENT_ID + "A0291772W "
             + PREFIX_TAG + "Struggling";
 
-    public static final String MESSAGE_UNTAG_PERSON_SUCCESS = "Removed tags from Person: %1$s";
+    public static final String MESSAGE_UNTAG_PERSON_SUCCESS = "✓ Removed tags from Person: %1$s";
     public static final String MESSAGE_NO_TAGS_PROVIDED = "At least one tag must be provided.";
     public static final String MESSAGE_PERSON_NOT_FOUND = "No person found with student ID: %1$s";
     public static final String MESSAGE_TAG_NOT_FOUND = "Some tags do not exist on this person: %1$s";

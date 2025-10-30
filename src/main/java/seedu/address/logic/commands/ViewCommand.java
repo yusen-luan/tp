@@ -92,6 +92,9 @@ public class ViewCommand extends Command {
     private String createDetailedViewMessage(Person person) {
         StringBuilder sb = new StringBuilder();
 
+        // Success indicator for styled formatting
+        sb.append("✓ Viewing Student Details\n\n");
+
         // Basic student information
         sb.append("=== STUDENT DETAILS ===\n");
         sb.append("Name: ").append(person.getName().fullName).append("\n");

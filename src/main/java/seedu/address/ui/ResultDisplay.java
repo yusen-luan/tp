@@ -32,7 +32,7 @@ public class ResultDisplay extends UiPart<Region> {
      * Shows the welcome message on startup.
      */
     private void showWelcomeMessage() {
-        String welcomeMessage = "Welcome to TeachMate!\n\n"
+        String welcomeMessage = "✓ Welcome to TeachMate!\n\n"
                 + "This result display shows feedback for your commands, including confirmations, "
                 + "warnings, and detailed results.\n\n"
                 + "Available commands:\n"
@@ -92,8 +92,10 @@ public class ResultDisplay extends UiPart<Region> {
      * Converts plain text message to GitHub-style HTML with rich formatting.
      */
     private String convertToHtml(String message) {
-        boolean isSuccess = message.contains("✓");
-        boolean isError = !isSuccess && isErrorMessage(message);
+        boolean isWelcome = message.contains("Welcome to TeachMate!");
+        boolean isUnknownCommand = message.toLowerCase().contains("unknown command");
+        boolean isSuccess = !isWelcome && message.contains("✓");
+        boolean isError = !isSuccess && !isWelcome && isErrorMessage(message);
 
         StringBuilder html = new StringBuilder();
         html.append("<!DOCTYPE html><html><head>");
@@ -103,11 +105,20 @@ public class ResultDisplay extends UiPart<Region> {
 
         // Message container
         html.append("<div class='message-container ");
-        html.append(isError ? "error" : (isSuccess ? "success" : "info"));
+        if (isWelcome) {
+            html.append("welcome");
+        } else {
+            html.append(isError ? "error" : (isSuccess ? "success" : "info"));
+        }
         html.append("'>");
 
         // Header with icon
-        if (isError) {
+        if (isWelcome) {
+            html.append("<div class='message-header welcome-header'>");
+            html.append("<span class='icon'>✓</span>");
+            html.append("<span class='header-text'>TeachMate</span>");
+            html.append("</div>");
+        } else if (isError) {
             html.append("<div class='message-header error-header'>");
             html.append("<span class='icon'>✗</span>");
             html.append("<span class='header-text'>Error</span>");
@@ -121,7 +132,37 @@ public class ResultDisplay extends UiPart<Region> {
 
         // Message body
         html.append("<div class='message-body'>");
-        html.append(formatMessageContent(message));
+
+        // Add command list for unknown command errors
+        if (isUnknownCommand) {
+            html.append(formatMessageContent(message));
+            html.append("<div style='margin-top: 12px; padding-top: 12px; border-top: 1px solid ");
+            html.append(isDarkTheme ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)");
+            html.append(";'>");
+            html.append("<p style='font-weight: 600; margin-bottom: 8px;'>Available commands:</p>");
+            html.append("<ul class='bullet-list'>");
+            html.append("<li>add - Add a new student</li>");
+            html.append("<li>delete - Delete a student</li>");
+            html.append("<li>edit - Edit student details</li>");
+            html.append("<li>list - List all students</li>");
+            html.append("<li>view - View detailed student information</li>");
+            html.append("<li>find - Find students by name</li>");
+            html.append("<li>filter - Filter students by tags</li>");
+            html.append("<li>attendance - Mark attendance</li>");
+            html.append("<li>grade - Add or update grades</li>");
+            html.append("<li>deletegrade - Delete a grade</li>");
+            html.append("<li>remark - Add remarks to a student</li>");
+            html.append("<li>tag - Add tags to a student</li>");
+            html.append("<li>untag - Remove tags from a student</li>");
+            html.append("<li>clear - Clear all entries</li>");
+            html.append("<li>help - Show help window</li>");
+            html.append("<li>exit - Exit the application</li>");
+            html.append("</ul>");
+            html.append("</div>");
+        } else {
+            html.append(formatMessageContent(message));
+        }
+
         html.append("</div>");
 
         html.append("</div></body></html>");
@@ -262,6 +303,10 @@ public class ResultDisplay extends UiPart<Region> {
                 + "background: linear-gradient(135deg, #FF453A 0%, #FF6961 100%); "
                 + "color: #ffffff; "
                 + "} "
+                + ".welcome-header { "
+                + "background: linear-gradient(135deg, #0A84FF 0%, #5AC8FA 100%); "
+                + "color: #ffffff; "
+                + "} "
                 + ".icon { "
                 + "font-size: 18px; "
                 + "} "
@@ -352,6 +397,10 @@ public class ResultDisplay extends UiPart<Region> {
                 + "} "
                 + ".error-header { "
                 + "background: linear-gradient(135deg, #FF3B30 0%, #FF6961 100%); "
+                + "color: #ffffff; "
+                + "} "
+                + ".welcome-header { "
+                + "background: linear-gradient(135deg, #007AFF 0%, #5AC8FA 100%); "
                 + "color: #ffffff; "
                 + "} "
                 + ".icon { "
