@@ -33,9 +33,9 @@ public class GradeCommand extends Command {
             + PREFIX_GRADE + "Midterm:85 "
             + PREFIX_GRADE + "Assignment1:92";
 
-    public static final String MESSAGE_ADD_GRADE_SUCCESS = "Added %s to %s:\n%s";
-    public static final String MESSAGE_UPDATE_GRADE_SUCCESS = "Updated %s for %s:\n%s";
-    public static final String MESSAGE_MIXED_GRADE_SUCCESS = "Added %s and updated %s for %s:\n%s";
+    public static final String MESSAGE_ADD_GRADE_SUCCESS = "✓ Added %s to %s:\n%s";
+    public static final String MESSAGE_UPDATE_GRADE_SUCCESS = "✓ Updated %s for %s:\n%s";
+    public static final String MESSAGE_MIXED_GRADE_SUCCESS = "✓ Added %s and updated %s for %s:\n%s";
     public static final String MESSAGE_NOT_STUDENT = "The person at the specified index is not a student. "
             + "Grades can only be added to students.";
 

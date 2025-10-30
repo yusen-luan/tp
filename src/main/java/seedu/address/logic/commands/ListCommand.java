@@ -17,9 +17,9 @@ public class ListCommand extends Command {
 
     public static final String COMMAND_WORD = "list";
 
-    public static final String MESSAGE_SUCCESS = "Showing all students (%d total)";
+    public static final String MESSAGE_SUCCESS = "✓ Showing all students (%d total)";
 
-    public static final String MESSAGE_SUCCESS_MODULE = "Showing students in %s (%d found)";
+    public static final String MESSAGE_SUCCESS_MODULE = "✓ Showing students in %s (%d found)";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Lists all students or filtered by module.\n"

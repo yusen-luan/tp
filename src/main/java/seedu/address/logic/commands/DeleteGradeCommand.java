@@ -31,7 +31,7 @@ public class DeleteGradeCommand extends Command {
             + PREFIX_GRADE + "Midterm "
             + PREFIX_GRADE + "Quiz1";
 
-    public static final String MESSAGE_DELETE_GRADE_SUCCESS = "Deleted grades from Student: %1$s";
+    public static final String MESSAGE_DELETE_GRADE_SUCCESS = "✓ Deleted grades from Student: %1$s";
     public static final String MESSAGE_NOT_STUDENT = "The person at the specified index is not a student. "
             + "Grades can only be deleted from students.";
     public static final String MESSAGE_GRADE_NOT_FOUND = "Grade not found for assignment: %1$s";

@@ -40,7 +40,7 @@ public class AddCommand extends Command {
             + PREFIX_CONSULTATION + "22 Oct 2025 14:00\n"
             + "Tag and Consultation are optional attributes.";
 
-    public static final String MESSAGE_SUCCESS = "Added student: %1$s";
+    public static final String MESSAGE_SUCCESS = "✓ Added student: %1$s";
     public static final String MESSAGE_DUPLICATE_STUDENT_ID =
             "Cannot add student: A student with ID %1$s already exists in TeachMate.";
 

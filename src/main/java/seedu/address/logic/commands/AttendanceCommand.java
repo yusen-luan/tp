@@ -33,8 +33,8 @@ public class AttendanceCommand extends Command {
             + COMMAND_WORD + " " + PREFIX_STUDENT_ID + "A0123456X " + PREFIX_WEEK + "1 absent OR "
             + COMMAND_WORD + " all " + PREFIX_WEEK + "1 unmark";
 
-    public static final String MESSAGE_MARK_ATTENDANCE_SUCCESS = "Marked attendance for %1$s: Week %2$s - %3$s";
-    public static final String MESSAGE_MARK_ALL_SUCCESS = "Marked attendance for all students: "
+    public static final String MESSAGE_MARK_ATTENDANCE_SUCCESS = "✓ Marked attendance for %1$s: Week %2$s - %3$s";
+    public static final String MESSAGE_MARK_ALL_SUCCESS = "✓ Marked attendance for all students: "
             + "Week %1$s - %2$s (%3$d students)";
     public static final String MESSAGE_STUDENT_NOT_FOUND = "No student found with ID: %1$s";
 
