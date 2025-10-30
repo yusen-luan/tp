@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.web.WebView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.StackPane?>
 
 <StackPane fx:id="placeHolder" styleClass="pane-with-border" xmlns="http://javafx.com/javafx/17"
     xmlns:fx="http://javafx.com/fxml/1">
-  <WebView fx:id="resultDisplay" styleClass="result-display"/>
+  <TextArea fx:id="resultDisplay" styleClass="result-display" editable="false" wrapText="true"/>
 </StackPane>
