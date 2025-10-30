@@ -249,6 +249,296 @@ The `Commons` package contains:
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### List Feature
+
+#### Implementation
+
+The list feature allows teaching assistants to view all students in the system or filter them by module code. It is implemented through the `ListCommand` command class and `ListCommandParser` parser class.
+
+**Key Components:**
+
+The `ListCommand` class:
+- Supports two modes: listing all students or filtering by a specific module code
+- Uses an `Optional<ModuleCode>` to store the optional module filter
+- Updates the filtered person list in the model based on the mode
+- Provides success messages showing the total count of displayed students
+
+The `ListCommandParser`:
+- Parses user input to detect the presence of a module code prefix (`m/`)
+- If no prefix is present, validates that the input is empty (simple `list` command)
+- If a module prefix is present, extracts and validates the module code format
+- Creates a `ListCommand` with either an empty `Optional` (list all) or a specific `ModuleCode` (filter by module)
+
+**Execution Flow:**
+
+Given below is an example usage scenario and how the list mechanism behaves.
+
+**Step 1.** The user executes `list` or `list m/CS2103T` to view students.
+
+**Step 2.** The command is parsed by `AddressBookParser`, which identifies it as a list command and creates a `ListCommandParser`.
+
+**Step 3.** `ListCommandParser` parses the arguments:
+- If `m/` prefix is absent: Validates empty input and creates a `ListCommand()` with no module filter
+- If `m/` prefix is present: Extracts module code, validates format, and creates `ListCommand(moduleCode)`
+
+**Step 4.** When `ListCommand#execute()` is called:
+- If no module filter: Calls `Model#updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS)` to show all students
+- If module filter exists: Creates a predicate that checks if any of the student's enrolled modules match the filter, then applies it to the filtered list
+- Counts the number of students in the filtered list
+- Returns a success message with the count
+
+**Step 5.** The UI updates to display the filtered list of students in the person list panel.
+
+#### Design Considerations
+
+**Aspect: Module filtering support**
+
+* **Alternative 1 (current choice):** Support optional module filtering with the `m/` prefix
+  * Pros: Flexible - can view all students or just those in a specific module. Simple command structure - `list` or `list m/CS2103T`. Consistent with other commands using prefixes.
+  * Cons: Only supports single module filtering. Cannot filter by multiple modules or other criteria simultaneously.
+
+* **Alternative 2:** Only support listing all students without filters
+  * Pros: Simpler implementation. No parsing complexity for filters. Single, clear purpose.
+  * Cons: Less useful for TAs managing multiple modules. Requires additional filtering steps to find module-specific students. Cannot leverage module-based workflows.
+
+**Aspect: Empty input validation**
+
+* **Alternative 1 (current choice):** Strictly validate that `list` command has no arguments when no prefix is used
+  * Pros: Prevents accidental typos or invalid arguments. Clear error messages guide users to correct usage. Prevents confusion about command behavior.
+  * Cons: Slightly less forgiving - users must use exact format.
+
+* **Alternative 2:** Accept any arguments and ignore them if no prefix is present
+  * Pros: More forgiving for users. Easier to use without strict format.
+  * Cons: Hides potential user errors. May lead to confusion if extra arguments are silently ignored.
+
+### Add Student Feature
+
+#### Implementation
+
+The add student feature allows teaching assistants to add new student records to TeachMate. It is implemented through the `AddCommand` command class and `AddCommandParser` parser class.
+
+**Key Components:**
+
+The `AddCommand` class:
+- Takes a `Person` object representing the student to be added
+- Checks for duplicate student IDs before adding
+- Validates that a student with the same student ID doesn't already exist
+- Calls `Model#addPerson()` to add the student to the address book
+
+The `AddCommandParser`:
+- Parses user input to extract student information from various prefixes
+- Validates required fields: name (`n/`), student ID (`s/`), email (`e/`), and at least one module code (`m/`)
+- Parses optional fields: tags (`t/`), consultations (`c/`)
+- Handles duplicate consultations by deduplicating them using `.distinct()`
+- Creates a new `Person` object with parsed data and returns an `AddCommand`
+
+The `Person` class:
+- Provides multiple constructors to handle different field combinations
+- For students: requires name, student ID, email, module codes
+- Includes optional fields: tags, attendance records, grades, consultations, and remarks
+- Initializes attendance record and grades as empty if not provided
+
+**Execution Flow:**
+
+Given below is an example usage scenario and how the add mechanism behaves.
+
+**Step 1.** The user executes `add n/John Doe s/A0123456X e/john@u.nus.edu m/CS2103T m/CS2101 t/struggling` to add a new student.
+
+**Step 2.** The command is parsed by `AddressBookParser`, which identifies it as an add command and creates an `AddCommandParser`.
+
+**Step 3.** `AddCommandParser` parses the arguments:
+- Validates that required prefixes (`n/`, `s/`, `e/`, `m/`) are all present and the preamble is empty
+- Uses `ArgumentTokenizer.tokenize()` to extract values for each prefix
+- Verifies no duplicate single-value prefixes using `verifyNoDuplicatePrefixesFor()`
+- Parses each field using appropriate `ParserUtil` methods
+- For consultations: parses each datetime string and removes duplicates using `.distinct()`
+- Creates a `Person` object with all parsed fields
+
+**Step 4.** When `AddCommand#execute()` is called:
+- Checks if the student has a student ID (required for all students)
+- Calls `Model#getPersonByStudentId()` to check for duplicates
+- Throws `CommandException` with message "Cannot add student: A student with ID [ID] already exists" if duplicate found
+- Calls `Model#addPerson()` to add the student to the address book
+- Returns a success message with the student's details
+
+**Step 5.** The model persists the changes:
+- Added student triggers storage save
+- Student data is serialized to JSON format
+- Data is written to disk automatically
+
+The following sequence diagram shows how an add operation works:
+
+<puml src="diagrams/AddSequenceDiagram.puml" alt="AddSequenceDiagram" />
+
+#### Design Considerations
+
+**Aspect: Required vs optional fields**
+
+* **Alternative 1 (current choice):** Require name, student ID, email, and at least one module code
+  * Pros: Ensures all students have essential information. Student ID provides unique identification. Module codes are essential for academic tracking. Prevents creation of incomplete records.
+  * Cons: Less flexible for initial quick entry. Requires multiple fields for simple additions.
+
+* **Alternative 2:** Make more fields optional or have minimal required fields
+  * Pros: More flexible for quick entry. Can add students with partial information and fill in later.
+  * Cons: Risk of incomplete data. Harder to track students without essential identifiers. Potential for orphaned records.
+
+### Edit Student Feature
+
+#### Implementation
+
+The edit student feature allows teaching assistants to modify existing student records in TeachMate. It is implemented through the `EditCommand` command class, `EditCommandParser` parser class, and the `EditPersonDescriptor` inner class.
+
+**Key Components:**
+
+The `EditCommand` class:
+- Takes an `Index` to identify the student and an `EditPersonDescriptor` with updated fields
+- Supports updating all student attributes: name, phone, email, address, student ID, module codes, tags, consultations, grades, attendance, and remarks
+- Validates that at least one field is being edited
+- Checks for duplicate student IDs when student ID is changed
+- Builds a detailed message showing which fields were updated
+
+The `EditPersonDescriptor` class:
+- Stores optional field values to be updated (all fields use `Optional` type)
+- Provides methods to set and get each field
+- Tracks whether any field has been edited via `isAnyFieldEdited()`
+- Uses defensive copying for collections (tags, module codes, consultations)
+
+The `EditCommandParser`:
+- Parses user input to extract the index and field updates
+- Validates the index is a positive integer
+- Parses each provided prefix's value using appropriate `ParserUtil` methods
+- Handles optional fields gracefully (only sets values if prefix is present)
+- Creates an `EditPersonDescriptor` and populates it with parsed values
+
+**Execution Flow:**
+
+Given below is an example usage scenario and how the edit mechanism behaves.
+
+**Step 1.** The user executes `edit 1 e/newemail@u.nus.edu` to edit the email of the first student in the list.
+
+**Step 2.** The command is parsed by `AddressBookParser`, which identifies it as an edit command and creates an `EditCommandParser`.
+
+**Step 3.** `EditCommandParser` parses the arguments:
+- Extracts index from preamble using `ParserUtil#parseIndex()`
+- Validates required prefixes are not duplicated
+- For each provided prefix, parses the value and sets it in `EditPersonDescriptor`
+- Creates an `EditCommand` with the index and descriptor
+
+**Step 4.** When `EditCommand#execute()` is called:
+- Gets the student at the specified index from the filtered person list
+- Validates that at least one field is being edited
+- If student ID is being changed, checks for duplicates
+- Creates an edited `Person` object using `createEditedPerson()` helper method
+- This method uses `Optional#orElse()` to preserve existing values for fields not being edited
+- For grades: finds and removes existing grade with matching assignment name (case-sensitive), then adds updated grade
+- For attendance: updates the attendance record using `AttendanceRecord#markAttendance()` or `unmarkAttendance()`
+- Calls `Model#setPerson()` to replace the old person with the edited person
+- Builds a detailed message showing which fields were changed
+- Returns success message with edited student details
+
+**Step 5.** The model persists the changes:
+- Updated person triggers storage save
+- Changes are serialized to JSON format
+- Data is written to disk automatically
+
+The following sequence diagram shows how an edit operation works:
+
+<puml src="diagrams/EditSequenceDiagram.puml" alt="EditSequenceDiagram" />
+
+#### Design Considerations
+
+**Aspect: Field update behavior**
+
+* **Alternative 1 (current choice):** Only update fields that are explicitly provided in the command
+  * Pros: Preserves existing data for unchanged fields. Selective updates without full replacement. Flexible for partial modifications.
+  * Cons: Users must remember current values if they want to keep them. More complex logic to merge old and new values.
+
+* **Alternative 2:** Replace entire person object with new values, requiring all fields
+  * Pros: Simpler logic - complete replacement. Clear, explicit updates.
+  * Cons: Tedious for users to provide all fields. Risk of data loss if some fields are omitted. Unfriendly user experience.
+
+**Aspect: EditPersonDescriptor design**
+
+* **Alternative 1 (current choice):** Use `Optional` fields in a descriptor class
+  * Pros: Type-safe indication of which fields are being updated. Clear API. Easy to check if any field is edited. Follows builder pattern.
+  * Cons: Boilerplate code for each field. More verbose than direct field manipulation.
+
+* **Alternative 2:** Pass all fields directly to `EditCommand`, using null for unchanged fields
+  * Pros: Simpler class structure. Fewer objects involved.
+  * Cons: Less type-safe. Ambiguous whether null means "not provided" or "set to null". Harder to validate completeness.
+
+### Delete Student Feature
+
+#### Implementation
+
+The delete student feature allows teaching assistants to remove student records from TeachMate. It is implemented through the `DeleteCommand` command class and `DeleteCommandParser` parser class.
+
+**Key Components:**
+
+The `DeleteCommand` class:
+- Supports two methods of identifying students: by index in the displayed list or by student ID
+- Provides two constructors: one for index-based deletion and one for student ID-based deletion
+- Finds the target student using the appropriate lookup method
+- Calls `Model#deletePerson()` to remove the student from the address book
+
+The `DeleteCommandParser`:
+- Parses user input to determine whether the user is deleting by index or student ID
+- Uses the presence of `s/` prefix to differentiate between index-based and ID-based deletion
+- If `s/` prefix is present: extracts and validates the student ID, creates a `DeleteCommand(StudentId)`
+- If no prefix: parses the argument as an index, creates a `DeleteCommand(Index)`
+- Validates the format of the parsed index or student ID
+
+**Execution Flow:**
+
+Given below is an example usage scenario and how the delete mechanism behaves.
+
+**Step 1.** The user executes `delete 1` or `delete s/A0123456X` to delete a student.
+
+**Step 2.** The command is parsed by `AddressBookParser`, which identifies it as a delete command and creates a `DeleteCommandParser`.
+
+**Step 3.** `DeleteCommandParser` parses the arguments:
+- Checks if `s/` prefix is present in the input
+- If prefix present: Extracts student ID using `ParserUtil#parseStudentId()`, creates `DeleteCommand(studentId)`
+- If no prefix: Parses argument as index using `ParserUtil#parseIndex()`, creates `DeleteCommand(index)`
+
+**Step 4.** When `DeleteCommand#execute()` is called:
+- If using index:
+  - Gets the filtered person list from `Model`
+  - Gets the student at the specified index
+  - Throws `CommandException` if index is out of bounds
+- If using student ID:
+  - Calls `Model#getPersonByStudentId()` to locate the student
+  - Throws `CommandException` with "No student found with student ID [ID]" if not found
+- Calls `Model#deletePerson()` to remove the student from the address book
+- Returns a success message with the deleted student's details
+
+**Step 5.** The model persists the changes:
+- Deletion triggers storage save
+- Updated student list is serialized to JSON format
+- Data is written to disk automatically
+
+#### Design Considerations
+
+**Aspect: Dual lookup methods (index vs student ID)**
+
+* **Alternative 1 (current choice):** Support both index and student ID lookup
+  * Pros: Flexible for different use cases. Index is quick for visible students in the current list. Student ID works regardless of filter state and is unambiguous. Accommodates different user workflows.
+  * Cons: More complex parsing logic. Need to handle two different code paths in execution. Potential confusion about which method to use.
+
+* **Alternative 2:** Support only index-based deletion
+  * Pros: Simpler implementation. Consistent with other basic operations. Easier to understand.
+  * Cons: Less convenient when user knows student ID but student is not visible in current list. Requires additional list/find commands first.
+
+**Aspect: Student ID as unique identifier**
+
+* **Alternative 1 (current choice):** Use student ID as the primary unique identifier
+  * Pros: Naturally unique for each student. Unambiguous identification. Works across different filter contexts. Permanent identifier that doesn't change.
+  * Cons: Requires users to know the student ID. Slightly more verbose command format with `s/` prefix.
+
+* **Alternative 2:** Use name or email as identifier
+  * Pros: More human-readable. Easier to remember than student ID.
+  * Cons: Not guaranteed to be unique. Names can have duplicates. Emails can change. Ambiguous identification.
+
 ### View Student Feature
 
 #### Implementation
