@@ -102,18 +102,29 @@ Shows a message explaining how to access the help page.
 
 ![help message](images/helpMessage.png)
 
-Format: `help`
+**Format:**
+```
+help
+```
+
+**Example:**
+```
+help
+```
 
 
 ### Adding a student: `add`
 
 Adds a student to TeachMate.
 
-Format: `add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/TAG]…​ [c/CONSULTATIONS]`
+**Format:**
+```
+add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/TAG]…​ [c/CONSULTATIONS]
+```
 
 <box type="info" seamless>
 
-**Parameter Constraints:**
+**Requirements:**
 * `NAME` should only contain alphanumeric characters and spaces, and should not be blank
 * `STUDENT_ID` must be in the format A followed by exactly 7 digits and 1 uppercase letter (e.g., A0123456X)
 * `EMAIL` should be of the format local-part@domain (see detailed constraints below)
@@ -139,7 +150,7 @@ Format: `add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/
 **Consultations Constraints**
 
 - Consultations are optional — a student can be added without any consultations.
-- If included, each consultation’s date and time must follow **one of the supported formats** below:
+- If included, each consultation's date and time must follow **one of the supported formats** below:
 
 | Accepted Format        | Example Input       |
 |------------------------|---------------------|
@@ -154,37 +165,57 @@ Format: `add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/
 - Invalid inputs (e.g., `2025-13-45 25:99`) will result in an error message showing the supported formats.
 </box>
 
-
-Examples:
-* `add n/John Doe s/A0123456X e/johnd@u.nus.edu m/CS2103T`
-* `add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t/needsHelp c/22/10/2025 15:30 `
+**Examples:**
+```
+add n/John Doe s/A0123456X e/johnd@u.nus.edu m/CS2103T
+```
+```
+add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t/needsHelp c/22/10/2025 15:30
+```
 
 ### Listing students : `list`
 
 Shows a list of all students in TeachMate, or filters students by module code.
 
-Format:
-* `list` - Lists all students
-* `list m/MODULE_CODE` - Lists students in a specific module
+**Format:**
+```
+list
+```
+```
+list m/MODULE_CODE
+```
 
-Examples:
-* `list` - Shows all students
-* `list m/CS2103T` - Shows all students taking CS2103T
+**Examples:**
+```
+list
+```
+```
+list m/CS2103T
+```
 
 ### Viewing a student : `view`
 
 Views detailed information and attendance records about a student identified by their index or student ID.
 
-Format:
-* `view INDEX` - View student by list index
-* `view s/STUDENT_ID` - View student by student ID
+**Format:**
+```
+view INDEX
+```
+```
+view s/STUDENT_ID
+```
 
-* Views the student at the specified `INDEX` or with the specified `STUDENT_ID`
+<box type="info" seamless>
+
+**Requirements:**
 * The index refers to the index number shown in the displayed student list
 * The index **must be a positive integer** 1, 2, 3, …​
 * Student ID must match the format A followed by 7 digits and 1 uppercase letter (e.g., A0123456X)
 * The student must exist in TeachMate
 * The display will automatically filter to show only the selected student
+</box>
+
+<box type="info" seamless>
 
 **What will be displayed:**
 
@@ -212,6 +243,7 @@ The view command displays comprehensive information in three sections:
    * Displayed in chronological order
    * Format: "• [date] [time]" (e.g., "• 26 Oct 2025 4:00pm")
    * If no consultations are scheduled, displays: "No consultations recorded yet."
+</box>
 
 **Output format:**
 ```
@@ -233,18 +265,25 @@ Week [number]: [symbol] [status]
 ...
 ```
 
-**Error messages:**
+<box type="warning" seamless>
+
+**Possible Error Messages:**
 * If the index is invalid: `The student index provided is invalid`
 * If the student ID is not found: `No student found with ID: [ID]`
+</box>
 
 <box type="tip" seamless>
 
 **Tip:** After viewing a student, use the `list` command to see all students again.
 </box>
 
-Examples:
-* `view 1` - Views the 1st student in the current list and filters the display to show only that student
-* `view s/A0123456X` - Views the student with student ID A0123456X
+**Examples:**
+```
+view 1
+```
+```
+view s/A0123456X
+```
 
 **Example output:**
 ```
@@ -271,10 +310,22 @@ Week 3: ✓ Present
 
 Marks attendance for a student for a specific week.
 
-Format: `attendance INDEX w/WEEK present|absent|unmark` or `attendance s/STUDENT_ID w/WEEK present|absent|unmark` or `attendance all w/WEEK present|absent|unmark`
+**Format:**
+```
+attendance INDEX w/WEEK present|absent|unmark
+```
+```
+attendance s/STUDENT_ID w/WEEK present|absent|unmark
+```
+```
+attendance all w/WEEK present|absent|unmark
+```
 
-* Marks attendance for the student at the specified `INDEX`, with the specified `STUDENT_ID`, or all students
+<box type="info" seamless>
+
+**Requirements:**
 * `INDEX` refers to the index number shown in the displayed student list (must be a positive integer)
+* `STUDENT_ID` must match the format A followed by 7 digits and 1 uppercase letter
 * `WEEK` must be a number between 1 and 13 (inclusive), representing the teaching week
 * `present|absent|unmark` specifies the attendance status (case-insensitive):
   - `present`: Mark as present
@@ -285,16 +336,23 @@ Format: `attendance INDEX w/WEEK present|absent|unmark` or `attendance s/STUDENT
 * The student must exist in TeachMate
 * Marking attendance for the same week again will update the previous record
 * Using `unmark` on an already unmarked week has no effect
+</box>
 
-**Success message:**
+<box type="success" seamless>
+
+**Success Messages:**
 * Individual: `Marked attendance for [name]: Week [week] - [status]` or `Unmarked attendance for [name]: Week [week]`
 * All students: `Marked attendance for all students: Week [week] - [status] ([count] students)` or `Unmarked attendance for all students: Week [week] ([count] students)`
+</box>
 
-**Error messages:**
+<box type="warning" seamless>
+
+**Possible Error Messages:**
 * If the index is invalid: `The student index provided is invalid`
 * If the student ID is not found: `No student found with ID: [ID]`
 * If the week is invalid: `Week should be a number between 1 and 13 (inclusive)`
 * If the status is invalid: `Invalid attendance status. Use 'present', 'absent', or 'unmark'.`
+</box>
 
 <box type="tip" seamless>
 
@@ -307,24 +365,35 @@ Format: `attendance INDEX w/WEEK present|absent|unmark` or `attendance s/STUDENT
 * Use `unmark` to correct mistakes or reset attendance for a specific week
 </box>
 
-Examples:
-* `attendance 1 w/1 present` - Marks the first student in the list as present for week 1
-* `attendance 2 w/2 absent` - Marks the second student in the list as absent for week 2
-* `attendance 1 w/1 unmark` - Unmarks attendance for the first student for week 1
-* `attendance s/A0123456X w/1 present` - Marks student A0123456X as present for week 1
-* `attendance s/A0123456X w/2 absent` - Marks student A0123456X as absent for week 2
-* `attendance s/A0123456X w/2 unmark` - Unmarks attendance for student A0123456X for week 2
-* `attendance all w/1 present` - Marks all students as present for week 1
-* `attendance all w/2 absent` - Marks all students as absent for week 2
-* `attendance all w/3 unmark` - Unmarks attendance for all students for week 3
+**Examples:**
+```
+attendance 1 w/1 present
+```
+```
+attendance 2 w/2 absent
+```
+```
+attendance 1 w/1 unmark
+```
+```
+attendance s/A0123456X w/1 present
+```
+```
+attendance all w/1 present
+```
 
 ### Editing a student : `edit`
 
 Edits an existing student in TeachMate. You can edit students whether they have phone/address (legacy data) or only have student-specific fields.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]​ [t/TAG] [c/CONSULTATIONS] [g/ASSIGNMENT_NAME:SCORE] [w/WEEK_NUMBER:STATUS] [r/REMARK]`
+**Format:**
+```
+edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]​ [t/TAG] [c/CONSULTATIONS] [g/ASSIGNMENT_NAME:SCORE] [w/WEEK_NUMBER:STATUS] [r/REMARK]
+```
 
-* Edits the student at the specified `INDEX`
+<box type="info" seamless>
+
+**Requirements:**
 * The index refers to the index number shown in the displayed student list
 * The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided
@@ -336,6 +405,7 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/M
 * **Editing grades:** Use `g/ASSIGNMENT_NAME:SCORE` to update an existing grade. The assignment must already exist for the student, otherwise an error will be shown.
 * **Editing attendance:** Use `w/WEEK_NUMBER:STATUS` to update attendance for a specific week (1-13). Status can be `present`, `absent`, or `unmark` (to remove the attendance record).
 * **Editing remarks:** Use `r/REMARK` to update the remark for a student.
+</box>
 
 <box type="warning" seamless>
 
@@ -343,25 +413,38 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/M
 The edit command still supports `p/PHONE` and `a/ADDRESS` prefixes for backward compatibility with older data. However, new students added via the `add` command will not have phone or address fields.
 </box>
 
-Examples:
-*  `edit 1 s/A9999999Z e/newemail@u.nus.edu` - Edits the student ID and email of the 1st student
-*  `edit 2 n/Jane Doe t/friends` - Edits the name of the 2nd student and replaces all tags with "friends"
-*  `edit 3 m/CS2103T m/CS2101` - Replaces all module codes with CS2103T and CS2101
-*  `edit 1 g/Midterm:90` - Updates the Midterm grade to 90 for the 1st student (assignment must already exist)
-*  `edit 2 w/5:present` - Marks the 2nd student as present for week 5
-*  `edit 3 w/3:absent` - Marks the 3rd student as absent for week 3
-*  `edit 4 w/7:unmark` - Removes the attendance record for week 7 for the 4th student
-*  `edit 1 r/Needs extra help with recursion` - Updates the remark for the 1st student
-*  `edit 2 c/22/10/2025 15:30` - Updates the consultation datetime for the 2nd student
+**Examples:**
+```
+edit 1 s/A9999999Z e/newemail@u.nus.edu
+```
+```
+edit 2 n/Jane Doe t/friends
+```
+```
+edit 3 m/CS2103T m/CS2101
+```
+```
+edit 1 g/Midterm:90
+```
+```
+edit 2 w/5:present
+```
 
 ### Adding tags to a student : `tag`
 
 Adds one or more tags to an existing student in TeachMate without removing existing tags.
 
-Format:
-* `tag INDEX t/TAG [t/TAG]…​` - Add tags by list index
-* `tag s/STUDENT_ID t/TAG [t/TAG]…​` - Add tags by student ID
+**Format:**
+```
+tag INDEX t/TAG [t/TAG]…​
+```
+```
+tag s/STUDENT_ID t/TAG [t/TAG]…​
+```
 
+<box type="info" seamless>
+
+**Requirements:**
 * The index refers to the index number shown in the displayed student list
 * The index **must be a positive integer** 1, 2, 3, …​
 * Student ID must match the format A followed by 7 digits and 1 uppercase letter
@@ -369,44 +452,70 @@ Format:
 * Tags are added to existing tags (not replaced)
 * Duplicate tags that already exist on the student will still be added
 * `TAG` should be alphanumeric (no spaces)
+</box>
 
-Examples:
-* `tag 1 t/Struggling t/Inactive` - Adds "Struggling" and "Inactive" tags to the 1st student
-* `tag s/A0291772W t/Excelling` - Adds "Excelling" tag to student with ID A0291772W
-* `tag 2 t/needsHelp` - Adds "needsHelp" tag to the 2nd student
+**Examples:**
+```
+tag 1 t/Struggling t/Inactive
+```
+```
+tag s/A0291772W t/Excelling
+```
+```
+tag 2 t/needsHelp
+```
 
 ### Removing tags from a student : `untag`
 
 Removes one or more tags from an existing student in TeachMate.
 
-Format:
-* `untag INDEX t/TAG [t/TAG]…​` - Remove tags by list index
-* `untag s/STUDENT_ID t/TAG [t/TAG]…​` - Remove tags by student ID
+**Format:**
+```
+untag INDEX t/TAG [t/TAG]…​
+```
+```
+untag s/STUDENT_ID t/TAG [t/TAG]…​
+```
 
+<box type="info" seamless>
+
+**Requirements:**
 * The index refers to the index number shown in the displayed student list
 * The index **must be a positive integer** 1, 2, 3, …​
 * Student ID must match the format A followed by 7 digits and 1 uppercase letter
 * At least one tag must be provided
 * All specified tags must exist on the student, otherwise an error will be shown
 * `TAG` should be alphanumeric (no spaces)
+</box>
 
 <box type="warning" seamless>
 
 **Note:** If you try to remove a tag that doesn't exist on the student, the command will fail and show you which tags are missing. Make sure the tags you want to remove are currently on the student.
 </box>
 
-Examples:
-* `untag 1 t/Struggling` - Removes "Struggling" tag from the 1st student
-* `untag s/A0291772W t/Struggling t/Inactive` - Removes "Struggling" and "Inactive" tags from student with ID A0291772W
-* `untag 2 t/needsHelp` - Removes "needsHelp" tag from the 2nd student
+**Examples:**
+```
+untag 1 t/Struggling
+```
+```
+untag s/A0291772W t/Struggling t/Inactive
+```
+```
+untag 2 t/needsHelp
+```
 
 ### Adding or updating grades for a student : `grade`
 
 Adds new grades or updates existing grades for a student in TeachMate.
 
-Format: `grade INDEX g/ASSIGNMENT_NAME:SCORE [g/ASSIGNMENT_NAME:SCORE]…​`
+**Format:**
+```
+grade INDEX g/ASSIGNMENT_NAME:SCORE [g/ASSIGNMENT_NAME:SCORE]…​
+```
 
-* Adds or updates grades for the student at the specified `INDEX`
+<box type="info" seamless>
+
+**Requirements:**
 * The index refers to the index number shown in the displayed student list
 * The index **must be a positive integer** 1, 2, 3, …​
 * At least one grade must be provided
@@ -417,10 +526,6 @@ Format: `grade INDEX g/ASSIGNMENT_NAME:SCORE [g/ASSIGNMENT_NAME:SCORE]…​`
 * **Assignment names are case-insensitive** (e.g., "Midterm", "midterm", and "MIDTERM" refer to the same assignment)
 * If a grade for an assignment already exists, it will be **updated** with the new score
 * New grades are added without affecting other existing grades
-
-<box type="tip" seamless>
-
-**Note:** If you add a grade for an assignment that already exists (case-insensitive), the old score will be replaced with the new score. For example, if a student has "Midterm: 85" and you run `grade 1 g/midterm:90`, the grade will be updated to "Midterm: 90".
 </box>
 
 <box type="tip" seamless>
@@ -429,57 +534,71 @@ Format: `grade INDEX g/ASSIGNMENT_NAME:SCORE [g/ASSIGNMENT_NAME:SCORE]…​`
 * You can add multiple grades in one command by using multiple `g/` prefixes
 * Grades will appear as purple badges in the student card, below the email
 * Assignment names can contain spaces (e.g., "Final Exam")
+* If you add a grade for an assignment that already exists (case-insensitive), the old score will be replaced with the new score
 * Grades are automatically saved and will persist across application restarts
 </box>
 
-Examples:
-* `grade 1 g/Midterm:85` - Adds a grade of 85 for "Midterm" to the 1st student
-* `grade 2 g/Quiz1:90 g/Assignment1:88` - Adds two grades to the 2nd student
-* `grade 3 g/Final Exam:92` - Adds a grade for "Final Exam" to the 3rd student
-* `grade 1 g/MIDTERM:90` - Updates the existing "Midterm" grade to 90 (case-insensitive match)
+**Examples:**
+```
+grade 1 g/Midterm:85
+```
+```
+grade 2 g/Quiz1:90 g/Assignment1:88
+```
+```
+grade 3 g/Final Exam:92
+```
+```
+grade 1 g/MIDTERM:90
+```
 
 ### Deleting grades from a student : `deletegrade`
 
 Deletes specific grades from an existing student in TeachMate.
 
-Format: `deletegrade INDEX g/ASSIGNMENT_NAME [g/ASSIGNMENT_NAME]…​`
+**Format:**
+```
+deletegrade INDEX g/ASSIGNMENT_NAME [g/ASSIGNMENT_NAME]…​
+```
 
-* Deletes grades from the student at the specified `INDEX`
+<box type="info" seamless>
+
+**Requirements:**
 * The index refers to the index number shown in the displayed student list
 * The index **must be a positive integer** 1, 2, 3, …​
 * At least one assignment name must be provided
 * Assignment names must match exactly (case-sensitive)
 * Only students (those with Student IDs) can have grades deleted
 * All specified assignment names must exist for the student
+</box>
 
-**Error messages:**
-* If the index is invalid: `The student index provided is invalid`
-* If the person is not a student: `The person at the specified index is not a student. Grades can only be deleted from students.`
-* If a grade doesn't exist: `Grade not found for assignment: [ASSIGNMENT_NAME]`
-
-Examples:
-* `deletegrade 1 g/Midterm` - Deletes the "Midterm" grade from the 1st student
-* `deletegrade 2 g/Quiz1 g/Assignment1` - Deletes both "Quiz1" and "Assignment1" grades from the 2nd student
+**Examples:**
+```
+deletegrade 1 g/Midterm
+```
+```
+deletegrade 2 g/Quiz1 g/Assignment1
+```
 
 ### Adding remarks to a student : `remark`
 
 Adds or updates a personalized remark for an existing student in TeachMate.
 
-Format: `remark s/STUDENT_ID r/REMARK`
+**Format:**
+```
+remark s/STUDENT_ID r/REMARK
+```
 
-* Adds or updates a remark for the student with the specified `STUDENT_ID`
+<box type="info" seamless>
+
+**Requirements:**
 * Student ID must match the format A followed by 7 digits and 1 uppercase letter
 * `REMARK` can contain any text including spaces and special characters
 * `REMARK` supports multi-line text for longer notes
 * The remark must not be blank (must contain at least one non-whitespace character)
 * Existing remarks will be overwritten by the new remark (not cumulative)
 * The student must exist in TeachMate
-
-**Success message:** `Added remark to Student: [student details]`
-
-**Error messages:**
-* If the student ID is not found: `No student found with ID: [ID]`
-* If the remark is blank: `Remarks should not be blank`
+</box>
 
 <box type="tip" seamless>
 
@@ -490,88 +609,153 @@ Format: `remark s/STUDENT_ID r/REMARK`
 * Remarks are automatically saved and will persist across application restarts
 </box>
 
-Examples:
-* `remark s/A0123456X r/Needs extra help with OOP concepts` - Adds a remark for student A0123456X
-* `remark s/A0234567Y r/Excellent participation in tutorials` - Adds a remark for student A0234567Y
-* `remark s/A0345678Z r/Struggling with time management. Recommended office hours on Fridays.` - Adds a multi-line remark
+**Examples:**
+```
+remark s/A0123456X r/Needs extra help with OOP concepts
+```
+```
+remark s/A0234567Y r/Excellent participation in tutorials
+```
+```
+remark s/A0345678Z r/Struggling with time management. Recommended office hours on Fridays.
+```
 
 ### Locating students by name: `find`
 
 Finds students whose names contain any of the given keywords.
 
-Format: `find KEYWORD [MORE_KEYWORDS]`
+**Format:**
+```
+find KEYWORD [MORE_KEYWORDS]
+```
 
+<box type="info" seamless>
+
+**Requirements:**
 * The search is case-insensitive (e.g. `john` will match `John`)
 * The order of the keywords does not matter (e.g. `John Doe` will match `Doe John`)
 * Only the name is searched
 * Only full words will be matched (e.g. `Joh` will not match `John`)
 * Students matching at least one keyword will be returned (i.e. `OR` search)
+</box>
 
-Examples:
-* `find John` returns `john` and `John Doe`
-* `find alex david` returns `Alex Yeoh`, `David Li`<br>
-  ![result for 'find alex david'](images/findAlexDavidResult.png)
+**Examples:**
+```
+find John
+```
+```
+find alex david
+```
+
+![result for 'find alex david'](images/findAlexDavidResult.png)
 
 ### Filtering students by tags: `filter`
 
 Filters students who have all of the specified tags.
 
-Format: `filter t/TAG [t/MORE_TAGS]…​`
+**Format:**
+```
+filter t/TAG [t/MORE_TAGS]…​
+```
 
+<box type="info" seamless>
+
+**Requirements:**
 * At least one tag must be provided
 * Only students who have **all** the specified tags will be shown (i.e. `AND` search)
 * **Tag matching is case-insensitive** (e.g., `Friends` matches `friends`)
 * **Substring matching is supported** (e.g., `help` matches tags containing "help" like `needHelp`)
 * Tags must be alphanumeric (no spaces)
+</box>
 
-Examples:
-* `filter t/friends` returns all students tagged with `friends`, `Friends`, or `FRIENDS`
-* `filter t/struggling t/needsHelp` returns students who have both `struggling` and `needsHelp` tags
-* `filter t/help` returns students with tags like `needHelp`, `helpfulStudent`, or `help`
-* `filter t/FRIEND` returns students with tags like `friends`, `friendlyStudent`, or `bestFriend`
+**Examples:**
+```
+filter t/friends
+```
+```
+filter t/struggling t/needsHelp
+```
+```
+filter t/help
+```
+```
+filter t/FRIEND
+```
 
 ### Deleting a student : `delete`
 
 Deletes the specified student from TeachMate.
 
-Format:
-* `delete INDEX` - Delete by list index
-* `delete s/STUDENT_ID` - Delete by student ID
+**Format:**
+```
+delete INDEX
+```
+```
+delete s/STUDENT_ID
+```
 
-* Deletes the student at the specified `INDEX` or with the specified `STUDENT_ID`
+<box type="info" seamless>
+
+**Requirements:**
 * The index refers to the index number shown in the displayed student list
 * The index **must be a positive integer** 1, 2, 3, …​
 * Student ID must match the format A followed by 7 digits and 1 uppercase letter (e.g., A0123456X)
+</box>
 
-Examples:
-* `list` followed by `delete 2` deletes the 2nd student in TeachMate
-* `find Jane` followed by `delete 1` deletes the 1st student in the results of the `find` command
-* `delete s/A0123456X` deletes the student with student ID A0123456X
+**Examples:**
+```
+delete 2
+```
+```
+delete s/A0123456X
+```
 
 ### Clearing all entries : `clear`
 
 Clears all entries from TeachMate.
 
-Format: `clear`
+**Format:**
+```
+clear
+```
 
 <box type="warning" seamless>
 
 **Warning:** This action cannot be undone. All student data will be permanently deleted.
 </box>
 
+**Example:**
+```
+clear
+```
+
 ### Exiting the program : `exit`
 
 Exits the program.
 
-Format: `exit`
+**Format:**
+```
+exit
+```
+
+**Example:**
+```
+exit
+```
 
 ### Saving the data
 
+<box type="info" seamless>
+
 TeachMate data are saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
+</box>
 
 ### Editing the data file
 
+<box type="info" seamless>
+
 TeachMate data are saved automatically as a JSON file `[JAR file location]/data/addressbook.json`. Advanced users are welcome to update data directly by editing that data file.
+</box>
 
 <box type="warning" seamless>
 
@@ -584,37 +768,83 @@ Furthermore, certain edits can cause TeachMate to behave in unexpected ways (e.g
 
 ## FAQ
 
-**Q**: How do I transfer my data to another Computer?<br>
-**A**: Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous TeachMate home folder.
+<box type="tip" seamless>
 
-**Q**: What is the student ID format?<br>
-**A**: Student IDs must follow the NUS format: A followed by exactly 7 digits and 1 uppercase letter (e.g., A0123456X, A1234567B).
+**Q: How do I transfer my data to another Computer?**
 
-**Q**: Can I add a student without module codes?<br>
-**A**: No, every student must have at least one module code when using the `add` command.
+Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous TeachMate home folder.
+</box>
 
-**Q**: Why does the edit command still accept phone (p/) and address (a/) prefixes?<br>
-**A**: For backward compatibility with older data that may contain phone and address information. New students added via the `add` command will only have student-specific fields (student ID, module codes).
+<box type="tip" seamless>
 
-**Q**: Can tags contain spaces?<br>
-**A**: No, tags must be alphanumeric without spaces. Use camelCase or single words (e.g., `needsHelp`, `struggling`).
+**Q: What is the student ID format?**
 
-**Q**: Can I edit or delete grades after adding them?<br>
-**A**: Yes! You can update grades by using the `grade` command with the same assignment name (case-insensitive). For example, if a student has "Midterm: 85", running `grade 1 g/Midterm:90` will update it to 90. To delete grades, use the `deletegrade` command. For example, `deletegrade 1 g/Midterm` will remove the Midterm grade from student 1.
+Student IDs must follow the NUS format: A followed by exactly 7 digits and 1 uppercase letter (e.g., A0123456X, A1234567B).
+</box>
 
-**Q**: Why can't I add grades to a person without a student ID?<br>
-**A**: Grades are only applicable to students. The system requires students to have a student ID to ensure grades are tracked for the right individuals.
+<box type="tip" seamless>
 
-**Q**: What happens to grades when I edit or delete a student?<br>
-**A**: When you edit a student's information (name, email, etc.), their grades are preserved. If you delete a student, all their associated grades are permanently deleted as well.
+**Q: Can I add a student without module codes?**
+
+No, every student must have at least one module code when using the `add` command.
+</box>
+
+<box type="tip" seamless>
+
+**Q: Why does the edit command still accept phone (p/) and address (a/) prefixes?**
+
+For backward compatibility with older data that may contain phone and address information. New students added via the `add` command will only have student-specific fields (student ID, module codes).
+</box>
+
+<box type="tip" seamless>
+
+**Q: Can tags contain spaces?**
+
+No, tags must be alphanumeric without spaces. Use camelCase or single words (e.g., `needsHelp`, `struggling`).
+</box>
+
+<box type="tip" seamless>
+
+**Q: Can I edit or delete grades after adding them?**
+
+Yes! You can update grades by using the `grade` command with the same assignment name (case-insensitive). For example, if a student has "Midterm: 85", running `grade 1 g/Midterm:90` will update it to 90. To delete grades, use the `deletegrade` command. For example, `deletegrade 1 g/Midterm` will remove the Midterm grade from student 1.
+</box>
+
+<box type="tip" seamless>
+
+**Q: Why can't I add grades to a person without a student ID?**
+
+Grades are only applicable to students. The system requires students to have a student ID to ensure grades are tracked for the right individuals.
+</box>
+
+<box type="tip" seamless>
+
+**Q: What happens to grades when I edit or delete a student?**
+
+When you edit a student's information (name, email, etc.), their grades are preserved. If you delete a student, all their associated grades are permanently deleted as well.
+</box>
 
 --------------------------------------------------------------------------------------------------------------------
 
 ## Known issues
 
-1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
+<box type="warning" seamless>
 
-2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
+**1. Multiple Screen Issue**
+
+If you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen.
+
+**Solution:** Delete the `preferences.json` file created by the application before running the application again.
+</box>
+
+<box type="warning" seamless>
+
+**2. Minimized Help Window Issue**
+
+If you minimize the Help Window and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear.
+
+**Solution:** Manually restore the minimized Help Window.
+</box>
 
 --------------------------------------------------------------------------------------------------------------------
 
