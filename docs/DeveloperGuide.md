@@ -1188,78 +1188,63 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
       Steps 3a1-3a2 are repeated until the data entered are correct.
       Use case resumes from step 4.
 
-**Use case: UC2 - Assign student to tutorial questions to present**
+**Use case: UC2 - Add consultations for a student**
 
 **MSS**
 
-1.  User requests to search for the student.
-2.  TeachMate requests for name or ID of the student.
-3.  User enters the requested details.
-4.  TeachMate displays the matching students.
-5.  User selects the student from the matches.
-6.  User fills up the tutorial & question number.
-7.  TeachMate assigns the question to student and displays the assigned status.
+1.  User requests to add or edit a student with consultation details.
+2.  TeachMate requests for student information and consultation date/time.
+3.  User enters student details including one or more consultation date/times.
+4.  TeachMate validates the consultation format and adds the student with consultations.
+5.  TeachMate displays the student details with scheduled consultations.
     Use case ends.
 
 **Extensions**
 
-* 3a. TeachMate cannot find any matching student based on the entered details.
-      3a1. TeachMate displays 'No Student Found'.
-      3a2. User enters new detail.
-      Steps 3a1-3a2 are repeated until the detail entered have matches.
+* 3a. Entered date/time format is invalid.
+      3a1. TeachMate displays error with supported date/time formats.
+      3a2. User enters a valid date/time in one of the supported formats.
+      Steps 3a1-3a2 are repeated until valid format is used.
       Use case resumes from step 4.
 
-**Use case: UC3 - Group students in the tutorial class**
+* 3b. User is editing an existing student.
+      3b1. User provides the student index and new consultation details.
+      3b2. TeachMate replaces existing consultations with the new ones.
+      Use case resumes from step 5.
+
+**Use case: UC3 - Mark a student's attendance**
 
 **MSS**
 
-1.  User requests to group students up
-2.  TeachMate requests to select the students and group ID
-3.  User enters the group ID and selects the students
-4.  TeachMate displays the selected students under the new group 
-
-**Extensions**
-
-* 3a. User does not select any students.
-      3a1. TeachMate displays 'No students selected'.
-      3a2. User selects at least one student.
-      Use case resumes from step 4.
-
-**Use case: UC4 - Add consultations to my calendar**
-
-**MSS**
-
-1.  User requests to add a consultation to the calendar.
-2.  TeachMate requests for date, time, student, and description.
-3.  User enters the requested details.
-4.  TeachMate adds the consultation and displays the scheduled entry.
+1.  User requests to mark attendance for a student for a specific week.
+2.  TeachMate requests for the student identifier and week number.
+3.  User provides the student (by index or student ID), week number (1-13), and status (present/absent).
+4.  TeachMate marks the attendance and displays the updated status.
     Use case ends.
 
 **Extensions**
 
-* 3a. Entered date/time is invalid.
-      3a1. TeachMate displays 'Invalid date/time'.
-      3a2. User enters a valid date/time.
+* 3a. The student index is invalid.
+      3a1. TeachMate displays 'The student index provided is invalid'.
+      3a2. User enters a valid index from the displayed list.
       Use case resumes from step 4.
 
-**Use case: UC5 - Mark a student's attendance for a class**
-
-**MSS**
-
-1.  User requests to mark a student's attendance.
-2.  TeachMate requests for the class/session and the student.
-3.  User provides the class/session and selects the student.
-4.  TeachMate marks the student's attendance and displays the updated status.
-    Use case ends.
-
-**Extensions**
-
-* 3a. Student is not enrolled in the specified class/session.
-      3a1. TeachMate displays 'Student not in class'.
-      3a2. User selects a valid student in the class/session.
+* 3b. The student ID is not found.
+      3b1. TeachMate displays 'No student found with ID: [ID]'.
+      3b2. User enters a valid student ID.
       Use case resumes from step 4.
 
-**Use case: UC6 - Add a remark to a student**
+* 3c. The week number is invalid.
+      3c1. TeachMate displays 'Week should be a number between 1 and 13 (inclusive)'.
+      3c2. User enters a valid week number.
+      Use case resumes from step 4.
+
+* 3d. User wants to unmark attendance.
+      3d1. User specifies 'unmark' as the status.
+      3d2. TeachMate removes the attendance record for that week.
+      Use case ends.
+
+**Use case: UC4 - Add a remark to a student**
 
 **MSS**
 
