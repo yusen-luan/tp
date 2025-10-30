@@ -302,7 +302,6 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/M
 * Existing values will be overwritten by the input values
 * When editing module codes, the existing module codes will be removed and replaced (not cumulative)
 * When editing tags, the existing tags will be removed and replaced (not cumulative)
-* You can remove all tags by typing `t/` without specifying any tags
 * You can remove all module codes by typing `m/` without specifying any module codes
 * Editing consultations should still follow the same format as in the `add` command
 * **Editing grades:** Use `g/ASSIGNMENT_NAME:SCORE` to update an existing grade. The assignment must already exist for the student, otherwise an error will be shown.
@@ -317,7 +316,7 @@ The edit command still supports `p/PHONE` and `a/ADDRESS` prefixes for backward 
 
 Examples:
 *  `edit 1 s/A9999999Z e/newemail@u.nus.edu` - Edits the student ID and email of the 1st student
-*  `edit 2 n/Jane Doe t/` - Edits the name of the 2nd student and clears all tags
+*  `edit 2 n/Jane Doe t/friends` - Edits the name of the 2nd student and replaces all tags with "friends"
 *  `edit 3 m/CS2103T m/CS2101` - Replaces all module codes with CS2103T and CS2101
 *  `edit 1 g/Midterm:90` - Updates the Midterm grade to 90 for the 1st student (assignment must already exist)
 *  `edit 2 w/5:present` - Marks the 2nd student as present for week 5
