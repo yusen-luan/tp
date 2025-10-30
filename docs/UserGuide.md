@@ -50,6 +50,16 @@ As an NUS TA juggling multiple modules, you face unique challenges:
 
 ## Quick start
 
+<box type="info" seamless>
+
+**Before you begin - Prerequisites:**
+
+* **Basic command line familiarity** - You should know how to open a terminal and navigate folders using `cd`
+* **NUS context** - You're familiar with NUS student IDs (e.g., A0123456X) and module codes (e.g., CS2103T)
+* **Typing preference** - You prefer typing commands over clicking buttons for faster workflows
+
+</box>
+
 1. Ensure you have Java `17` or above installed in your Computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
