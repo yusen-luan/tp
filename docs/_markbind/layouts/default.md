@@ -7,14 +7,14 @@
 <header sticky>
   <navbar type="dark">
     <a slot="brand" href="{{baseUrl}}/index.html" title="Home" class="navbar-brand">
-      <img src="{{baseUrl}}/images/SeEduLogo.png" height="20" alt="TA Mate">
-      TA Mate
+      <img src="{{baseUrl}}/images/SeEduLogo.png" height="20" alt="TeachMate">
+      TeachMate
     </a>
     <li>
       <a highlight-on="exact" href="{{baseUrl}}/index.html" class="nav-link">HOME</a>
     </li>
     <li>
-      <a highlight-on="sibling-or-child" href="{{baseUrl}}/UserGuide.html" class="nav-link">USER GUIDE</a>
+      <a highlight-on="sibling-or-child" href="{{baseUrl}}/UserGuide.html" class="nav-link">USER GUIDE</a>tel
     </li>
     <li>
       <a highlight-on="sibling-or-child" href="{{baseUrl}}/DeveloperGuide.html" class="nav-link">DEVELOPER GUIDE</a>
