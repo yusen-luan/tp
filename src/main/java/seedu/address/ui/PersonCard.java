@@ -70,26 +70,24 @@ public class PersonCard extends UiPart<Region> {
         id.setText(String.valueOf(displayedIndex));
         name.setText(person.getName().fullName);
         studentId.setText(person.getStudentId() != null ? person.getStudentId().value : "N/A");
+
+        // Modules with placeholder
         if (!person.getModuleCodes().isEmpty()) {
             String moduleCodesText = person.getModuleCodes().stream()
                     .map(mc -> mc.value)
                     .reduce((a, b) -> a + ", " + b)
-                    .orElse("No Modules Recorded");
+                    .orElse("No modules recorded");
             moduleCode.setText(moduleCodesText);
         } else {
-            moduleCode.setText("No Modules Recorded");
+            moduleCode.setText("No modules recorded");
         }
 
         // Populate attendance grid
         populateAttendanceGrid(person);
 
-        person.getTags().stream()
-                .sorted(Comparator.comparing(tag -> tag.tagName))
-                .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
-
+        // Grades with placeholder
         if (person.getGrades().isEmpty()) {
-            Label noGradesLabel = new Label("No Grades Recorded");
-            noGradesLabel.getStyleClass().add("empty-label");
+            Label noGradesLabel = new Label("No grades recorded");
             grades.getChildren().add(noGradesLabel);
         } else {
             person.getGrades().stream()
@@ -100,8 +98,17 @@ public class PersonCard extends UiPart<Region> {
                         grades.getChildren().add(gradeLabel);
                     });
         }
+
+        // Consultations with placeholder
         consultations.setText(getConsultationsSummary(person));
+
+        // Remark with placeholder
         remark.setText(person.getRemark() != null ? person.getRemark().value : "No remarks");
+
+        // Tags (no placeholder needed as tags are optional badges)
+        person.getTags().stream()
+                .sorted(Comparator.comparing(tag -> tag.tagName))
+                .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
     }
 
     /**
