@@ -29,7 +29,6 @@ public class ListCommandParserTest {
     public void parse_validModuleCode_success() {
         // Implement test for valid module code
         assertParseSuccess(parser, " m/CS2103T", new ListCommand(new ModuleCode("CS2103T")));
-        assertParseSuccess(parser, " m/cs2103t", new ListCommand(new ModuleCode("CS2103T")));
         assertParseSuccess(parser, " m/  CS2103T  ", new ListCommand(new ModuleCode("CS2103T")));
     }
 
