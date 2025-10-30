@@ -4,7 +4,7 @@
   pageNav: 3
 ---
 
-# AB-3 Developer Guide
+# TeachMate Developer Guide
 
 <!-- * Table of Contents -->
 <page-nav-print />
@@ -125,7 +125,7 @@ The `Model` component,
 
 * stores the address book data i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
 * stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Person>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
-* stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
+* stores a `UserPref` object that represents the user's preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
 
 <box type="info" seamless>
@@ -157,103 +157,6 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 ## **Implementation**
 
 This section describes some noteworthy details on how certain features are implemented.
-
-### \[Proposed\] Undo/redo feature
-
-#### Proposed Implementation
-
-The proposed undo/redo mechanism is facilitated by `VersionedAddressBook`. It extends `AddressBook` with an undo/redo history, stored internally as an `addressBookStateList` and `currentStatePointer`. Additionally, it implements the following operations:
-
-* `VersionedAddressBook#commit()` — Saves the current address book state in its history.
-* `VersionedAddressBook#undo()` — Restores the previous address book state from its history.
-* `VersionedAddressBook#redo()` — Restores a previously undone address book state from its history.
-
-These operations are exposed in the `Model` interface as `Model#commitAddressBook()`, `Model#undoAddressBook()` and `Model#redoAddressBook()` respectively.
-
-Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
-
-Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the initial address book state, and the `currentStatePointer` pointing to that single address book state.
-
-<puml src="diagrams/UndoRedoState0.puml" alt="UndoRedoState0" />
-
-Step 2. The user executes `delete 5` command to delete the 5th person in the address book. The `delete` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `delete 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
-
-<puml src="diagrams/UndoRedoState1.puml" alt="UndoRedoState1" />
-
-Step 3. The user executes `add n/David …​` to add a new person. The `add` command also calls `Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
-
-<puml src="diagrams/UndoRedoState2.puml" alt="UndoRedoState2" />
-
-<box type="info" seamless>
-
-**Note:** If a command fails its execution, it will not call `Model#commitAddressBook()`, so the address book state will not be saved into the `addressBookStateList`.
-
-</box>
-
-Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
-
-<puml src="diagrams/UndoRedoState3.puml" alt="UndoRedoState3" />
-
-
-<box type="info" seamless>
-
-**Note:** If the `currentStatePointer` is at index 0, pointing to the initial AddressBook state, then there are no previous AddressBook states to restore. The `undo` command uses `Model#canUndoAddressBook()` to check if this is the case. If so, it will return an error to the user rather
-than attempting to perform the undo.
-
-</box>
-
-The following sequence diagram shows how an undo operation goes through the `Logic` component:
-
-<puml src="diagrams/UndoSequenceDiagram-Logic.puml" alt="UndoSequenceDiagram-Logic" />
-
-<box type="info" seamless>
-
-**Note:** The lifeline for `UndoCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline reaches the end of diagram.
-
-</box>
-
-Similarly, how an undo operation goes through the `Model` component is shown below:
-
-<puml src="diagrams/UndoSequenceDiagram-Model.puml" alt="UndoSequenceDiagram-Model" />
-
-The `redo` command does the opposite — it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the address book to that state.
-
-<box type="info" seamless>
-
-**Note:** If the `currentStatePointer` is at index `addressBookStateList.size() - 1`, pointing to the latest address book state, then there are no undone AddressBook states to restore. The `redo` command uses `Model#canRedoAddressBook()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
-
-</box>
-
-Step 5. The user then decides to execute the command `list`. Commands that do not modify the address book, such as `list`, will usually not call `Model#commitAddressBook()`, `Model#undoAddressBook()` or `Model#redoAddressBook()`. Thus, the `addressBookStateList` remains unchanged.
-
-<puml src="diagrams/UndoRedoState4.puml" alt="UndoRedoState4" />
-
-Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/David …​` command. This is the behavior that most modern desktop applications follow.
-
-<puml src="diagrams/UndoRedoState5.puml" alt="UndoRedoState5" />
-
-The following activity diagram summarizes what happens when a user executes a new command:
-
-<puml src="diagrams/CommitActivityDiagram.puml" width="250" />
-
-#### Design considerations:
-
-**Aspect: How undo & redo executes:**
-
-* **Alternative 1 (current choice):** Saves the entire address book.
-  * Pros: Easy to implement.
-  * Cons: May have performance issues in terms of memory usage.
-
-* **Alternative 2:** Individual command knows how to undo/redo by
-  itself.
-  * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
-  * Cons: We must ensure that the implementation of each individual command are correct.
-
-_{more aspects and alternatives to be added}_
-
-### \[Proposed\] Data archiving
-
-_{Explain here how the data archiving feature will be implemented}_
 
 ### View Student Feature
 
@@ -371,12 +274,6 @@ The `AttendanceCommand`:
 - Supports unmarking attendance (removing records) with `unmark` status
 - Creates updated `Person` objects with modified attendance records
 
-The `AttendanceRecord` class:
-- Stores attendance using a `Map<Week, AttendanceStatus>` structure
-- Unmarked weeks are absent from the map (no entry = unmarked state)
-- `markAttendance()` adds or updates an entry in the map
-- `unmarkAttendance()` removes an entry from the map
-
 The `PersonCard` UI component:
 - Displays attendance visually in the student list using a grid of 13 rectangles (16x16 pixels each with rounded edges)
 - Each rectangle represents one week (1-13) of the semester
@@ -462,36 +359,6 @@ The following sequence diagram shows how an attendance marking operation works f
   * Pros: Simpler parsing logic. Single identification method. No ambiguity in command format.
   * Cons: Less convenient. Requires memorizing or looking up student IDs. Cannot leverage displayed list. Slower for bulk operations.
 
-**Aspect: Bulk attendance marking**
-
-* **Alternative 1 (current choice):** Support `all` keyword (without prefix) to mark all students
-  * Pros: Very convenient for TAs marking full-class attendance. Saves time when all students share same status. Single command instead of N commands. Clean syntax without prefix clutter.
-  * Cons: Requires special parsing logic to distinguish `all` from numeric index. All-or-nothing operation (cannot mark most students one way, exceptions another way). Risk of accidental bulk operations.
-
-* **Alternative 2:** Require individual marking for each student
-  * Pros: More explicit, less risk of mistakes. Simpler parsing logic. Forces TAs to verify each student.
-  * Cons: Tedious for large classes. Time-consuming when most students have same status. Many repetitive commands.
-
-**Aspect: Status parameter position**
-
-* **Alternative 1 (current choice):** Status must come after week parameter (`w/1 present`)
-  * Pros: Clear and consistent command structure. Status is visually grouped with week. Easier to parse - no ambiguity about parameter order. Natural reading flow (week then status).
-  * Cons: Slightly longer to type. Cannot put status at the beginning for emphasis.
-
-* **Alternative 2:** Allow flexible status positioning (before or after week)
-  * Pros: More flexibility for users. Can emphasize status by putting it first.
-  * Cons: More complex parsing logic. Ambiguous command structure. Harder to document and explain. Can lead to user confusion about accepted formats.
-
-**Aspect: Week number validation**
-
-* **Alternative 1 (current choice):** Validate weeks are between 1-13
-  * Pros: Matches typical NUS semester structure. Prevents obviously invalid data. Provides clear error messages to users.
-  * Cons: Not flexible for special terms or non-standard schedules. Hard-coded constraint.
-
-* **Alternative 2:** Allow any positive week number
-  * Pros: Flexible for different semester structures. Works for special terms, summer sessions, etc.
-  * Cons: Allows potentially meaningless data (e.g., week 100). No validation against errors. Harder to generate meaningful reports.
-
 ### Grade Feature
 
 #### Implementation
@@ -510,7 +377,7 @@ The `GradeCommand`:
 - Takes an index and one or more grade entries in the format `g/ASSIGNMENT_NAME:SCORE`
 - Finds the person at the specified index in the filtered person list
 - Creates a new `Person` object with the updated grades (defensive copying)
-- Checks for duplicate grades (same assignment name) and prevents them
+- Updates existing grades if assignment name matches (case-insensitive)
 - Only allows adding grades to students (persons with StudentId)
 
 **Execution Flow:**
@@ -531,8 +398,8 @@ Given below is an example usage scenario and how the grade mechanism behaves.
 **Step 4.** When `GradeCommand#execute()` is called:
 - Gets the person at index 1 from the filtered person list using `Model#getFilteredPersonList()`
 - Validates the person has a StudentId (only students can have grades)
-- Checks for duplicate grades by comparing assignment names
-- Creates a new `Person` with the existing grades plus the new grade
+- Checks for existing grades with same assignment name (case-insensitive)
+- Creates a new `Person` with updated/added grades
 - Updates the model with `Model#setPerson(personToEdit, editedPerson)`
 - Returns a `CommandResult` with success message
 
@@ -556,13 +423,13 @@ The following sequence diagram shows how the grade operation works:
 
 **Aspect: Duplicate grade handling**
 
-* **Alternative 1 (current choice):** Prevent duplicates by checking assignment names
-  * Pros: Ensures data consistency, prevents accidental overwrites. Clear error message to user.
-  * Cons: Cannot easily update an existing grade - must delete first then add. More validation logic needed.
+* **Alternative 1 (current choice):** Allow updates by replacing grades with matching assignment names
+  * Pros: Easy to update grades without deleting first. Natural user experience. Case-insensitive matching prevents accidental duplicates.
+  * Cons: No history of grade changes. Cannot track grade evolution over time.
 
-* **Alternative 2:** Allow duplicates and keep all versions
-  * Pros: Maintains history of grade changes. Simpler implementation.
-  * Cons: Confusing for users which grade is "current". Takes more storage space. Need additional logic to determine which grade to display.
+* **Alternative 2:** Prevent duplicates entirely, require explicit deletion before update
+  * Pros: More explicit operations. Forces user to acknowledge grade replacement.
+  * Cons: More tedious workflow. Requires two commands to update a grade.
 
 **Aspect: Grade validation**
 
@@ -578,7 +445,7 @@ The following sequence diagram shows how the grade operation works:
 
 #### Implementation
 
-The consultation feature allows teaching assistants to record and view student consultation sessions as part of each student’s profile. Unlike other standalone commands, consultations are implemented as an **attribute of each student**, and can be added or modified **only through the `add` or `edit` commands**.
+The consultation feature allows teaching assistants to record and view student consultation sessions as part of each student's profile. Unlike other standalone commands, consultations are implemented as an **attribute of each student**, and can be added or modified **only through the `add` or `edit` commands**.
 
 Consultations are stored within each `Person` object as a list of `Consultation` instances, each representing a single consultation date and time.
 
@@ -606,7 +473,7 @@ Given below is an example usage scenario and how the consultation mechanism beha
 **Step 1.** The user executes either:
 - `add n/John Doe s/A0123456X e/john@u.nus.edu m/CS2103T c/22/10/2025 15:30`, or
 - `edit 1 c/25/10/2025 14:00`  
-  to add or update a student’s consultation record.
+  to add or update a student's consultation record.
 
 **Step 2.** The command is parsed by `AddressBookParser`, which identifies the command type (`add` or `edit`) and creates the respective command parser.
 
@@ -628,6 +495,7 @@ The following sequence diagram shows how consultations are processed as part of 
 <puml src="diagrams/ConsultationSequenceDiagram.puml" alt="ConsultationSequenceDiagram" />
 
 *The edit command follows a similar sequence, with the difference being that it retrieves an existing student from the model, updates their consultations, and re-saves the modified record.*
+
 #### Design Considerations
 
 **Aspect: Integration within `add` and `edit` commands vs standalone `consult` command**
@@ -640,8 +508,6 @@ The following sequence diagram shows how consultations are processed as part of 
     * Pros: Clear separation of concerns. Easier to track when consultations are added. Provides finer-grained control for managing consultation records.
     * Cons: Adds a new command and parser, increasing system complexity. Introduces overlapping functionality with `edit`. Users would need to remember and use multiple commands to update the same student record.
 
----
-
 **Aspect: Consultation data structure**
 
 * **Alternative 1 (current choice):** Store consultations as a list of `Consultation` objects within `Person`
@@ -651,8 +517,6 @@ The following sequence diagram shows how consultations are processed as part of 
 * **Alternative 2:** Store consultations as a simple formatted `String` within `Person`
     * Pros: Simpler to implement and serialize. Minimal model changes required.
     * Cons: Harder to validate and manipulate programmatically. Loses type safety and flexibility for future enhancements.
-
----
 
 **Aspect: Datetime input format**
 
@@ -825,12 +689,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 | Priority | As a …                            | I want to …                                                   | So that I can …                                                          |
 |----------|-----------------------------------|---------------------------------------------------------------|--------------------------------------------------------------------------|
-| `* * *`  | TA                                | add a new student’s details                                   | have their basic information readily available (name, ID, email, module) |
-| `* * *`  | TA                                | view student contact details                                  | check in with my student’s progress                                      |
-| `* * *`  | TA                                | view student grades                                           | track my students’ academic progress                                     |
+| `* * *`  | TA                                | add a new student's details                                   | have their basic information readily available (name, ID, email, module) |
+| `* * *`  | TA                                | view student contact details                                  | check in with my student's progress                                      |
+| `* * *`  | TA                                | view student grades                                           | track my students' academic progress                                     |
 | `* *`    | TA                                | view student assignment submissions                           | track their assignment progress                                          |
 | `* *`    | TA with many modules              | view all my modules that I teach                              | easily track all modules from one glance                                 |
-| `* * *`  | TA                                | mark a student’s attendance                                   | award marks according to their attendance                                |
+| `* * *`  | TA                                | mark a student's attendance                                   | award marks according to their attendance                                |
 | `* *`    | TA with many classes              | view my timetable schedule                                    | view my schedule from one location                                       |
 | `* *`    | TA willing to give consultations  | add consultations to my calendar                              | keep track of my timetable                                               |
 | `* *`    | TA                                | delete consultations                                          | allocate time for other students                                         |
@@ -840,7 +704,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *`    | TA with many things to do         | add tasks that are related to my classes                      | keep track of what to do outside of class                                |
 | `*`      | TA                                | randomly select students for class participation              | ensure fair distribution of participation opportunities                  |
 | `* *`    | TA                                | flag out students with special needs                          | pay more attention to them                                               |
-| `* *`    | TA                                | unmark a student’s attendance if they leave mid-lesson        | easily edit their attendance                                             |
+| `* *`    | TA                                | unmark a student's attendance if they leave mid-lesson        | easily edit their attendance                                             |
 | `*`      | TA                                | assign students to tutorial questions to present              | ensure all students have a fair chance to present their answers          |
 | `*`      | TA that gets asked many questions | add reminders to follow up with students after class          | ensure their questions get answered (even if out of syllabus)            |
 | `*`      | TA                                | group students up if the module requires group work           | keep track of all groupings                                              |
@@ -1075,3 +939,4 @@ testers are expected to do more *exploratory* testing.
    1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
 
 1. _{ more test cases …​ }_
+
