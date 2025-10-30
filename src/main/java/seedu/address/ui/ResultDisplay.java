@@ -32,9 +32,9 @@ public class ResultDisplay extends UiPart<Region> {
      * Shows the welcome message on startup.
      */
     private void showWelcomeMessage() {
-        String welcomeMessage = "✓ Welcome to TeachMate!\n\n"
-                + "This result display shows feedback for your commands, including success confirmations, "
-                + "error messages, and detailed results.\n\n"
+        String welcomeMessage = "Welcome to TeachMate!\n\n"
+                + "This result display shows feedback for your commands, including confirmations, "
+                + "warnings, and detailed results.\n\n"
                 + "Available commands:\n"
                 + "- add: Add a new student\n"
                 + "- delete: Delete a student\n"
@@ -92,8 +92,8 @@ public class ResultDisplay extends UiPart<Region> {
      * Converts plain text message to GitHub-style HTML with rich formatting.
      */
     private String convertToHtml(String message) {
-        boolean isError = isErrorMessage(message);
         boolean isSuccess = message.contains("✓");
+        boolean isError = !isSuccess && isErrorMessage(message);
 
         StringBuilder html = new StringBuilder();
         html.append("<!DOCTYPE html><html><head>");
