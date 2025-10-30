@@ -534,15 +534,19 @@ Examples:
 
 Deletes the specified student from TeachMate.
 
-Format: `delete INDEX`
+Format:
+* `delete INDEX` - Delete by list index
+* `delete s/STUDENT_ID` - Delete by student ID
 
-* Deletes the student at the specified `INDEX`
+* Deletes the student at the specified `INDEX` or with the specified `STUDENT_ID`
 * The index refers to the index number shown in the displayed student list
 * The index **must be a positive integer** 1, 2, 3, …​
+* Student ID must match the format A followed by 7 digits and 1 uppercase letter (e.g., A0123456X)
 
 Examples:
 * `list` followed by `delete 2` deletes the 2nd student in TeachMate
 * `find Jane` followed by `delete 1` deletes the 1st student in the results of the `find` command
+* `delete s/A0123456X` deletes the student with student ID A0123456X
 
 ### Clearing all entries : `clear`
 
