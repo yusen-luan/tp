@@ -663,6 +663,114 @@ The following sequence diagram shows how consultations are processed as part of 
     * Pros: Simpler parsing logic and clearer documentation. Ensures data consistency across all entries.
     * Cons: Less user-friendly; rejects valid but differently formatted datetimes. May frustrate users unfamiliar with the required format.
 
+### Remark Feature
+
+#### Implementation
+
+The remark feature allows teaching assistants to add personalized notes and observations about individual students. It is implemented through the `Remark` model class, `RemarkCommand` command class, and `RemarkCommandParser` parser class.
+
+**Key Components:**
+
+The `Remark` class:
+- Immutable value object storing a remark string
+- Validates that remarks contain at least one non-whitespace character
+- Supports multi-line text with DOTALL regex mode
+- Stored as an optional field in `Person` (can be null)
+
+The `RemarkCommand`:
+- Takes student ID and remark text as parameters
+- Uses `Model#findPersonByStudentId()` for student lookup
+- Creates new `Person` with updated remark (defensive copying)
+- Replaces existing remarks (not cumulative)
+
+The `RemarkCommandParser`:
+- Parses format: `remark s/STUDENT_ID r/REMARK`
+- Validates both required prefixes present
+- Uses `ParserUtil#parseStudentId()` and `ParserUtil#parseRemark()`
+
+**Object Structure:**
+
+The following object diagram shows how `Remark` integrates with other student data:
+
+<puml src="diagrams/RemarkObjectDiagram.puml" alt="Remark Object Diagram showing relationship with Person" />
+
+<box type="info" seamless>
+
+**Note:** The diagram shows a single `Person` instance with all its associated data including the optional `Remark`. Remark is nullable and supports multi-line text.
+</box>
+
+**Execution Flow:**
+
+The following activity diagram illustrates the command validation and execution flow:
+
+<puml src="diagrams/RemarkActivityDiagram.puml" alt="Remark Command Activity Diagram" />
+
+Given below is a detailed step-by-step execution scenario:
+
+**Step 1.** User executes `remark s/A0123456X r/Needs extra help with OOP concepts`
+
+**Step 2.** `AddressBookParser` identifies remark command and creates `RemarkCommandParser`
+
+**Step 3.** `RemarkCommandParser` parses arguments:
+- Tokenizes input using `ArgumentTokenizer`
+- Verifies required prefixes present and no duplicates
+- Extracts and validates student ID and remark text
+- Creates `RemarkCommand` with validated parameters
+
+**Step 4.** `RemarkCommand#execute()` is called:
+- Calls `Model#findPersonByStudentId()` to locate student
+- Throws `CommandException` if student not found
+- Creates new `Person` via `createStudentWithRemark()` helper
+- All existing fields preserved except remark is replaced
+- Updates model via `Model#setPerson()`
+- Returns success message
+
+**Step 5.** Model persists changes:
+- Storage saves to JSON via `JsonAdaptedPerson`
+- Remark serialized as nullable string field
+- UI updates to show remark with 📝 icon
+
+The following sequence diagram shows the detailed interactions:
+
+<puml src="diagrams/RemarkSequenceDiagram.puml" alt="Remark Command Sequence Diagram" />
+
+<box type="info" seamless>
+
+**Note:** The lifeline for `RemarkCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
+</box>
+
+#### Design Considerations
+
+**Aspect: Student identification method**
+
+* **Alternative 1 (current choice):** Only support student ID-based lookup
+  * Pros: Unambiguous - student ID is unique. Works regardless of filter state. Prevents accidental remark assignment to wrong student.
+  * Cons: Requires knowing student ID. Cannot use index for quick operations. More typing required.
+
+* **Alternative 2:** Support both index and student ID lookup
+  * Pros: More flexible for different workflows. Index faster for visible students.
+  * Cons: Risk of wrong student if list changes. Index is context-dependent. More complex parsing.
+
+**Aspect: Remark update behavior**
+
+* **Alternative 1 (current choice):** Replace existing remark
+  * Pros: Simple and predictable. Consistent with edit semantics. Prevents clutter.
+  * Cons: Previous content lost. No history tracking.
+
+* **Alternative 2:** Append new remarks
+  * Pros: Preserves history. Can build notes over time.
+  * Cons: Remarks grow long. No clear structure. Hard to find recent info.
+
+**Aspect: Multi-line support**
+
+* **Alternative 1 (current choice):** Support multi-line with DOTALL regex
+  * Pros: Allows detailed notes with structure. Natural for longer observations.
+  * Cons: More complex validation. UI must handle multi-line display.
+
+* **Alternative 2:** Single-line only
+  * Pros: Simpler validation. Predictable display size.
+  * Cons: Limited expressiveness. Cannot organize complex information.
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Documentation, logging, testing, configuration, dev-ops**
