@@ -60,7 +60,7 @@ dependencies {
 }
 
 shadowJar {
-    archiveFileName = 'addressbook.jar'
+    archiveFileName = 'teachmate.jar'
 }
 
 run {
