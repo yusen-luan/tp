@@ -371,26 +371,27 @@ Examples:
 * `untag s/A0291772W t/Struggling t/Inactive` - Removes "Struggling" and "Inactive" tags from student with ID A0291772W
 * `untag 2 t/needsHelp` - Removes "needsHelp" tag from the 2nd student
 
-### Adding grades to a student : `grade`
+### Adding or updating grades for a student : `grade`
 
-Adds one or more grades to an existing student in TeachMate.
+Adds new grades or updates existing grades for a student in TeachMate.
 
 Format: `grade INDEX g/ASSIGNMENT_NAME:SCORE [g/ASSIGNMENT_NAME:SCORE]…​`
 
-* Adds grades to the student at the specified `INDEX`
+* Adds or updates grades for the student at the specified `INDEX`
 * The index refers to the index number shown in the displayed student list
 * The index **must be a positive integer** 1, 2, 3, …​
 * At least one grade must be provided
-* Grades are added to existing grades (not replaced)
 * Each grade consists of an assignment name and a score separated by a colon `:`
 * `ASSIGNMENT_NAME` should not be blank
 * `SCORE` must be a number between 0 and 100 (inclusive)
 * Only students (those with Student IDs) can have grades added
-* Duplicate grades for the same assignment name are not allowed
+* **Assignment names are case-insensitive** (e.g., "Midterm", "midterm", and "MIDTERM" refer to the same assignment)
+* If a grade for an assignment already exists, it will be **updated** with the new score
+* New grades are added without affecting other existing grades
 
-<box type="warning" seamless>
+<box type="tip" seamless>
 
-**Note:** If you try to add a grade for an assignment that already exists for the student, the command will fail. Each assignment name must be unique per student.
+**Note:** If you add a grade for an assignment that already exists (case-insensitive), the old score will be replaced with the new score. For example, if a student has "Midterm: 85" and you run `grade 1 g/midterm:90`, the grade will be updated to "Midterm: 90".
 </box>
 
 <box type="tip" seamless>
@@ -406,6 +407,30 @@ Examples:
 * `grade 1 g/Midterm:85` - Adds a grade of 85 for "Midterm" to the 1st student
 * `grade 2 g/Quiz1:90 g/Assignment1:88` - Adds two grades to the 2nd student
 * `grade 3 g/Final Exam:92` - Adds a grade for "Final Exam" to the 3rd student
+* `grade 1 g/MIDTERM:90` - Updates the existing "Midterm" grade to 90 (case-insensitive match)
+
+### Deleting grades from a student : `deletegrade`
+
+Deletes specific grades from an existing student in TeachMate.
+
+Format: `deletegrade INDEX g/ASSIGNMENT_NAME [g/ASSIGNMENT_NAME]…​`
+
+* Deletes grades from the student at the specified `INDEX`
+* The index refers to the index number shown in the displayed student list
+* The index **must be a positive integer** 1, 2, 3, …​
+* At least one assignment name must be provided
+* Assignment names must match exactly (case-sensitive)
+* Only students (those with Student IDs) can have grades deleted
+* All specified assignment names must exist for the student
+
+**Error messages:**
+* If the index is invalid: `The student index provided is invalid`
+* If the person is not a student: `The person at the specified index is not a student. Grades can only be deleted from students.`
+* If a grade doesn't exist: `Grade not found for assignment: [ASSIGNMENT_NAME]`
+
+Examples:
+* `deletegrade 1 g/Midterm` - Deletes the "Midterm" grade from the 1st student
+* `deletegrade 2 g/Quiz1 g/Assignment1` - Deletes both "Quiz1" and "Assignment1" grades from the 2nd student
 
 ### Adding remarks to a student : `remark`
 
@@ -542,7 +567,7 @@ Furthermore, certain edits can cause TeachMate to behave in unexpected ways (e.g
 **A**: No, tags must be alphanumeric without spaces. Use camelCase or single words (e.g., `needsHelp`, `struggling`).
 
 **Q**: Can I edit or delete grades after adding them?<br>
-**A**: Currently, grades cannot be edited or deleted through commands. If you need to modify a grade, you can manually edit the `data/addressbook.json` file (make sure to back it up first), or delete the student and re-add them with the correct grades.
+**A**: Yes! You can update grades by using the `grade` command with the same assignment name (case-insensitive). For example, if a student has "Midterm: 85", running `grade 1 g/Midterm:90` will update it to 90. To delete grades, use the `deletegrade` command. For example, `deletegrade 1 g/Midterm` will remove the Midterm grade from student 1.
 
 **Q**: Why can't I add grades to a person without a student ID?<br>
 **A**: Grades are only applicable to students. The system requires students to have a student ID to ensure grades are tracked for the right individuals.
@@ -571,6 +596,7 @@ Furthermore, certain edits can cause TeachMate to behave in unexpected ways (e.g
 | **Filter** | `filter t/TAG [t/MORE_TAGS]…​`<br> e.g., `filter t/struggling t/needsHelp`                                                                                               |
 | **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find John Jane`                                                                                                                |
 | **Grade**  | `grade INDEX g/ASSIGNMENT_NAME:SCORE [g/ASSIGNMENT_NAME:SCORE]…​`<br> e.g., `grade 1 g/Midterm:85 g/Quiz1:90`                                                            |
+| **Delete Grade** | `deletegrade INDEX g/ASSIGNMENT_NAME [g/ASSIGNMENT_NAME]…​`<br> e.g., `deletegrade 1 g/Midterm g/Quiz1`                                                           |
 | **List**   | `list` or `list m/MODULE_CODE`<br> e.g., `list m/CS2103T`                                                                                                                |
 | **Remark** | `remark s/STUDENT_ID r/REMARK`<br> e.g., `remark s/A0123456X r/Needs extra help with OOP concepts`                                                                       |
 | **Tag**    | `tag INDEX t/TAG [t/TAG]…​` or `tag s/STUDENT_ID t/TAG [t/TAG]…​`<br> e.g., `tag 1 t/Struggling t/Inactive` or `tag s/A0291772W t/Excelling`                            |
