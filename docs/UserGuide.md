@@ -6,36 +6,57 @@
 
 # TeachMate User Guide
 
-TeachMate is a **desktop application designed specifically for NUS Teaching Assistants (TAs)** to streamline student management across multiple tutorial groups and modules. Built for TAs who prefer typing over clicking, TeachMate combines the speed of a Command Line Interface (CLI) with the clarity of a Graphical User Interface (GUI).
+<box type="info" seamless>
+
+**TeachMate** is a **desktop application designed specifically for NUS Teaching Assistants (TAs)** to streamline student management across multiple tutorial groups and modules. Built for TAs who prefer typing over clicking, TeachMate combines the speed of a Command Line Interface (CLI) with the clarity of a Graphical User Interface (GUI).
+
+</box>
+
+--------------------------------------------------------------------------------------------------------------------
 
 ## Why TeachMate?
 
-As an NUS TA juggling multiple modules, you face unique challenges:
-- **Tracking attendance** across 13 weeks for dozens of students
-- **Managing grades** for various assignments and assessments
-- **Scheduling consultations** while keeping track of who needs extra help
-- **Remembering student details** - who's struggling with OOP concepts, who excels at algorithms
-- **Switching between modules** like CS2103T and CS2101 throughout the week
+### The TA's Challenge
 
-TeachMate solves these problems by putting everything in one place:
+<box type="warning" seamless>
+
+As an NUS TA juggling multiple modules, you face unique challenges:
+
+| 🎯 Challenge | 💡 Solution |
+|-------------|------------|
+| **Tracking attendance** across 13 weeks for dozens of students | Visual color-coded grids at a glance |
+| **Managing grades** for various assignments and assessments | Centralized grade tracking on student cards |
+| **Scheduling consultations** while keeping track of who needs extra help | Built-in consultation records |
+| **Remembering student details** - who's struggling with OOP concepts | Personalized remarks system |
+| **Switching between modules** like CS2103T and CS2101 | Multi-module filtering and organization |
+
+</box>
 
 ### What TeachMate Does for You
 
-**Instant Student Access** - View a student's complete profile including modules, grades, consultation history, attendance pattern, and your personal notes. No more hunting through spreadsheets or scrolling through email threads.
+<box type="success" seamless>
 
-**Effortless Attendance Tracking** - Mark attendance with a single command. See visual color-coded grids showing each student's 13-week attendance pattern at a glance - green for present, red for absent, grey for no record.
+**⚡ Instant Student Access** - View a student's complete profile including modules, grades, consultation history, attendance pattern, and your personal notes. No more hunting through spreadsheets or scrolling through email threads.
 
-**Smart Grade Management** - Add and update grades by assignment name, delete specific grades, and see all assignment scores displayed on each student card. No more maintaining separate Excel files.
+**📊 Effortless Attendance Tracking** - Mark attendance with a single command. See visual color-coded grids showing each student's 13-week attendance pattern at a glance - **green** for present, **red** for absent, **grey** for no record.
 
-**Consultation Scheduling** - Record consultation appointments with date and time, view upcoming consultations for specific students, and keep track of who needs follow-up help.
+**📝 Smart Grade Management** - Add and update grades by assignment name, delete specific grades, and see all assignment scores displayed on each student card. No more maintaining separate Excel files.
 
-**Personalized Student Notes** - Add remarks to remember each student's learning journey, challenges, and progress. Track observations like which concepts they struggle with or how they're improving over time.
+**📅 Consultation Scheduling** - Record consultation appointments with date and time, view upcoming consultations for specific students, and keep track of who needs follow-up help.
 
-**Multi-Module Organization** - Filter students by module to focus on one tutorial group at a time. Tag students with labels like "struggling" or "excellent" and filter by tags to identify who needs attention.
+**✏️ Personalized Student Notes** - Add remarks to remember each student's learning journey, challenges, and progress. Track observations like which concepts they struggle with or how they're improving over time.
 
-**Fast Keyboard Workflow** - Every action is a quick typed command. During live tutorials, you can mark attendance, add grades, or schedule consultations in seconds without taking your hands off the keyboard.
+**🏷️ Multi-Module Organization** - Filter students by module to focus on one tutorial group at a time. Tag students with labels like "struggling" or "excellent" and filter by tags to identify who needs attention.
 
-TeachMate is optimized for NUS workflows, using familiar formats like NUS student IDs and module codes. If you're comfortable with the terminal and type quickly, TeachMate will help you manage your students significantly faster than traditional point-and-click applications or multiple spreadsheets.
+**⌨️ Fast Keyboard Workflow** - Every action is a quick typed command. During live tutorials, you can mark attendance, add grades, or schedule consultations in seconds without taking your hands off the keyboard.
+
+</box>
+
+<box type="tip" seamless>
+
+**Optimized for NUS Workflows** - TeachMate uses familiar formats like NUS student IDs and module codes. If you're comfortable with the terminal and type quickly, TeachMate will help you manage your students significantly faster than traditional point-and-click applications or multiple spreadsheets.
+
+</box>
 
 <!-- * Table of Contents -->
 <page-nav-print />
@@ -47,65 +68,117 @@ TeachMate is optimized for NUS workflows, using familiar formats like NUS studen
 1. Ensure you have Java `17` or above installed in your Computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
-1. Download the latest `.jar` file from [here](https://github.com/AY2425S1-CS2103T-T12-1/tp/releases).
+1. Download the latest `.jar` file from [here](https://github.com/AY2526S1-CS2103T-F11-3/tp/releases).
 
 1. Copy the file to the folder you want to use as the _home folder_ for TeachMate.
 
 1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar addressbook.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
-   ![Ui](images/tp_home.png)
 
-1. Type the command in the command box and press Enter to execute it. e.g. typing **`help`** and pressing Enter will open the help window.<br>
-   Some example commands you can try:
+### Understanding the Interface
 
-   * `list` : Lists all students.
+Before you start using TeachMate, let's familiarize you with the main components of the application:
 
-   * `add n/John Doe s/A0123456X e/johnd@u.nus.edu m/CS2103T` : Adds a student named `John Doe` with student ID `A0123456X` to TeachMate.
+<p align="center">
+  <img src="images/tp_home.png" alt="TeachMate Main Interface" width="600"/>
+</p>
 
-   * `delete 3` : Deletes the 3rd student shown in the current list.
+**Figure 1: Main Interface** - The TeachMate desktop application showing the main interface with student cards displayed on the left and command results on the right. The interface uses a dark theme with color-coded sections for easy navigation.
 
-   * `clear` : Deletes all students.
+<p align="center">
+  <img src="images/tp_input.png" alt="Command Input Box" style="width: 100%; height: auto;"/>
+</p>
 
-   * `exit` : Exits the app.
+**Figure 2: Command Input Box** - The command input field at the top where you type commands. The blue glowing border indicates it's ready for input. This is where you'll enter all commands like `add`, `list`, `find`, etc.
 
-1. Refer to the [Features](#features) below for details of each command.
+<p align="center">
+  <img src="images/tp_result.png" alt="Result Display Panel" width="600"/>
+</p>
+
+**Figure 3: Result Display Panel** - The right-side panel that shows feedback for your commands, confirmations, and detailed results. It also displays the welcome message and available commands when you first start the application.
+
+<p align="center">
+  <img src="images/tp_student.png" alt="Student Cards Display" width="600"/>
+</p>
+
+**Figure 4: Student Cards** - The left panel showing student cards with comprehensive information including attendance progress bars, grades, consultation schedules, and remarks. Each card is color-coded for quick visual reference.
+
+<box type="tip" seamless>
+
+**Ready to start?** Try typing `help` in the command box to see all available commands, or check out the [Features](#features) section below to learn about each command in detail.
+
+</box>
+
+--------------------------------------------------------------------------------------------------------------------
+
+## Command Format Guide
+
+<box type="tip" seamless>
+
+### How Commands Work in TeachMate
+
+TeachMate uses a simple command-based system. Think of it like typing instructions to the app. Here's what you need to know:
+
+</box>
+
+**1. Basic Command Structure**
+* Every command starts with a command word (like `add`, `list`, `delete`)
+* Commands are followed by parameters that provide the details
+* Each parameter has a prefix (like `n/` for name, `s/` for student ID) followed by the value
+
+**Example:** `add n/John Doe s/A0123456X`
+* `add` is the command
+* `n/John Doe` means name is "John Doe"
+* `s/A0123456X` means student ID is "A0123456X"
+
+**2. Understanding the Format Notation**
+
+When you see a command format like this:
+```
+add n/NAME s/STUDENT_ID e/EMAIL [t/TAG]
+```
+
+Here's what the symbols mean:
+* **Words in CAPS** (like `NAME`) = Replace with your actual information
+* **[Square brackets]** = This part is optional - you can include it or skip it
+* **`…` after a bracket** = You can repeat this part multiple times
+
+**3. Common Prefixes You'll Use**
+* `n/` = Student name
+* `s/` = Student ID (e.g., A0123456X)
+* `e/` = Email address
+* `m/` = Module code (e.g., CS2103T)
+* `t/` = Tag (a label like "struggling" or "excellent")
+* `w/` = Week number (for attendance)
+* `g/` = Grade (assignment name and score)
+* `r/` = Remark (a note about the student)
+
+**4. Helpful Tips**
+* You can type parameters in any order - `add n/John s/A0123456X` works the same as `add s/A0123456X n/John`
+* Don't worry about capitalization - commands work the same whether you type `ADD` or `add`
+* When typing commands, just follow the pattern shown in the examples below
+
+<box type="warning" seamless>
+
+**Tip:** If you're ever unsure about a command, just type `help` to see all available commands with examples!
+
+</box>
 
 --------------------------------------------------------------------------------------------------------------------
 
 ## Features
 
-<box type="info" seamless>
-
-**Notes about the command format:**<br>
-
-* Words in `UPPER_CASE` are the parameters to be supplied by the user.<br>
-  e.g. in `add n/NAME`, `NAME` is a parameter which can be used as `add n/John Doe`.
-
-* Items in square brackets are optional.<br>
-  e.g `n/NAME [t/TAG]` can be used as `n/John Doe t/struggling` or as `n/John Doe`.
-
-* Items with `…`​ after them can be used multiple times including zero times.<br>
-  e.g. `[t/TAG]…​` can be used as ` ` (i.e. 0 times), `t/struggling`, `t/struggling t/needsHelp` etc.
-
-* Parameters can be in any order.<br>
-  e.g. if the command specifies `n/NAME s/STUDENT_ID`, `s/STUDENT_ID n/NAME` is also acceptable.
-
-* Extraneous parameters for commands that do not take in parameters (such as `help`, `list`, `exit` and `clear`) will be ignored.<br>
-  e.g. if the command specifies `help 123`, it will be interpreted as `help`.
-
-* If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
-</box>
-
 ### Viewing help : `help`
 
 Shows a message explaining how to access the help page.
 
-![help message](images/helpMessage.png)
+![help message](images/tp_help.png)
 
 **Format:**
 ```
 help
 ```
+*Opens the help window with all available commands.*
 
 **Example:**
 ```
@@ -120,6 +193,15 @@ Adds a student to TeachMate.
 **Format:**
 ```
 add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/TAG]…​ [c/CONSULTATIONS]
+```
+*Creates a new student record with the specified details.*
+
+**Examples:**
+```
+add n/John Doe s/A0123456X e/johnd@u.nus.edu m/CS2103T
+```
+```
+add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t/needsHelp c/22/10/2025 15:30
 ```
 
 <box type="info" seamless>
@@ -165,14 +247,6 @@ add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/TAG]…�
 - Invalid inputs (e.g., `2025-13-45 25:99`) will result in an error message showing the supported formats.
 </box>
 
-**Examples:**
-```
-add n/John Doe s/A0123456X e/johnd@u.nus.edu m/CS2103T
-```
-```
-add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t/needsHelp c/22/10/2025 15:30
-```
-
 ### Listing students : `list`
 
 Shows a list of all students in TeachMate, or filters students by module code.
@@ -181,9 +255,12 @@ Shows a list of all students in TeachMate, or filters students by module code.
 ```
 list
 ```
+*Displays all students in TeachMate.*
+
 ```
 list m/MODULE_CODE
 ```
+*Displays only students enrolled in the specified module.*
 
 **Examples:**
 ```
@@ -201,8 +278,40 @@ Views detailed information and attendance records about a student identified by 
 ```
 view INDEX
 ```
+*Shows detailed information for the student at the specified position in the list.*
+
 ```
 view s/STUDENT_ID
+```
+*Shows detailed information for the student with the specified student ID.*
+
+**Examples:**
+```
+view 1
+```
+```
+view s/A0123456X
+```
+
+**Example output:**
+```
+=== STUDENT DETAILS ===
+Name: John Doe
+Student ID: A0123456X
+Email: johnd@u.nus.edu
+Modules: CS2103T, CS2101
+Tags: struggling, needsHelp
+Grades: Midterm: 85, Quiz1: 90
+Remark: Very active in class discussions
+
+=== ATTENDANCE RECORD ===
+Week 1: ✓ Present
+Week 2: ✗ Absent
+Week 3: ✓ Present
+
+=== CONSULTATION RECORDS ===
+• 26 Oct 2025 4:00pm
+• 03 Nov 2025 2:30pm
 ```
 
 <box type="info" seamless>
@@ -245,26 +354,6 @@ The view command displays comprehensive information in three sections:
    * If no consultations are scheduled, displays: "No consultations recorded yet."
 </box>
 
-**Output format:**
-```
-=== STUDENT DETAILS ===
-Name: [name]
-Student ID: [student ID]
-Email: [email]
-Modules: [module codes]
-Tags: [tags]
-Grades: [grades]
-Remark: [remark]
-
-=== ATTENDANCE RECORD ===
-Week [number]: [symbol] [status]
-...
-
-=== CONSULTATION RECORDS ===
-• [consultation date and time]
-...
-```
-
 <box type="warning" seamless>
 
 **Possible Error Messages:**
@@ -277,35 +366,6 @@ Week [number]: [symbol] [status]
 **Tip:** After viewing a student, use the `list` command to see all students again.
 </box>
 
-**Examples:**
-```
-view 1
-```
-```
-view s/A0123456X
-```
-
-**Example output:**
-```
-=== STUDENT DETAILS ===
-Name: John Doe
-Student ID: A0123456X
-Email: johnd@u.nus.edu
-Modules: CS2103T, CS2101
-Tags: struggling, needsHelp
-Grades: Midterm: 85, Quiz1: 90
-Remark: Very active in class discussions
-
-=== ATTENDANCE RECORD ===
-Week 1: ✓ Present
-Week 2: ✗ Absent
-Week 3: ✓ Present
-
-=== CONSULTATION RECORDS ===
-• 26 Oct 2025 4:00pm
-• 03 Nov 2025 2:30pm
-```
-
 ### Marking attendance : `attendance`
 
 Marks attendance for a student for a specific week.
@@ -314,11 +374,33 @@ Marks attendance for a student for a specific week.
 ```
 attendance INDEX w/WEEK present|absent|unmark
 ```
+*Marks attendance for the student at the specified position in the list.*
+
 ```
 attendance s/STUDENT_ID w/WEEK present|absent|unmark
 ```
+*Marks attendance for the student with the specified student ID.*
+
 ```
 attendance all w/WEEK present|absent|unmark
+```
+*Marks attendance for all students at once.*
+
+**Examples:**
+```
+attendance 1 w/1 present
+```
+```
+attendance 2 w/2 absent
+```
+```
+attendance 1 w/1 unmark
+```
+```
+attendance s/A0123456X w/1 present
+```
+```
+attendance all w/1 present
 ```
 
 <box type="info" seamless>
@@ -365,23 +447,6 @@ attendance all w/WEEK present|absent|unmark
 * Use `unmark` to correct mistakes or reset attendance for a specific week
 </box>
 
-**Examples:**
-```
-attendance 1 w/1 present
-```
-```
-attendance 2 w/2 absent
-```
-```
-attendance 1 w/1 unmark
-```
-```
-attendance s/A0123456X w/1 present
-```
-```
-attendance all w/1 present
-```
-
 ### Editing a student : `edit`
 
 Edits an existing student in TeachMate. You can edit students whether they have phone/address (legacy data) or only have student-specific fields.
@@ -389,6 +454,24 @@ Edits an existing student in TeachMate. You can edit students whether they have 
 **Format:**
 ```
 edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]​ [t/TAG] [c/CONSULTATIONS] [g/ASSIGNMENT_NAME:SCORE] [w/WEEK_NUMBER:STATUS] [r/REMARK]
+```
+*Updates student information with the specified fields.*
+
+**Examples:**
+```
+edit 1 s/A9999999Z e/newemail@u.nus.edu
+```
+```
+edit 2 n/Jane Doe t/friends
+```
+```
+edit 3 m/CS2103T m/CS2101
+```
+```
+edit 1 g/Midterm:90
+```
+```
+edit 2 w/5:present
 ```
 
 <box type="info" seamless>
@@ -413,23 +496,6 @@ edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_COD
 The edit command still supports `p/PHONE` and `a/ADDRESS` prefixes for backward compatibility with older data. However, new students added via the `add` command will not have phone or address fields.
 </box>
 
-**Examples:**
-```
-edit 1 s/A9999999Z e/newemail@u.nus.edu
-```
-```
-edit 2 n/Jane Doe t/friends
-```
-```
-edit 3 m/CS2103T m/CS2101
-```
-```
-edit 1 g/Midterm:90
-```
-```
-edit 2 w/5:present
-```
-
 ### Adding tags to a student : `tag`
 
 Adds one or more tags to an existing student in TeachMate without removing existing tags.
@@ -438,8 +504,22 @@ Adds one or more tags to an existing student in TeachMate without removing exist
 ```
 tag INDEX t/TAG [t/TAG]…​
 ```
+*Adds tags to the student at the specified position in the list.*
+
 ```
 tag s/STUDENT_ID t/TAG [t/TAG]…​
+```
+*Adds tags to the student with the specified student ID.*
+
+**Examples:**
+```
+tag 1 t/Struggling t/Inactive
+```
+```
+tag s/A0291772W t/Excelling
+```
+```
+tag 2 t/needsHelp
 ```
 
 <box type="info" seamless>
@@ -454,17 +534,6 @@ tag s/STUDENT_ID t/TAG [t/TAG]…​
 * `TAG` should be alphanumeric (no spaces)
 </box>
 
-**Examples:**
-```
-tag 1 t/Struggling t/Inactive
-```
-```
-tag s/A0291772W t/Excelling
-```
-```
-tag 2 t/needsHelp
-```
-
 ### Removing tags from a student : `untag`
 
 Removes one or more tags from an existing student in TeachMate.
@@ -473,8 +542,22 @@ Removes one or more tags from an existing student in TeachMate.
 ```
 untag INDEX t/TAG [t/TAG]…​
 ```
+*Removes tags from the student at the specified position in the list.*
+
 ```
 untag s/STUDENT_ID t/TAG [t/TAG]…​
+```
+*Removes tags from the student with the specified student ID.*
+
+**Examples:**
+```
+untag 1 t/Struggling
+```
+```
+untag s/A0291772W t/Struggling t/Inactive
+```
+```
+untag 2 t/needsHelp
 ```
 
 <box type="info" seamless>
@@ -493,17 +576,6 @@ untag s/STUDENT_ID t/TAG [t/TAG]…​
 **Note:** If you try to remove a tag that doesn't exist on the student, the command will fail and show you which tags are missing. Make sure the tags you want to remove are currently on the student.
 </box>
 
-**Examples:**
-```
-untag 1 t/Struggling
-```
-```
-untag s/A0291772W t/Struggling t/Inactive
-```
-```
-untag 2 t/needsHelp
-```
-
 ### Adding or updating grades for a student : `grade`
 
 Adds new grades or updates existing grades for a student in TeachMate.
@@ -511,6 +583,21 @@ Adds new grades or updates existing grades for a student in TeachMate.
 **Format:**
 ```
 grade INDEX g/ASSIGNMENT_NAME:SCORE [g/ASSIGNMENT_NAME:SCORE]…​
+```
+*Adds or updates grades for a student's assignments.*
+
+**Examples:**
+```
+grade 1 g/Midterm:85
+```
+```
+grade 2 g/Quiz1:90 g/Assignment1:88
+```
+```
+grade 3 g/Final Exam:92
+```
+```
+grade 1 g/MIDTERM:90
 ```
 
 <box type="info" seamless>
@@ -538,20 +625,6 @@ grade INDEX g/ASSIGNMENT_NAME:SCORE [g/ASSIGNMENT_NAME:SCORE]…​
 * Grades are automatically saved and will persist across application restarts
 </box>
 
-**Examples:**
-```
-grade 1 g/Midterm:85
-```
-```
-grade 2 g/Quiz1:90 g/Assignment1:88
-```
-```
-grade 3 g/Final Exam:92
-```
-```
-grade 1 g/MIDTERM:90
-```
-
 ### Deleting grades from a student : `deletegrade`
 
 Deletes specific grades from an existing student in TeachMate.
@@ -559,6 +632,15 @@ Deletes specific grades from an existing student in TeachMate.
 **Format:**
 ```
 deletegrade INDEX g/ASSIGNMENT_NAME [g/ASSIGNMENT_NAME]…​
+```
+*Deletes specified grade assignments from a student.*
+
+**Examples:**
+```
+deletegrade 1 g/Midterm
+```
+```
+deletegrade 2 g/Quiz1 g/Assignment1
 ```
 
 <box type="info" seamless>
@@ -572,14 +654,6 @@ deletegrade INDEX g/ASSIGNMENT_NAME [g/ASSIGNMENT_NAME]…​
 * All specified assignment names must exist for the student
 </box>
 
-**Examples:**
-```
-deletegrade 1 g/Midterm
-```
-```
-deletegrade 2 g/Quiz1 g/Assignment1
-```
-
 ### Adding remarks to a student : `remark`
 
 Adds or updates a personalized remark for an existing student in TeachMate.
@@ -587,6 +661,18 @@ Adds or updates a personalized remark for an existing student in TeachMate.
 **Format:**
 ```
 remark s/STUDENT_ID r/REMARK
+```
+*Adds or updates a personalized remark for a student.*
+
+**Examples:**
+```
+remark s/A0123456X r/Needs extra help with OOP concepts
+```
+```
+remark s/A0234567Y r/Excellent participation in tutorials
+```
+```
+remark s/A0345678Z r/Struggling with time management. Recommended office hours on Fridays.
 ```
 
 <box type="info" seamless>
@@ -609,17 +695,6 @@ remark s/STUDENT_ID r/REMARK
 * Remarks are automatically saved and will persist across application restarts
 </box>
 
-**Examples:**
-```
-remark s/A0123456X r/Needs extra help with OOP concepts
-```
-```
-remark s/A0234567Y r/Excellent participation in tutorials
-```
-```
-remark s/A0345678Z r/Struggling with time management. Recommended office hours on Fridays.
-```
-
 ### Locating students by name: `find`
 
 Finds students whose names contain any of the given keywords.
@@ -628,16 +703,7 @@ Finds students whose names contain any of the given keywords.
 ```
 find KEYWORD [MORE_KEYWORDS]
 ```
-
-<box type="info" seamless>
-
-**Requirements:**
-* The search is case-insensitive (e.g. `john` will match `John`)
-* The order of the keywords does not matter (e.g. `John Doe` will match `Doe John`)
-* Only the name is searched
-* Only full words will be matched (e.g. `Joh` will not match `John`)
-* Students matching at least one keyword will be returned (i.e. `OR` search)
-</box>
+*Searches for students whose names contain any of the given keywords.*
 
 **Examples:**
 ```
@@ -649,6 +715,16 @@ find alex david
 
 ![result for 'find alex david'](images/findAlexDavidResult.png)
 
+<box type="info" seamless>
+
+**Requirements:**
+* The search is case-insensitive (e.g. `john` will match `John`)
+* The order of the keywords does not matter (e.g. `John Doe` will match `Doe John`)
+* Only the name is searched
+* Only full words will be matched (e.g. `Joh` will not match `John`)
+* Students matching at least one keyword will be returned (i.e. `OR` search)
+</box>
+
 ### Filtering students by tags: `filter`
 
 Filters students who have all of the specified tags.
@@ -657,16 +733,7 @@ Filters students who have all of the specified tags.
 ```
 filter t/TAG [t/MORE_TAGS]…​
 ```
-
-<box type="info" seamless>
-
-**Requirements:**
-* At least one tag must be provided
-* Only students who have **all** the specified tags will be shown (i.e. `AND` search)
-* **Tag matching is case-insensitive** (e.g., `Friends` matches `friends`)
-* **Substring matching is supported** (e.g., `help` matches tags containing "help" like `needHelp`)
-* Tags must be alphanumeric (no spaces)
-</box>
+*Filters and displays students who have all of the specified tags.*
 
 **Examples:**
 ```
@@ -682,6 +749,16 @@ filter t/help
 filter t/FRIEND
 ```
 
+<box type="info" seamless>
+
+**Requirements:**
+* At least one tag must be provided
+* Only students who have **all** the specified tags will be shown (i.e. `AND` search)
+* **Tag matching is case-insensitive** (e.g., `Friends` matches `friends`)
+* **Substring matching is supported** (e.g., `help` matches tags containing "help" like `needHelp`)
+* Tags must be alphanumeric (no spaces)
+</box>
+
 ### Deleting a student : `delete`
 
 Deletes the specified student from TeachMate.
@@ -690,9 +767,12 @@ Deletes the specified student from TeachMate.
 ```
 delete INDEX
 ```
+*Deletes the student at the specified position in the list.*
+
 ```
 delete s/STUDENT_ID
 ```
+*Deletes the student with the specified student ID.*
 
 <box type="info" seamless>
 
@@ -718,6 +798,7 @@ Clears all entries from TeachMate.
 ```
 clear
 ```
+*Deletes all students from TeachMate permanently.*
 
 <box type="warning" seamless>
 
@@ -737,6 +818,7 @@ Exits the program.
 ```
 exit
 ```
+*Closes the TeachMate application.*
 
 **Example:**
 ```

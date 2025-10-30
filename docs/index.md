@@ -8,7 +8,9 @@
 [![CI Status](https://github.com/AY2526S1-CS2103T-F11-3/tp/workflows/Java%20CI/badge.svg)](https://github.com/AY2526S1-CS2103T-F11-3/tp/actions)
 [![codecov](https://codecov.io/gh/AY2526S1-CS2103T-F11-3/tp/branch/master/graph/badge.svg)](https://codecov.io/gh/AY2526S1-CS2103T-F11-3/tp)
 
-![Ui](images/tp_home.jpg)
+<p align="center">
+  <img src="images/tp_home.png" alt="TeachMate Main Interface" width="600"/>
+</p>
 
 **TeachMate is a desktop application designed specifically for NUS Teaching Assistants (TAs)** to streamline student management across multiple tutorial groups and modules. Built for TAs who prefer typing over clicking, TeachMate combines the speed of a Command Line Interface (CLI) with the clarity of a Graphical User Interface (GUI).
 

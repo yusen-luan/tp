@@ -1,7 +1,9 @@
 [![CI Status](https://github.com/AY2526S1-CS2103T-F11-3/tp/workflows/Java%20CI/badge.svg)](https://github.com/AY2526S1-CS2103T-F11-3/tp/actions)
 [![codecov](https://codecov.io/github/AY2526S1-CS2103T-F11-3/tp/graph/badge.svg?token=VOSQW04EXB)](https://codecov.io/github/AY2526S1-CS2103T-F11-3/tp)
 
-![Ui](docs/images/tp_home.jpg)
+<p align="center">
+  <img src="docs/images/tp_home.png" alt="TeachMate Main Interface" width="600"/>
+</p>
 
 # TeachMate
 
