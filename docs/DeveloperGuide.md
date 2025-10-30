@@ -13,7 +13,8 @@
 
 ## **Acknowledgements**
 
-_{ list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the original source as well }_
+* This project is based on the AddressBook-Level3 project created by the [SE-EDU initiative](https://se-education.org).
+* Libraries used: [JavaFX](https://openjfx.io/), [Jackson](https://github.com/FasterXML/jackson), [JUnit5](https://github.com/junit-team/junit5)
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -247,6 +248,296 @@ The `Commons` package contains:
 ## **Implementation**
 
 This section describes some noteworthy details on how certain features are implemented.
+
+### List Feature
+
+#### Implementation
+
+The list feature allows teaching assistants to view all students in the system or filter them by module code. It is implemented through the `ListCommand` command class and `ListCommandParser` parser class.
+
+**Key Components:**
+
+The `ListCommand` class:
+- Supports two modes: listing all students or filtering by a specific module code
+- Uses an `Optional<ModuleCode>` to store the optional module filter
+- Updates the filtered person list in the model based on the mode
+- Provides success messages showing the total count of displayed students
+
+The `ListCommandParser`:
+- Parses user input to detect the presence of a module code prefix (`m/`)
+- If no prefix is present, validates that the input is empty (simple `list` command)
+- If a module prefix is present, extracts and validates the module code format
+- Creates a `ListCommand` with either an empty `Optional` (list all) or a specific `ModuleCode` (filter by module)
+
+**Execution Flow:**
+
+Given below is an example usage scenario and how the list mechanism behaves.
+
+**Step 1.** The user executes `list` or `list m/CS2103T` to view students.
+
+**Step 2.** The command is parsed by `AddressBookParser`, which identifies it as a list command and creates a `ListCommandParser`.
+
+**Step 3.** `ListCommandParser` parses the arguments:
+- If `m/` prefix is absent: Validates empty input and creates a `ListCommand()` with no module filter
+- If `m/` prefix is present: Extracts module code, validates format, and creates `ListCommand(moduleCode)`
+
+**Step 4.** When `ListCommand#execute()` is called:
+- If no module filter: Calls `Model#updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS)` to show all students
+- If module filter exists: Creates a predicate that checks if any of the student's enrolled modules match the filter, then applies it to the filtered list
+- Counts the number of students in the filtered list
+- Returns a success message with the count
+
+**Step 5.** The UI updates to display the filtered list of students in the person list panel.
+
+#### Design Considerations
+
+**Aspect: Module filtering support**
+
+* **Alternative 1 (current choice):** Support optional module filtering with the `m/` prefix
+  * Pros: Flexible - can view all students or just those in a specific module. Simple command structure - `list` or `list m/CS2103T`. Consistent with other commands using prefixes.
+  * Cons: Only supports single module filtering. Cannot filter by multiple modules or other criteria simultaneously.
+
+* **Alternative 2:** Only support listing all students without filters
+  * Pros: Simpler implementation. No parsing complexity for filters. Single, clear purpose.
+  * Cons: Less useful for TAs managing multiple modules. Requires additional filtering steps to find module-specific students. Cannot leverage module-based workflows.
+
+**Aspect: Empty input validation**
+
+* **Alternative 1 (current choice):** Strictly validate that `list` command has no arguments when no prefix is used
+  * Pros: Prevents accidental typos or invalid arguments. Clear error messages guide users to correct usage. Prevents confusion about command behavior.
+  * Cons: Slightly less forgiving - users must use exact format.
+
+* **Alternative 2:** Accept any arguments and ignore them if no prefix is present
+  * Pros: More forgiving for users. Easier to use without strict format.
+  * Cons: Hides potential user errors. May lead to confusion if extra arguments are silently ignored.
+
+### Add Student Feature
+
+#### Implementation
+
+The add student feature allows teaching assistants to add new student records to TeachMate. It is implemented through the `AddCommand` command class and `AddCommandParser` parser class.
+
+**Key Components:**
+
+The `AddCommand` class:
+- Takes a `Person` object representing the student to be added
+- Checks for duplicate student IDs before adding
+- Validates that a student with the same student ID doesn't already exist
+- Calls `Model#addPerson()` to add the student to the address book
+
+The `AddCommandParser`:
+- Parses user input to extract student information from various prefixes
+- Validates required fields: name (`n/`), student ID (`s/`), email (`e/`), and at least one module code (`m/`)
+- Parses optional fields: tags (`t/`), consultations (`c/`)
+- Handles duplicate consultations by deduplicating them using `.distinct()`
+- Creates a new `Person` object with parsed data and returns an `AddCommand`
+
+The `Person` class:
+- Provides multiple constructors to handle different field combinations
+- For students: requires name, student ID, email, module codes
+- Includes optional fields: tags, attendance records, grades, consultations, and remarks
+- Initializes attendance record and grades as empty if not provided
+
+**Execution Flow:**
+
+Given below is an example usage scenario and how the add mechanism behaves.
+
+**Step 1.** The user executes `add n/John Doe s/A0123456X e/john@u.nus.edu m/CS2103T m/CS2101 t/struggling` to add a new student.
+
+**Step 2.** The command is parsed by `AddressBookParser`, which identifies it as an add command and creates an `AddCommandParser`.
+
+**Step 3.** `AddCommandParser` parses the arguments:
+- Validates that required prefixes (`n/`, `s/`, `e/`, `m/`) are all present and the preamble is empty
+- Uses `ArgumentTokenizer.tokenize()` to extract values for each prefix
+- Verifies no duplicate single-value prefixes using `verifyNoDuplicatePrefixesFor()`
+- Parses each field using appropriate `ParserUtil` methods
+- For consultations: parses each datetime string and removes duplicates using `.distinct()`
+- Creates a `Person` object with all parsed fields
+
+**Step 4.** When `AddCommand#execute()` is called:
+- Checks if the student has a student ID (required for all students)
+- Calls `Model#getPersonByStudentId()` to check for duplicates
+- Throws `CommandException` with message "Cannot add student: A student with ID [ID] already exists" if duplicate found
+- Calls `Model#addPerson()` to add the student to the address book
+- Returns a success message with the student's details
+
+**Step 5.** The model persists the changes:
+- Added student triggers storage save
+- Student data is serialized to JSON format
+- Data is written to disk automatically
+
+The following sequence diagram shows how an add operation works:
+
+<puml src="diagrams/AddSequenceDiagram.puml" alt="AddSequenceDiagram" />
+
+#### Design Considerations
+
+**Aspect: Required vs optional fields**
+
+* **Alternative 1 (current choice):** Require name, student ID, email, and at least one module code
+  * Pros: Ensures all students have essential information. Student ID provides unique identification. Module codes are essential for academic tracking. Prevents creation of incomplete records.
+  * Cons: Less flexible for initial quick entry. Requires multiple fields for simple additions.
+
+* **Alternative 2:** Make more fields optional or have minimal required fields
+  * Pros: More flexible for quick entry. Can add students with partial information and fill in later.
+  * Cons: Risk of incomplete data. Harder to track students without essential identifiers. Potential for orphaned records.
+
+### Edit Student Feature
+
+#### Implementation
+
+The edit student feature allows teaching assistants to modify existing student records in TeachMate. It is implemented through the `EditCommand` command class, `EditCommandParser` parser class, and the `EditPersonDescriptor` inner class.
+
+**Key Components:**
+
+The `EditCommand` class:
+- Takes an `Index` to identify the student and an `EditPersonDescriptor` with updated fields
+- Supports updating all student attributes: name, phone, email, address, student ID, module codes, tags, consultations, grades, attendance, and remarks
+- Validates that at least one field is being edited
+- Checks for duplicate student IDs when student ID is changed
+- Builds a detailed message showing which fields were updated
+
+The `EditPersonDescriptor` class:
+- Stores optional field values to be updated (all fields use `Optional` type)
+- Provides methods to set and get each field
+- Tracks whether any field has been edited via `isAnyFieldEdited()`
+- Uses defensive copying for collections (tags, module codes, consultations)
+
+The `EditCommandParser`:
+- Parses user input to extract the index and field updates
+- Validates the index is a positive integer
+- Parses each provided prefix's value using appropriate `ParserUtil` methods
+- Handles optional fields gracefully (only sets values if prefix is present)
+- Creates an `EditPersonDescriptor` and populates it with parsed values
+
+**Execution Flow:**
+
+Given below is an example usage scenario and how the edit mechanism behaves.
+
+**Step 1.** The user executes `edit 1 e/newemail@u.nus.edu` to edit the email of the first student in the list.
+
+**Step 2.** The command is parsed by `AddressBookParser`, which identifies it as an edit command and creates an `EditCommandParser`.
+
+**Step 3.** `EditCommandParser` parses the arguments:
+- Extracts index from preamble using `ParserUtil#parseIndex()`
+- Validates required prefixes are not duplicated
+- For each provided prefix, parses the value and sets it in `EditPersonDescriptor`
+- Creates an `EditCommand` with the index and descriptor
+
+**Step 4.** When `EditCommand#execute()` is called:
+- Gets the student at the specified index from the filtered person list
+- Validates that at least one field is being edited
+- If student ID is being changed, checks for duplicates
+- Creates an edited `Person` object using `createEditedPerson()` helper method
+- This method uses `Optional#orElse()` to preserve existing values for fields not being edited
+- For grades: finds and removes existing grade with matching assignment name (case-sensitive), then adds updated grade
+- For attendance: updates the attendance record using `AttendanceRecord#markAttendance()` or `unmarkAttendance()`
+- Calls `Model#setPerson()` to replace the old person with the edited person
+- Builds a detailed message showing which fields were changed
+- Returns success message with edited student details
+
+**Step 5.** The model persists the changes:
+- Updated person triggers storage save
+- Changes are serialized to JSON format
+- Data is written to disk automatically
+
+The following sequence diagram shows how an edit operation works:
+
+<puml src="diagrams/EditSequenceDiagram.puml" alt="EditSequenceDiagram" />
+
+#### Design Considerations
+
+**Aspect: Field update behavior**
+
+* **Alternative 1 (current choice):** Only update fields that are explicitly provided in the command
+  * Pros: Preserves existing data for unchanged fields. Selective updates without full replacement. Flexible for partial modifications.
+  * Cons: Users must remember current values if they want to keep them. More complex logic to merge old and new values.
+
+* **Alternative 2:** Replace entire person object with new values, requiring all fields
+  * Pros: Simpler logic - complete replacement. Clear, explicit updates.
+  * Cons: Tedious for users to provide all fields. Risk of data loss if some fields are omitted. Unfriendly user experience.
+
+**Aspect: EditPersonDescriptor design**
+
+* **Alternative 1 (current choice):** Use `Optional` fields in a descriptor class
+  * Pros: Type-safe indication of which fields are being updated. Clear API. Easy to check if any field is edited. Follows builder pattern.
+  * Cons: Boilerplate code for each field. More verbose than direct field manipulation.
+
+* **Alternative 2:** Pass all fields directly to `EditCommand`, using null for unchanged fields
+  * Pros: Simpler class structure. Fewer objects involved.
+  * Cons: Less type-safe. Ambiguous whether null means "not provided" or "set to null". Harder to validate completeness.
+
+### Delete Student Feature
+
+#### Implementation
+
+The delete student feature allows teaching assistants to remove student records from TeachMate. It is implemented through the `DeleteCommand` command class and `DeleteCommandParser` parser class.
+
+**Key Components:**
+
+The `DeleteCommand` class:
+- Supports two methods of identifying students: by index in the displayed list or by student ID
+- Provides two constructors: one for index-based deletion and one for student ID-based deletion
+- Finds the target student using the appropriate lookup method
+- Calls `Model#deletePerson()` to remove the student from the address book
+
+The `DeleteCommandParser`:
+- Parses user input to determine whether the user is deleting by index or student ID
+- Uses the presence of `s/` prefix to differentiate between index-based and ID-based deletion
+- If `s/` prefix is present: extracts and validates the student ID, creates a `DeleteCommand(StudentId)`
+- If no prefix: parses the argument as an index, creates a `DeleteCommand(Index)`
+- Validates the format of the parsed index or student ID
+
+**Execution Flow:**
+
+Given below is an example usage scenario and how the delete mechanism behaves.
+
+**Step 1.** The user executes `delete 1` or `delete s/A0123456X` to delete a student.
+
+**Step 2.** The command is parsed by `AddressBookParser`, which identifies it as a delete command and creates a `DeleteCommandParser`.
+
+**Step 3.** `DeleteCommandParser` parses the arguments:
+- Checks if `s/` prefix is present in the input
+- If prefix present: Extracts student ID using `ParserUtil#parseStudentId()`, creates `DeleteCommand(studentId)`
+- If no prefix: Parses argument as index using `ParserUtil#parseIndex()`, creates `DeleteCommand(index)`
+
+**Step 4.** When `DeleteCommand#execute()` is called:
+- If using index:
+  - Gets the filtered person list from `Model`
+  - Gets the student at the specified index
+  - Throws `CommandException` if index is out of bounds
+- If using student ID:
+  - Calls `Model#getPersonByStudentId()` to locate the student
+  - Throws `CommandException` with "No student found with student ID [ID]" if not found
+- Calls `Model#deletePerson()` to remove the student from the address book
+- Returns a success message with the deleted student's details
+
+**Step 5.** The model persists the changes:
+- Deletion triggers storage save
+- Updated student list is serialized to JSON format
+- Data is written to disk automatically
+
+#### Design Considerations
+
+**Aspect: Dual lookup methods (index vs student ID)**
+
+* **Alternative 1 (current choice):** Support both index and student ID lookup
+  * Pros: Flexible for different use cases. Index is quick for visible students in the current list. Student ID works regardless of filter state and is unambiguous. Accommodates different user workflows.
+  * Cons: More complex parsing logic. Need to handle two different code paths in execution. Potential confusion about which method to use.
+
+* **Alternative 2:** Support only index-based deletion
+  * Pros: Simpler implementation. Consistent with other basic operations. Easier to understand.
+  * Cons: Less convenient when user knows student ID but student is not visible in current list. Requires additional list/find commands first.
+
+**Aspect: Student ID as unique identifier**
+
+* **Alternative 1 (current choice):** Use student ID as the primary unique identifier
+  * Pros: Naturally unique for each student. Unambiguous identification. Works across different filter contexts. Permanent identifier that doesn't change.
+  * Cons: Requires users to know the student ID. Slightly more verbose command format with `s/` prefix.
+
+* **Alternative 2:** Use name or email as identifier
+  * Pros: More human-readable. Easier to remember than student ID.
+  * Cons: Not guaranteed to be unique. Names can have duplicates. Emails can change. Ambiguous identification.
 
 ### View Student Feature
 
@@ -530,6 +821,78 @@ The following sequence diagram shows how the grade operation works:
 * **Alternative 2:** Validate only when parsing user input
   * Pros: More flexible for internal use and testing. Can create temporary Grade objects during processing.
   * Cons: Risk of invalid grades propagating through the system. Validation logic scattered across multiple parsers.
+
+### Delete Grade Feature
+
+#### Implementation
+
+The delete grade feature allows teaching assistants to remove specific grades from students. It is implemented through the `DeleteGradeCommand` command class and `DeleteGradeCommandParser` parser class.
+
+**Key Components:**
+
+The `DeleteGradeCommand`:
+- Takes an index and one or more assignment names in the format `g/ASSIGNMENT_NAME`
+- Finds the person at the specified index in the filtered person list
+- Validates that all specified assignment names exist for the student
+- Creates a new `Person` object with the specified grades removed (defensive copying)
+- Only allows deleting grades from students (persons with StudentId)
+- Assignment name matching is case-sensitive (exact match required)
+
+The `DeleteGradeCommandParser`:
+- Parses user input in the format `deletegrade INDEX g/ASSIGNMENT_NAME [g/ASSIGNMENT_NAME]...`
+- Extracts the index and validates it is a positive integer
+- Extracts all assignment names from `g/` prefixes
+- Creates a `DeleteGradeCommand` with the validated index and set of assignment names
+
+**Execution Flow:**
+
+Given below is an example usage scenario and how the delete grade mechanism behaves.
+
+**Step 1.** The user executes `deletegrade 1 g/Midterm` to delete the "Midterm" grade from the 1st student.
+
+**Step 2.** The command is parsed by `AddressBookParser`, which identifies it as a deletegrade command and creates a `DeleteGradeCommandParser`.
+
+**Step 3.** `DeleteGradeCommandParser` parses the arguments:
+- Extracts the index (1)
+- Extracts assignment name(s) from `g/` prefix ("Midterm")
+- Validates at least one assignment name is provided
+- Creates a `DeleteGradeCommand` with the index and set of assignment names
+
+**Step 4.** When `DeleteGradeCommand#execute()` is called:
+- Gets the person at index 1 from the filtered person list using `Model#getFilteredPersonList()`
+- Validates the person has a StudentId (only students can have grades deleted)
+- Checks that all specified assignment names exist in the student's grades
+- Throws `CommandException` with message "Grade not found for assignment: [NAME]" if any assignment doesn't exist
+- Creates a new `Person` with specified grades removed via `createPersonWithDeletedGrades()`
+- Updates the model with `Model#setPerson(personToEdit, updatedPerson)`
+- Returns a `CommandResult` with success message
+
+**Step 5.** The `createPersonWithDeletedGrades()` helper method:
+- Creates a new set of grades excluding the specified assignment names
+- Constructs a new `Person` object preserving all other fields
+- Returns the updated person object
+
+#### Design Considerations
+
+**Aspect: Assignment name matching**
+
+* **Alternative 1 (current choice):** Case-sensitive exact matching
+  * Pros: Unambiguous - user must specify exact assignment name. Prevents accidental deletion of wrong grades. Consistent with file system conventions.
+  * Cons: Less user-friendly if user doesn't remember exact capitalization. Requires checking exact name first (via view command).
+
+* **Alternative 2:** Case-insensitive matching
+  * Pros: More flexible and user-friendly. Consistent with grade update behavior.
+  * Cons: Could lead to accidental deletions if multiple assignments have similar names with different cases. Less explicit about which grade is being deleted.
+
+**Aspect: Validation timing**
+
+* **Alternative 1 (current choice):** Validate all assignment names exist before deleting any
+  * Pros: Atomic operation - either all grades deleted or none. Prevents partial deletions on error. Clear error message identifies missing assignment.
+  * Cons: Cannot delete subset of grades if one name is invalid.
+
+* **Alternative 2:** Delete valid assignments, skip invalid ones
+  * Pros: More forgiving - deletes what it can. User doesn't have to retry entire command.
+  * Cons: Unclear behavior - some grades deleted, some not. Harder to track what was actually deleted. Less predictable.
 
 ### Consultation Feature
 
@@ -967,7 +1330,7 @@ testers are expected to do more *exploratory* testing.
 
    1. Download the jar file and copy into an empty folder
 
-   1. Double-click the jar file Expected: Shows the GUI with a set of sample contacts. The window size may not be optimum.
+   1. Double-click the jar file Expected: Shows the GUI with a set of sample students. The window size may not be optimum.
 
 1. Saving window preferences
 
@@ -978,22 +1341,71 @@ testers are expected to do more *exploratory* testing.
 
 1. _{ more test cases …​ }_
 
-### Deleting a person
+### Adding a student
 
-1. Deleting a person while all persons are being shown
+1. Adding a new student to TeachMate
 
-   1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
+   1. Prerequisites: Application is running with sample data loaded.
+
+   1. Test case: `add n/John Tan s/A0123456X e/johntan@u.nus.edu m/CS2103T m/CS2101`<br>
+      Expected: New student "John Tan" is added with ID A0123456X. Success message shows the added student details. Student appears in the list.
+
+   1. Test case: `add n/Mary Lee s/A0123456X e/mary@u.nus.edu m/CS2103T` (duplicate student ID)<br>
+      Expected: No student is added. Error message indicates student with this ID already exists.
+
+   1. Test case: `add n/Jane s/A1234567B e/invalid-email m/CS2103T` (invalid email)<br>
+      Expected: No student is added. Error message shows email validation requirements.
+
+   1. Test case: `add n/Bob s/INVALID e/bob@u.nus.edu m/CS2103T` (invalid student ID format)<br>
+      Expected: No student is added. Error message shows student ID format requirements.
+
+### Editing a student
+
+1. Editing student details
+
+   1. Prerequisites: List all students using `list`. At least one student in the list.
+
+   1. Test case: `edit 1 e/newemail@u.nus.edu`<br>
+      Expected: Email of 1st student is updated. Success message shows updated details.
+
+   1. Test case: `edit 1 m/CS2103T m/CS2101` (replacing modules)<br>
+      Expected: Modules of 1st student are replaced with CS2103T and CS2101. Previous modules are removed.
+
+   1. Test case: `edit 0 n/Test` (invalid index)<br>
+      Expected: No student is edited. Error message shows invalid index.
+
+### Deleting a student
+
+1. Deleting a student from TeachMate
+
+   1. Prerequisites: List all students using `list`. Multiple students in the list.
 
    1. Test case: `delete 1`<br>
-      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+      Expected: First student is deleted from the list. Success message shows the deleted student's details.
 
    1. Test case: `delete 0`<br>
-      Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
+      Expected: No student is deleted. Error message shows invalid index.
 
-   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
-      Expected: Similar to previous.
+   1. Test case: `delete x` (where x is larger than the list size)<br>
+      Expected: No student is deleted. Error message shows invalid index.
 
-1. _{ more test cases …​ }_
+### Viewing a student
+
+1. Viewing detailed information about a student
+
+   1. Prerequisites: At least one student in the list.
+
+   1. Test case: `view 1`<br>
+      Expected: Detailed information for the 1st student is displayed in the result panel, including attendance history. The list filters to show only this student.
+
+   1. Test case: `view s/A0123456X` (viewing by student ID)<br>
+      Expected: Student with ID A0123456X is displayed with full details. List filters to show only this student.
+
+   1. Test case: `view s/A9999999Z` (non-existent student ID)<br>
+      Expected: Error message shows "No student found with student ID: A9999999Z".
+
+   1. Test case: `view 0`<br>
+      Expected: Error message shows invalid index.
 
 ### Adding a remark to a student
 
@@ -1022,11 +1434,144 @@ testers are expected to do more *exploratory* testing.
    1. Other incorrect remark commands to try: `remark`, `remark A0123456X r/test` (missing s/ prefix), `remark s/INVALID r/test` (invalid student ID format)<br>
       Expected: Similar error messages indicating the specific validation failure.
 
+### Managing attendance
+
+1. Marking attendance for students
+
+   1. Prerequisites: At least one student in the list.
+
+   1. Test case: `attendance 1 w/1 present`<br>
+      Expected: Attendance for week 1 is marked as present for the 1st student. Success message confirms the update. Attendance grid in student card shows green for week 1.
+
+   1. Test case: `attendance s/A0123456X w/2 absent`<br>
+      Expected: Attendance for week 2 is marked as absent for student with ID A0123456X. Attendance grid shows red for week 2.
+
+   1. Test case: `attendance all w/3 present`<br>
+      Expected: Attendance for week 3 is marked as present for all students. Success message shows number of students updated.
+
+   1. Test case: `attendance 1 w/1 unmark` (where week 1 attendance exists)<br>
+      Expected: Attendance record for week 1 is removed for the 1st student. Attendance grid shows grey for week 1.
+
+   1. Test case: `attendance 1 w/14 present` (invalid week number)<br>
+      Expected: No attendance is marked. Error message shows week must be between 1 and 13.
+
+   1. Test case: `attendance 0 w/1 present`<br>
+      Expected: No attendance is marked. Error message shows invalid index.
+
+### Managing grades
+
+1. Adding and updating grades
+
+   1. Prerequisites: At least one student in the list.
+
+   1. Test case: `grade 1 g/Midterm:85`<br>
+      Expected: Grade "Midterm: 85" is added to the 1st student. Success message shows the student name and added grade.
+
+   1. Test case: `grade 1 g/Quiz1:90 g/Assignment1:88`<br>
+      Expected: Both grades are added to the 1st student. Success message shows both grades were added.
+
+   1. Test case: `grade 1 g/Midterm:95` (where "Midterm" grade already exists)<br>
+      Expected: Existing "Midterm" grade is updated to 95. Success message indicates grade was updated.
+
+   1. Test case: `grade 1 g/MIDTERM:90` (case-insensitive update test)<br>
+      Expected: Existing "Midterm" grade is updated to 90. Case-insensitive matching succeeds.
+
+   1. Test case: `grade 1 g/Final:101`<br>
+      Expected: No grade is added. Error message shows "Grades should be a number between 0 and 100".
+
+   1. Test case: `grade 1 g/:85` (missing assignment name)<br>
+      Expected: No grade is added. Error message shows "Assignment name should not be blank".
+
+2. Deleting grades from a student
+
+   1. Prerequisites: Student at index 1 has grades for "Midterm" and "Quiz1".
+
+   1. Test case: `deletegrade 1 g/Midterm`<br>
+      Expected: "Midterm" grade is deleted from the 1st student. Success message confirms deletion.
+
+   1. Test case: `deletegrade 1 g/Quiz1 g/Assignment1` (where only "Quiz1" exists)<br>
+      Expected: No grades are deleted. Error message shows "Grade not found for assignment: Assignment1".
+
+   1. Test case: `deletegrade 1 g/midterm` (case-sensitive test)<br>
+      Expected: No grades are deleted. Error message shows "Grade not found for assignment: midterm".
+
+   1. Test case: `deletegrade 1` (missing grade prefix)<br>
+      Expected: No grade is deleted. Error message shows invalid command format with usage instructions.
+
+### Managing tags
+
+1. Adding and removing tags
+
+   1. Prerequisites: At least one student in the list.
+
+   1. Test case: `tag 1 t/Struggling t/NeedsHelp`<br>
+      Expected: Tags "Struggling" and "NeedsHelp" are added to the 1st student. Success message shows updated tags.
+
+   1. Test case: `tag s/A0123456X t/Excelling`<br>
+      Expected: Tag "Excelling" is added to student with ID A0123456X.
+
+   1. Test case: `untag 1 t/Struggling`<br>
+      Expected: Tag "Struggling" is removed from the 1st student. Success message confirms removal.
+
+   1. Test case: `tag 1 t/ExistingTag` (where tag already exists)<br>
+      Expected: Tag is not duplicated. Success message may indicate tag already exists.
+
+### Finding and filtering students
+
+1. Searching for students
+
+   1. Prerequisites: Multiple students in the list with different names and tags.
+
+   1. Test case: `find John`<br>
+      Expected: List shows only students with "John" in their name. Number of matching students displayed in result message.
+
+   1. Test case: `find alex david` (multiple keywords)<br>
+      Expected: List shows students with "alex" OR "david" in their names.
+
+   1. Test case: `filter t/Struggling`<br>
+      Expected: List shows only students tagged with "Struggling".
+
+   1. Test case: `filter t/Struggling t/NeedsHelp`<br>
+      Expected: List shows only students with BOTH "Struggling" AND "NeedsHelp" tags.
+
+   1. Test case: `list`<br>
+      Expected: All students are displayed again, removing any filters.
+
 ### Saving data
 
 1. Dealing with missing/corrupted data files
 
-   1. _{explain how to simulate a missing/corrupted file, and the expected behavior}_
+   1. Test case: Delete the data file at `[JAR file location]/data/addressbook.json` and restart the application.<br>
+      Expected: Application starts with sample data loaded.
 
-1. _{ more test cases …​ }_
+   1. Test case: Edit the data file to add an invalid student ID (e.g., change "A0123456X" to "INVALID"), then restart the application.<br>
+      Expected: Application starts with an empty student list, discarding the corrupted data.
+
+   1. Test case: Edit the data file to make it invalid JSON (e.g., remove a closing brace), then restart the application.<br>
+      Expected: Application starts with an empty student list.
+
+--------------------------------------------------------------------------------------------------------------------
+
+## **Appendix: Planned Enhancements**
+
+Team size: 5
+
+1. **Make grade assignment name matching consistent between grade and deletegrade commands**: Currently, the `grade` command uses case-insensitive matching (e.g., "midterm" matches "Midterm"), while `deletegrade` uses case-sensitive matching. We plan to make both commands use case-insensitive matching for consistency. This will allow users to delete grades without remembering the exact capitalization, matching the update behavior.
+
+2. **Add validation for past consultation dates**: Currently, the system accepts any valid date/time format for consultations, including dates in the past. We plan to add a warning message when users add consultations with past dates to help prevent data entry errors. The format will be: "Warning: The consultation date [date] is in the past. Do you want to continue? (y/n)".
+
+3. **Improve duplicate consultation handling**: Currently, duplicate consultations are silently removed using `.distinct()`. We plan to show a warning message when duplicate consultations are detected in the input: "Duplicate consultation detected: [date/time]. Only one instance will be added."
+
+4. **Enhance find command to support partial matching**: Currently, `find` only matches complete words (e.g., "find alex" won't match "Alexander"). We plan to support partial matching so that "find alex" will also match "Alexander" and "Alexandria", making the search more user-friendly.
+
+5. **Add confirmation prompt for bulk attendance operations**: Currently, `attendance all w/1 present` marks attendance for all students without confirmation. We plan to add a confirmation prompt showing the number of students affected: "This will mark attendance for [N] students. Confirm? (y/n)".
+
+6. **Improve error message specificity for invalid module codes**: Currently, invalid module codes show a generic "Module codes should be alphanumeric" message. We plan to make this more specific by showing the exact format requirements: "Module code must be 2-3 uppercase letters followed by 4 digits and an optional letter (e.g., CS2103T, MA1521)".
+
+7. **Add ability to clear all consultations for a student**: Currently, there's no direct way to remove all consultations from a student without using the edit command and omitting the `c/` prefix. We plan to add support for `edit INDEX c/` (empty consultation prefix) to explicitly clear all consultations.
+
+8. **Enhance grade display sorting**: Currently, grades are displayed sorted alphabetically by assignment name. We plan to add an optional sort order preference (alphabetical or by date added) that users can set, allowing TAs to see the most recent grades first if preferred.
+
+9. **Add validation for duplicate module codes in add/edit commands**: Currently, users can add the same module code multiple times (e.g., `m/CS2103T m/CS2103T`). We plan to detect and prevent duplicate module codes with an error message: "Duplicate module code detected: [code]. Each module should only be listed once."
+
 
