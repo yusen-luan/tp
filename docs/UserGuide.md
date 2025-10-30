@@ -50,12 +50,21 @@ As an NUS TA juggling multiple modules, you face unique challenges:
 
 ## Quick start
 
+<box type="info" seamless>
+
+**Before you begin - Prerequisites:**
+
+* **Basic command line familiarity** - You should know how to open a terminal and navigate folders using `cd`
+* **NUS context** - You're familiar with NUS student IDs (e.g., A0123456X) and module codes (e.g., CS2103T)
+
+</box>
+
 1. Ensure you have Java `17` or above installed in your Computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
-1. Download the latest `.jar` file from [here](https://github.com/AY2526S1-CS2103T-F11-3/tp/releases).
+2. Download the latest `.jar` file from [here](https://github.com/AY2526S1-CS2103T-F11-3/tp/releases).
 
-1. Copy the file to the folder you want to use as the _home folder_ for TeachMate.
+3. Copy the file to the folder you want to use as the _home folder_ for TeachMate.
 
 1. Open a command terminal, `cd` into the folder you put the jar file in, and use the `java -jar teachmate.jar` command to run the application.<br>
    A GUI similar to the below should appear in a few seconds. Note how the app contains some sample data.<br>
