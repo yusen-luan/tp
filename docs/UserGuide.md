@@ -6,19 +6,13 @@
 
 # TeachMate User Guide
 
-<box type="info" seamless>
-
 **TeachMate** is a **desktop application designed specifically for NUS Teaching Assistants (TAs)** to streamline student management across multiple tutorial groups and modules. Built for TAs who prefer typing over clicking, TeachMate combines the speed of a Command Line Interface (CLI) with the clarity of a Graphical User Interface (GUI).
-
-</box>
 
 --------------------------------------------------------------------------------------------------------------------
 
 ## Why TeachMate?
 
 ### The TA's Challenge
-
-<box type="warning" seamless>
 
 As an NUS TA juggling multiple modules, you face unique challenges:
 
@@ -30,11 +24,7 @@ As an NUS TA juggling multiple modules, you face unique challenges:
 | **Remembering student details** - who's struggling with OOP concepts | Personalized remarks system |
 | **Switching between modules** like CS2103T and CS2101 | Multi-module filtering and organization |
 
-</box>
-
 ### What TeachMate Does for You
-
-<box type="success" seamless>
 
 **⚡ Instant Student Access** - View a student's complete profile including modules, grades, consultation history, attendance pattern, and your personal notes. No more hunting through spreadsheets or scrolling through email threads.
 
@@ -50,13 +40,8 @@ As an NUS TA juggling multiple modules, you face unique challenges:
 
 **⌨️ Fast Keyboard Workflow** - Every action is a quick typed command. During live tutorials, you can mark attendance, add grades, or schedule consultations in seconds without taking your hands off the keyboard.
 
-</box>
-
-<box type="tip" seamless>
-
 **Optimized for NUS Workflows** - TeachMate uses familiar formats like NUS student IDs and module codes. If you're comfortable with the terminal and type quickly, TeachMate will help you manage your students significantly faster than traditional point-and-click applications or multiple spreadsheets.
 
-</box>
 
 <!-- * Table of Contents -->
 <page-nav-print />
@@ -707,13 +692,11 @@ find KEYWORD [MORE_KEYWORDS]
 
 **Examples:**
 ```
-find John
+find Zayan
 ```
 ```
-find alex david
+find Ze Xuan
 ```
-
-![result for 'find alex david'](images/findAlexDavidResult.png)
 
 <box type="info" seamless>
 
