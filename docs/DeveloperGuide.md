@@ -604,8 +604,8 @@ The `AddCommandParser` and `EditCommandParser` classes:
 Given below is an example usage scenario and how the consultation mechanism behaves during both add and edit operations.
 
 **Step 1.** The user executes either:
-- `add n/John Doe s/A0123456X e/john@u.nus.edu m/CS2103T c/22-10-2025 15:30`, or
-- `edit 1 c/25-10-2025 14:00`  
+- `add n/John Doe s/A0123456X e/john@u.nus.edu m/CS2103T c/22/10/2025 15:30`, or
+- `edit 1 c/25/10/2025 14:00`  
   to add or update a student’s consultation record.
 
 **Step 2.** The command is parsed by `AddressBookParser`, which identifies the command type (`add` or `edit`) and creates the respective command parser.
@@ -623,10 +623,11 @@ Given below is an example usage scenario and how the consultation mechanism beha
 **Step 5.** The updated `Person` (with consultations) is persisted to storage and reflected in the UI.  
 Consultation details can then be viewed through the `view` command, which displays all recorded consultations for that student in the result panel.
 
-The following sequence diagram shows how consultations are processed as part of the add and edit workflows:
+The following sequence diagram shows how consultations are processed as part of the add workflows:
 
 <puml src="diagrams/ConsultationSequenceDiagram.puml" alt="ConsultationSequenceDiagram" />
 
+*The edit command follows a similar sequence, with the difference being that it retrieves an existing student from the model, updates their consultations, and re-saves the modified record.*
 #### Design Considerations
 
 **Aspect: Integration within `add` and `edit` commands vs standalone `consult` command**
