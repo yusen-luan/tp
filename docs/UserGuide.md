@@ -107,10 +107,10 @@ Format: `add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/
 
 <box type="tip" seamless>
 
-## Consultations Constraints
+**Consultations Constraints**
 
-- **Consultations are optional** — a student can be added without any consultations.
-- **If included**, each consultation’s date and time must follow **one of the supported formats** below:
+- Consultations are optional — a student can be added without any consultations.
+- If included, each consultation’s date and time must follow **one of the supported formats** below:
 
 | Accepted Format        | Example Input       |
 |------------------------|---------------------|
@@ -119,7 +119,7 @@ Format: `add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/
 | `yyyy-MM-dd HH:mm`     | `2025-10-22 15:30`  |
 | `yyyy/MM/dd HH:mm`     | `2025/10/22 15:30`  |
 
-### Notes
+*Notes*:
 - The time must be entered in **24-hour format** (e.g., `14:00` for 2 PM).
 - All formats require both a **date** and a **time** — partial inputs like `22/10/2025` or `15:30` alone are not accepted.
 - Invalid inputs (e.g., `2025-13-45 25:99`) will result in an error message showing the supported formats.
@@ -323,6 +323,7 @@ Examples:
 *  `edit 3 w/3:absent` - Marks the 3rd student as absent for week 3
 *  `edit 4 w/7:unmark` - Removes the attendance record for week 7 for the 4th student
 *  `edit 1 r/Needs extra help with recursion` - Updates the remark for the 1st student
+*  `edit 2 c/22/10/2025 15:30` - Updates the consultation datetime for the 2nd student
 
 ### Adding tags to a student : `tag`
 
