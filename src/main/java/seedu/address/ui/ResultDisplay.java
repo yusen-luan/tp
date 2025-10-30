@@ -25,7 +25,34 @@ public class ResultDisplay extends UiPart<Region> {
     public ResultDisplay() {
         super(FXML);
         resultDisplay.setContextMenuEnabled(false);
-        initializeDisplay();
+        showWelcomeMessage();
+    }
+
+    /**
+     * Shows the welcome message on startup.
+     */
+    private void showWelcomeMessage() {
+        String welcomeMessage = "✓ Welcome to TeachMate!\n\n"
+                + "This result display shows feedback for your commands, including success confirmations, "
+                + "error messages, and detailed results.\n\n"
+                + "Available commands:\n"
+                + "- add: Add a new student\n"
+                + "- delete: Delete a student\n"
+                + "- edit: Edit student details\n"
+                + "- list: List all students\n"
+                + "- find: Find students by name\n"
+                + "- filter: Filter students by tags\n"
+                + "- view: View detailed student information\n"
+                + "- attendance: Mark attendance\n"
+                + "- grade: Add or update grades\n"
+                + "- deletegrade: Delete a grade\n"
+                + "- remark: Add remarks to a student\n"
+                + "- tag: Add tags to a student\n"
+                + "- untag: Remove tags from a student\n"
+                + "- clear: Clear all entries\n"
+                + "- help: Show help window\n"
+                + "- exit: Exit the application";
+        setFeedbackToUser(welcomeMessage);
     }
 
     /**
