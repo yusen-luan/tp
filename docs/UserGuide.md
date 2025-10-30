@@ -6,7 +6,36 @@
 
 # TeachMate User Guide
 
-TeachMate is a **desktop app for Teaching Assistants (TAs) to manage university students, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, TeachMate can help you manage your students faster than traditional GUI apps.
+TeachMate is a **desktop application designed specifically for NUS Teaching Assistants (TAs)** to streamline student management across multiple tutorial groups and modules. Built for TAs who prefer typing over clicking, TeachMate combines the speed of a Command Line Interface (CLI) with the clarity of a Graphical User Interface (GUI).
+
+## Why TeachMate?
+
+As an NUS TA juggling multiple modules, you face unique challenges:
+- **Tracking attendance** across 13 weeks for dozens of students
+- **Managing grades** for various assignments and assessments
+- **Scheduling consultations** while keeping track of who needs extra help
+- **Remembering student details** - who's struggling with OOP concepts, who excels at algorithms
+- **Switching between modules** like CS2103T and CS2101 throughout the week
+
+TeachMate solves these problems by putting everything in one place:
+
+### What TeachMate Does for You
+
+**Instant Student Access** - View a student's complete profile including modules, grades, consultation history, attendance pattern, and your personal notes. No more hunting through spreadsheets or scrolling through email threads.
+
+**Effortless Attendance Tracking** - Mark attendance with a single command. See visual color-coded grids showing each student's 13-week attendance pattern at a glance - green for present, red for absent, grey for no record.
+
+**Smart Grade Management** - Add and update grades by assignment name, delete specific grades, and see all assignment scores displayed on each student card. No more maintaining separate Excel files.
+
+**Consultation Scheduling** - Record consultation appointments with date and time, view upcoming consultations for specific students, and keep track of who needs follow-up help.
+
+**Personalized Student Notes** - Add remarks to remember each student's learning journey, challenges, and progress. Track observations like which concepts they struggle with or how they're improving over time.
+
+**Multi-Module Organization** - Filter students by module to focus on one tutorial group at a time. Tag students with labels like "struggling" or "excellent" and filter by tags to identify who needs attention.
+
+**Fast Keyboard Workflow** - Every action is a quick typed command. During live tutorials, you can mark attendance, add grades, or schedule consultations in seconds without taking your hands off the keyboard.
+
+TeachMate is optimized for NUS workflows, using familiar formats like NUS student IDs and module codes. If you're comfortable with the terminal and type quickly, TeachMate will help you manage your students significantly faster than traditional point-and-click applications or multiple spreadsheets.
 
 <!-- * Table of Contents -->
 <page-nav-print />
