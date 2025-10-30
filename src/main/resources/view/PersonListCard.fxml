@@ -47,7 +47,7 @@
         <Insets top="8" right="10" bottom="8" left="10" />
       </padding>
 
-      <Label text="Attendance:" styleClass="attendance-label" />
+      <Label text="📊" styleClass="icon-compact" style="-fx-font-size: 13pt;" />
 
       <VBox spacing="2" HBox.hgrow="ALWAYS">
         <!-- Week numbers row (top) -->

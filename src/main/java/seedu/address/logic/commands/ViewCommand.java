@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.ToStringBuilder;
@@ -93,6 +92,9 @@ public class ViewCommand extends Command {
     private String createDetailedViewMessage(Person person) {
         StringBuilder sb = new StringBuilder();
 
+        // Success indicator for styled formatting
+        sb.append("✓ Viewing Student Details\n\n");
+
         // Basic student information
         sb.append("=== STUDENT DETAILS ===\n");
         sb.append("Name: ").append(person.getName().fullName).append("\n");
@@ -127,14 +129,6 @@ public class ViewCommand extends Command {
                     .reduce((a, b) -> a + ", " + b)
                     .orElse("N/A");
             sb.append("Grades: ").append(gradesText).append("\n");
-        }
-
-        // Consultations
-        if (person.getConsultations() != null && !person.getConsultations().isEmpty()) {
-            String consultationsText = person.getConsultations().stream()
-                    .map(c -> c.getDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm")))
-                    .collect(Collectors.joining(", "));
-            sb.append("Consultations: ").append(consultationsText).append("\n");
         }
 
         // Remark

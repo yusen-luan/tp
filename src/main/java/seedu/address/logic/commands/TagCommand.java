@@ -35,7 +35,7 @@ public class TagCommand extends Command {
             + "Example: " + COMMAND_WORD + " " + PREFIX_STUDENT_ID + "A0291772W "
             + PREFIX_TAG + "Excelling";
 
-    public static final String MESSAGE_TAG_PERSON_SUCCESS = "Added %s to %s: %s";
+    public static final String MESSAGE_TAG_PERSON_SUCCESS = "✓ Added %s to %s: %s";
     public static final String MESSAGE_NO_TAGS_PROVIDED = "At least one tag must be provided.";
     public static final String MESSAGE_PERSON_NOT_FOUND = "No student found with student ID %1$s.";
     public static final String MESSAGE_DUPLICATE_TAGS = "Some tags already exist on this student and were not added.";

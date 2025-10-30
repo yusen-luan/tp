@@ -1,6 +1,7 @@
 package seedu.address.model.consultation;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -20,7 +21,7 @@ public class Consultation {
 
     @Override
     public String toString() {
-        return dateTime.toString();
+        return dateTime.format(DateTimeFormatter.ofPattern("dd MMM yyyy h:mma"));
     }
 
     @Override

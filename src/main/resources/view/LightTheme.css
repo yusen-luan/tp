@@ -132,7 +132,7 @@
     -fx-border-width: 1px;
     -fx-border-radius: 20px;
     -fx-background-radius: 20px;
-    -fx-padding: 0;
+    -fx-padding: 12px 18px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.12), 15, 0, 0, 5);
     -fx-background-insets: 0;
 }
@@ -481,6 +481,18 @@
     -fx-font-family: -apple-system, "SF Mono", monospace;
     -fx-font-weight: 700;
     -fx-effect: dropshadow(gaussian, rgba(175, 82, 222, 0.3), 10, 0, 0, 3);
+}
+
+#grades .placeholder-text {
+    -fx-font-family: -apple-system, "SF Pro Text", sans-serif !important;
+    -fx-font-size: 12pt !important;
+    -fx-text-fill: #000000 !important;
+    -fx-font-weight: 500 !important;
+    -fx-background-color: transparent !important;
+    -fx-padding: 0 !important;
+    -fx-border-radius: 0 !important;
+    -fx-background-radius: 0 !important;
+    -fx-effect: none !important;
 }
 
 /* ==================== MODULE CODES - iOS INFO BADGES ==================== */
