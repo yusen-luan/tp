@@ -88,6 +88,7 @@ public class PersonCard extends UiPart<Region> {
         // Grades with placeholder
         if (person.getGrades().isEmpty()) {
             Label noGradesLabel = new Label("No grades recorded");
+            noGradesLabel.getStyleClass().add("placeholder-text");
             grades.getChildren().add(noGradesLabel);
         } else {
             person.getGrades().stream()
