@@ -23,7 +23,7 @@ checkstyle {
 
 javafx {
     version = '17.0.7'
-    modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.web', 'javafx.media']
+    modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics']
 }
 
 test {
@@ -60,7 +60,7 @@ dependencies {
 }
 
 shadowJar {
-    archiveFileName = 'addressbook.jar'
+    archiveFileName = 'teachmate.jar'
 }
 
 run {
