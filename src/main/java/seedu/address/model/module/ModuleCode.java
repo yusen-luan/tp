@@ -9,14 +9,14 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class ModuleCode {
     public static final String MESSAGE_CONSTRAINTS =
-        "Module code should be in NUS format (e.g., CS2103T)";
+        "Module code should be in NUS format (e.g., CS2103T, ACC1701XA, GESS1000, BMA5001)";
     /*
      * The module code must:
-     * 1. Start with 2-3 uppercase letters
+     * 1. Start with 2-4 uppercase letters
      * 2. Followed by exactly 4 digits
-     * 3. Optionally end with 1 uppercase letter
+     * 3. Optionally end with 0-2 uppercase letters
      */
-    public static final String VALIDATION_REGEX = "[A-Z]{2,3}\\d{4}[A-Z]?";
+    public static final String VALIDATION_REGEX = "[A-Z]{2,4}\\d{4}[A-Z]{0,2}";
     public final String value;
 
     /**

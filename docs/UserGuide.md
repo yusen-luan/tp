@@ -205,7 +205,7 @@ add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t
 * `NAME` should only contain alphanumeric characters and spaces, and should not be blank
 * `STUDENT_ID` must be in the format A followed by exactly 7 digits and 1 uppercase letter (e.g., A0123456X)
 * `EMAIL` should be of the format local-part@domain (see detailed constraints below)
-* `MODULE_CODE` must be in NUS format: 2-3 uppercase letters, followed by 4 digits, optionally ending with 1 uppercase letter (e.g., CS2103T, CS2101)
+* `MODULE_CODE` must be in NUS format: 2-4 uppercase letters, followed by exactly 4 digits, optionally ending with 0-2 uppercase letters (e.g., CS2103T, ACC1701XA, GESS1000, CS2040DE, LL4008BV, BMA5001)
 * `TAG` should be alphanumeric (no spaces)
 * At least one module code is required
 * Tags are optional

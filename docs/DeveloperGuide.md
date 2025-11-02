@@ -173,7 +173,7 @@ The `Person` class in TeachMate has been enhanced to represent students with TA-
 * `Address`: Optional (can be null for students)
 
 **Academic Fields:**
-* `Set<ModuleCode>`: Module codes the student is enrolled in (format: 2-3 letters + 4 digits + optional letter, e.g., CS2103T)
+* `Set<ModuleCode>`: Module codes the student is enrolled in (format: 2-4 letters + exactly 4 digits + optional 0-2 letters, e.g., CS2103T, ACC1701XA, GESS1000, BMA5001)
 * `Set<Grade>`: Assignment grades with assignment names and scores (0-100)
 * `AttendanceRecord`: Immutable record of weekly attendance (Week 1-13) mapped to `AttendanceStatus` (PRESENT/ABSENT)
 * `List<Consultation>`: Scheduled consultations with date and time
@@ -1286,7 +1286,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * **Mainstream OS**: Windows, Linux, Unix, MacOS
 * **TA**: Teaching Assistant - A university staff member or senior student who assists professors in conducting tutorials, grading assignments, and providing academic support to students
 * **Module**: A course or subject offered by NUS, identified by a unique module code (e.g., CS2103T)
-* **Module Code**: NUS standard format for course identification, consisting of 2-3 uppercase letters followed by 4 digits and an optional suffix letter (e.g., CS2103T, MA1521)
+* **Module Code**: NUS standard format for course identification, consisting of 2-4 uppercase letters followed by exactly 4 digits and an optional suffix of 0-2 uppercase letters (e.g., CS2103T, ACC1701XA, GESS1000, CS2040DE, LL4008BV, BMA5001)
 * **Student ID**: A unique identifier assigned to each NUS student, following the format AXXXXXXXY where X represents digits (0-9) and Y represents an uppercase letter (e.g., A0123456X)
 * **Index**: A positive integer representing the position of a student in the currently displayed list, used for quick command-line reference
 * **Tag**: A custom label (e.g., "struggling", "excellent", "international") assigned to students to quickly identify those requiring special attention or categorization
@@ -1551,7 +1551,7 @@ Team size: 5
 
 5. **Add confirmation prompt for bulk attendance operations**: Currently, `attendance all w/1 present` marks attendance for all students without confirmation. We plan to add a confirmation prompt showing the number of students affected: "This will mark attendance for [N] students. Confirm? (y/n)".
 
-6. **Improve error message specificity for invalid module codes**: Currently, invalid module codes show a generic "Module codes should be alphanumeric" message. We plan to make this more specific by showing the exact format requirements: "Module code must be 2-3 uppercase letters followed by 4 digits and an optional letter (e.g., CS2103T, MA1521)".
+6. **Improve error message specificity for invalid module codes**: Currently, invalid module codes show a generic "Module codes should be alphanumeric" message. We plan to make this more specific by showing the exact format requirements: "Module code must be 2-4 uppercase letters followed by exactly 4 digits and an optional suffix of 0-2 uppercase letters (e.g., CS2103T, ACC1701XA, GESS1000, BMA5001)".
 
 7. **Add ability to clear all consultations for a student**: Currently, there's no direct way to remove all consultations from a student without using the edit command and omitting the `c/` prefix. We plan to add support for `edit INDEX c/` (empty consultation prefix) to explicitly clear all consultations.
 

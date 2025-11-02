@@ -37,7 +37,7 @@ public class ListCommandParserTest {
         // Implement test for invalid module code
         assertParseFailure(parser, " m/CS21", ModuleCode.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, " m/1234567", ModuleCode.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, " m/CS2103TT", ModuleCode.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, " m/CS2103TTT", ModuleCode.MESSAGE_CONSTRAINTS); // 3-letter suffix (too long)
     }
 
 
