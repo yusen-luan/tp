@@ -150,7 +150,7 @@ Here's what the symbols mean:
 
 **4. Helpful Tips**
 * You can type parameters in any order - `add n/John s/A0123456X` works the same as `add s/A0123456X n/John`
-* Don't worry about capitalization - commands work the same whether you type `ADD` or `add`
+* Command keywords are case-sensitive - you must use lowercase (e.g., `add`, `list`, `edit`). Using uppercase like `ADD` will result in an error.
 * When typing commands, just follow the pattern shown in the examples below
 
 <box type="warning" seamless>
