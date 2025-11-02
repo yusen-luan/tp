@@ -120,17 +120,18 @@ TeachMate uses a simple command-based system. Think of it like typing instructio
 * Commands are followed by parameters that provide the details
 * Each parameter has a prefix (like `n/` for name, `s/` for student ID) followed by the value
 
-**Example:** `add n/John Doe s/A0123456X e/e123413@u.nus.edu` 
+**Example:** `add n/John Doe s/A0123456X e/e123413@u.nus.edu m/CS2103T` 
 * `add` is the command
 * `n/John Doe` means name is "John Doe"
 * `s/A0123456X` means student ID is "A0123456X"
-* `e123413@u.nus.edu means the student's email is "e123413@u.nus.edu"
+* `e/e123413@u.nus.edu` means the student's email is "e123413@u.nus.edu"
+* `m/CS2103T` means the student is enrolled in module CS2103T
 
 **2. Understanding the Format Notation**
 
 When you see a command format like this:
 ```
-add n/NAME s/STUDENT_ID e/EMAIL [t/TAG]
+add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]… [t/TAG]
 ```
 
 Here's what the symbols mean:
@@ -149,8 +150,8 @@ Here's what the symbols mean:
 * `r/` = Remark (a note about the student)
 
 **4. Helpful Tips**
-* You can type parameters in any order - `add n/John s/A0123456X` works the same as `add s/A0123456X n/John`
-* Don't worry about capitalization - commands work the same whether you type `ADD` or `add`
+* You can type parameters in any order - `add n/John s/A0123456X e/john@u.nus.edu m/CS2103T` works the same as `add s/A0123456X n/John e/john@u.nus.edu m/CS2103T`
+* Command keywords are case-sensitive - you must use lowercase (e.g., `add`, `list`, `edit`). Using uppercase like `ADD` will result in an error.
 * When typing commands, just follow the pattern shown in the examples below
 
 <box type="warning" seamless>
@@ -202,10 +203,11 @@ add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t
 <box type="info" seamless>
 
 **Requirements:**
+* All 4 fields (`n/NAME`, `s/STUDENT_ID`, `e/EMAIL`, and `m/MODULE_CODE`) are **required**, in any order. The command will fail if any of these fields are missing.
 * `NAME` should only contain alphanumeric characters and spaces, and should not be blank
 * `STUDENT_ID` must be in the format A followed by exactly 7 digits and 1 uppercase letter (e.g., A0123456X)
 * `EMAIL` should be of the format local-part@domain (see detailed constraints below)
-* `MODULE_CODE` must be in NUS format: 2-3 uppercase letters, followed by 4 digits, optionally ending with 1 uppercase letter (e.g., CS2103T, CS2101)
+* `MODULE_CODE` must be in NUS format: 2-4 uppercase letters, followed by exactly 4 digits, optionally ending with 0-2 uppercase letters (e.g., CS2103T, ACC1701XA, GESS1000). Module codes must be entered in uppercase as the validation is case-sensitive.
 * `TAG` should be alphanumeric (no spaces)
 * At least one module code is required
 * Tags are optional
@@ -264,6 +266,13 @@ list
 ```
 list m/CS2103T
 ```
+
+<box type="info" seamless>
+
+**Note about module code filtering:**
+* Module code filtering is case-sensitive. You must enter the module code in the exact case as stored (e.g., `CS2103T` not `cs2103t`).
+* Module codes follow the NUS format and are typically in uppercase (e.g., `CS2103T`, `ACC1701XA`, `GESS1000`).
+</box>
 
 ### Viewing a student : `view`
 
@@ -475,13 +484,13 @@ edit 2 w/5:present
 * The index refers to the index number shown in the displayed student list
 * The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided
-* Existing values will be overwritten by the input values
-* When editing module codes, the existing module codes will be removed and replaced (not cumulative)
-* When editing tags, the existing tags will be removed and replaced (not cumulative)
+* When editing a field, you must provide a valid value for that field. Empty prefixes (e.g., `m/`, `t/`, `r/`) are not supported
+* Existing values will be overwritten by the input values (not cumulative) for most fields
+* **Exception - Grades and Attendance:** These fields can update specific items without affecting others:
+  * **Grades:** Use `g/ASSIGNMENT_NAME:SCORE` to update an existing grade. The assignment must already exist for the student, otherwise an error will be shown. This only updates that specific assignment's grade, leaving other grades unchanged.
+  * **Attendance:** Use `w/WEEK_NUMBER:STATUS` to update attendance for a specific week (1-13). Status can be `present`, `absent`, or `unmark` (to remove the attendance record). This only updates that specific week's attendance, leaving other weeks unchanged.
+* Module codes must be entered in uppercase as the validation is case-sensitive (e.g., `CS2103T` not `cs2103t`)
 * Editing consultations should still follow the same format as in the `add` command
-* **Editing grades:** Use `g/ASSIGNMENT_NAME:SCORE` to update an existing grade. The assignment must already exist for the student, otherwise an error will be shown.
-* **Editing attendance:** Use `w/WEEK_NUMBER:STATUS` to update attendance for a specific week (1-13). Status can be `present`, `absent`, or `unmark` (to remove the attendance record).
-* **Editing remarks:** Use `r/REMARK` to update the remark for a student.
 </box>
 
 <box type="warning" seamless>
@@ -612,9 +621,8 @@ grade 1 g/MIDTERM:90
 
 **Tips:**
 * You can add multiple grades in one command by using multiple `g/` prefixes
-* Grades will appear as purple badges in the student card, below the email
+* Grades will appear as purple badges in the student card
 * Assignment names can contain spaces (e.g., "Final Exam")
-* If you add a grade for an assignment that already exists (case-insensitive), the old score will be replaced with the new score
 * Grades are automatically saved and will persist across application restarts
 </box>
 
