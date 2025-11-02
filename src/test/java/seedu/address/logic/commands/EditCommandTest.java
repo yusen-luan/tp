@@ -175,6 +175,43 @@ public class EditCommandTest {
     }
 
     @Test
+    public void execute_duplicateEmailUnfilteredList_failure() {
+        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person secondPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+
+        // Only test if both persons have emails
+        if (firstPerson.getEmail() != null && secondPerson.getEmail() != null) {
+            EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                    .withEmail(firstPerson.getEmail().value).build();
+            EditCommand editCommand = new EditCommand(INDEX_SECOND_PERSON, descriptor);
+
+            String expectedMessage = String.format(EditCommand.MESSAGE_DUPLICATE_EMAIL,
+                    firstPerson.getEmail());
+            assertCommandFailure(editCommand, model, expectedMessage);
+        }
+    }
+
+    @Test
+    public void execute_duplicateEmailFilteredList_failure() {
+        showPersonAtIndex(model, INDEX_FIRST_PERSON);
+
+        Person firstPersonInList = model.getAddressBook().getPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person secondPersonInList = model.getAddressBook().getPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+
+        // Only test if both persons have emails
+        if (firstPersonInList.getEmail() != null && secondPersonInList.getEmail() != null) {
+            // edit person in filtered list to have the email of another person in address book
+            EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON,
+                    new EditPersonDescriptorBuilder()
+                            .withEmail(secondPersonInList.getEmail().value).build());
+
+            String expectedMessage = String.format(EditCommand.MESSAGE_DUPLICATE_EMAIL,
+                    secondPersonInList.getEmail());
+            assertCommandFailure(editCommand, model, expectedMessage);
+        }
+    }
+
+    @Test
     public void execute_invalidPersonIndexUnfilteredList_failure() {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB).build();

@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.person.Email;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.model.person.UniquePersonList;
@@ -77,6 +78,17 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(studentId);
         return persons.asUnmodifiableObservableList().stream()
                 .filter(person -> person.getStudentId() != null && person.getStudentId().equals(studentId))
+                .findFirst();
+    }
+
+    /**
+     * Returns the person with the specified email, if present.
+     * Returns an empty Optional if no person with the given email exists.
+     */
+    public Optional<Person> getPersonByEmail(Email email) {
+        requireNonNull(email);
+        return persons.asUnmodifiableObservableList().stream()
+                .filter(person -> person.getEmail() != null && person.getEmail().equals(email))
                 .findFirst();
     }
 

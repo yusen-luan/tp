@@ -73,6 +73,8 @@ public class EditCommand extends Command {
     public static final String MESSAGE_DUPLICATE_PERSON = "This student already exists in TeachMate.";
     public static final String MESSAGE_DUPLICATE_STUDENT_ID =
             "Cannot update: Student ID %1$s is already assigned to another student.";
+    public static final String MESSAGE_DUPLICATE_EMAIL =
+            "Cannot update: Email %1$s is already assigned to another student.";
     public static final String MESSAGE_GRADE_NOT_FOUND =
             "Cannot update grade: Assignment '%1$s' not found for this student.";
 
@@ -113,6 +115,17 @@ public class EditCommand extends Command {
                 if (model.getPersonByStudentId(editedPerson.getStudentId()).isPresent()) {
                     throw new CommandException(String.format(MESSAGE_DUPLICATE_STUDENT_ID,
                             editedPerson.getStudentId()));
+                }
+            }
+        }
+
+        // Check for duplicate email if the email is being changed
+        if (editedPerson.getEmail() != null && personToEdit.getEmail() != null) {
+            if (!editedPerson.getEmail().equals(personToEdit.getEmail())) {
+                var existingPerson = model.getPersonByEmail(editedPerson.getEmail());
+                if (existingPerson.isPresent()) {
+                    throw new CommandException(String.format(MESSAGE_DUPLICATE_EMAIL,
+                            editedPerson.getEmail()));
                 }
             }
         }

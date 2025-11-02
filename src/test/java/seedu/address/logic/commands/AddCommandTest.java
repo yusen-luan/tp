@@ -23,6 +23,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.person.Email;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 import seedu.address.testutil.PersonBuilder;
@@ -50,8 +51,10 @@ public class AddCommandTest {
     @Test
     public void execute_duplicateNameDifferentStudentId_addSuccessful() throws Exception {
         ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
-        Person person1 = new PersonBuilder().withName("Alice").withStudentId("A0123456X").build();
-        Person person2 = new PersonBuilder().withName("Alice").withStudentId("A9999999Z").build();
+        Person person1 = new PersonBuilder().withName("Alice").withStudentId("A0123456X")
+                .withEmail("alice1@u.nus.edu").build();
+        Person person2 = new PersonBuilder().withName("Alice").withStudentId("A9999999Z")
+                .withEmail("alice2@u.nus.edu").build();
 
         CommandResult commandResult1 = new AddCommand(person1).execute(modelStub);
         CommandResult commandResult2 = new AddCommand(person2).execute(modelStub);
@@ -73,6 +76,18 @@ public class AddCommandTest {
 
         String expectedMessage = String.format(AddCommand.MESSAGE_DUPLICATE_STUDENT_ID,
                 validPerson.getStudentId());
+        assertThrows(CommandException.class, expectedMessage, () ->
+                addCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_duplicateEmail_throwsCommandException() {
+        Person validPerson = new PersonBuilder().withEmail("test@u.nus.edu").build();
+        AddCommand addCommand = new AddCommand(validPerson);
+        ModelStub modelStub = new ModelStubWithEmail(validPerson.getEmail());
+
+        String expectedMessage = String.format(AddCommand.MESSAGE_DUPLICATE_EMAIL,
+                validPerson.getEmail());
         assertThrows(CommandException.class, expectedMessage, () ->
                 addCommand.execute(modelStub));
     }
@@ -168,6 +183,11 @@ public class AddCommandTest {
         }
 
         @Override
+        public Optional<Person> getPersonByEmail(Email email) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void deletePerson(Person target) {
             throw new AssertionError("This method should not be called.");
         }
@@ -217,6 +237,42 @@ public class AddCommandTest {
             }
             return Optional.empty();
         }
+
+        @Override
+        public Optional<Person> getPersonByEmail(Email email) {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * A Model stub that contains a person with a specific email.
+     */
+    private class ModelStubWithEmail extends ModelStub {
+        private final Email email;
+
+        ModelStubWithEmail(Email email) {
+            requireNonNull(email);
+            this.email = email;
+        }
+
+        @Override
+        public Optional<Person> getPersonByStudentId(StudentId studentId) {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<Person> getPersonByEmail(Email email) {
+            requireNonNull(email);
+            if (this.email.equals(email)) {
+                // Return a dummy person with this email
+                return Optional.of(new PersonBuilder()
+                        .withName("Dummy Person")
+                        .withEmail(email.value)
+                        .withStudentId("A9999999Z")
+                        .build());
+            }
+            return Optional.empty();
+        }
     }
 
     /**
@@ -245,6 +301,15 @@ public class AddCommandTest {
             return personsAdded.stream()
                     .filter(person -> person.getStudentId() != null
                             && person.getStudentId().equals(studentId))
+                    .findFirst();
+        }
+
+        @Override
+        public Optional<Person> getPersonByEmail(Email email) {
+            requireNonNull(email);
+            return personsAdded.stream()
+                    .filter(person -> person.getEmail() != null
+                            && person.getEmail().equals(email))
                     .findFirst();
         }
 
