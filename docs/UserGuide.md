@@ -120,17 +120,18 @@ TeachMate uses a simple command-based system. Think of it like typing instructio
 * Commands are followed by parameters that provide the details
 * Each parameter has a prefix (like `n/` for name, `s/` for student ID) followed by the value
 
-**Example:** `add n/John Doe s/A0123456X e/e123413@u.nus.edu` 
+**Example:** `add n/John Doe s/A0123456X e/e123413@u.nus.edu m/CS2103T` 
 * `add` is the command
 * `n/John Doe` means name is "John Doe"
 * `s/A0123456X` means student ID is "A0123456X"
-* `e123413@u.nus.edu means the student's email is "e123413@u.nus.edu"
+* `e/e123413@u.nus.edu` means the student's email is "e123413@u.nus.edu"
+* `m/CS2103T` means the student is enrolled in module CS2103T
 
 **2. Understanding the Format Notation**
 
 When you see a command format like this:
 ```
-add n/NAME s/STUDENT_ID e/EMAIL [t/TAG]
+add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]… [t/TAG]
 ```
 
 Here's what the symbols mean:
@@ -149,7 +150,7 @@ Here's what the symbols mean:
 * `r/` = Remark (a note about the student)
 
 **4. Helpful Tips**
-* You can type parameters in any order - `add n/John s/A0123456X` works the same as `add s/A0123456X n/John`
+* You can type parameters in any order - `add n/John s/A0123456X e/john@u.nus.edu m/CS2103T` works the same as `add s/A0123456X n/John e/john@u.nus.edu m/CS2103T`
 * Command keywords are case-sensitive - you must use lowercase (e.g., `add`, `list`, `edit`). Using uppercase like `ADD` will result in an error.
 * When typing commands, just follow the pattern shown in the examples below
 
@@ -202,6 +203,7 @@ add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t
 <box type="info" seamless>
 
 **Requirements:**
+* All 4 fields (`n/NAME`, `s/STUDENT_ID`, `e/EMAIL`, and `m/MODULE_CODE`) are **required**, in any order. The command will fail if any of these fields are missing.
 * `NAME` should only contain alphanumeric characters and spaces, and should not be blank
 * `STUDENT_ID` must be in the format A followed by exactly 7 digits and 1 uppercase letter (e.g., A0123456X)
 * `EMAIL` should be of the format local-part@domain (see detailed constraints below)
