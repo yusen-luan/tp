@@ -525,7 +525,6 @@ tag 2 t/needsHelp
 * Student ID must match the format A followed by 7 digits and 1 uppercase letter
 * At least one tag must be provided
 * Tags are added to existing tags (not replaced)
-* Duplicate tags that already exist on the student will still be added
 * `TAG` should be alphanumeric (no spaces)
 </box>
 
