@@ -612,7 +612,7 @@ grade 1 g/MIDTERM:90
 
 **Tips:**
 * You can add multiple grades in one command by using multiple `g/` prefixes
-* Grades will appear as purple badges in the student card, below the email
+* Grades will appear as purple badges in the student card
 * Assignment names can contain spaces (e.g., "Final Exam")
 * Grades are automatically saved and will persist across application restarts
 </box>
