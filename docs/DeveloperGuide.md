@@ -1140,29 +1140,28 @@ The remark is displayed in the student card in the UI:
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …                            | I want to …                                                   | So that I can …                                                          |
-|----------|-----------------------------------|---------------------------------------------------------------|--------------------------------------------------------------------------|
-| `* * *`  | TA                                | add a new student's details                                   | have their basic information readily available (name, ID, email, module) |
-| `* * *`  | TA                                | view student contact details                                  | check in with my student's progress                                      |
-| `* * *`  | TA                                | view student grades                                           | track my students' academic progress                                     |
-| `* *`    | TA                                | view student assignment submissions                           | track their assignment progress                                          |
-| `* *`    | TA with many modules              | view all my modules that I teach                              | easily track all modules from one glance                                 |
-| `* * *`  | TA                                | mark a student's attendance                                   | award marks according to their attendance                                |
-| `* *`    | TA with many classes              | view my timetable schedule                                    | view my schedule from one location                                       |
-| `* *`    | TA willing to give consultations  | add consultations to my calendar                              | keep track of my timetable                                               |
-| `* *`    | TA                                | delete consultations                                          | allocate time for other students                                         |
-| `* *`    | TA                                | add custom tags to students (e.g., "struggling", "excellent") | quickly identify students who need special attention                     |
-| `* * *`  | busy TA for multiple modules      | search for a student by typing partial names                  | quickly find their information during consultations                      |
-| `* *`    | TA                                | add special notes/remarks for each student                    | keep tabs on certain students through remarks                            |
-| `* *`    | TA with many things to do         | add tasks that are related to my classes                      | keep track of what to do outside of class                                |
-| `*`      | TA                                | randomly select students for class participation              | ensure fair distribution of participation opportunities                  |
-| `* *`    | TA                                | flag out students with special needs                          | pay more attention to them                                               |
-| `* *`    | TA                                | unmark a student's attendance if they leave mid-lesson        | easily edit their attendance                                             |
-| `*`      | TA                                | assign students to tutorial questions to present              | ensure all students have a fair chance to present their answers          |
-| `*`      | TA that gets asked many questions | add reminders to follow up with students after class          | ensure their questions get answered (even if out of syllabus)            |
-| `*`      | TA                                | group students up if the module requires group work           | keep track of all groupings                                              |
-| `*`      | TA                                | randomly pair/group students for each tutorial session        | all students get to pair up with everyone else                           |
-
+| Priority | As a …                       | I want to …                                                   | So that I can …                                                          |
+|----------|------------------------------|---------------------------------------------------------------|--------------------------------------------------------------------------|
+| `* * *`  | TA                           | add a new student's details                                   | have their basic information readily available (name, ID, email, module) |
+| `* * *`  | TA                           | view student contact details                                  | check in with my student's progress                                      |
+| `* * *`  | TA                           | edit an existing student's details                            | update outdated or incorrect information easily                          |
+| `* * *`  | TA                           | delete a student                                              | remove students who have dropped the module or are no longer relevant    |
+| `* * *`  | TA                           | view student grades                                           | track my students' academic progress                                     |
+| `* * *`  | TA                           | add or update grades for a student                            | record their assessment results consistently                             |
+| `* * *`  | TA                           | delete specific grades from a student                         | correct grading mistakes or remove outdated assessments                  |
+| `* * *`  | TA                           | mark a student's attendance                                   | award marks according to their attendance                                |
+| `* *`    | TA                           | unmark or edit attendance for a student                       | fix mistakes in attendance tracking                                      |
+| `* *`    | TA                           | add consultations to my calendar                              | keep track of consultation sessions and follow-ups                       |
+| `* *`    | TA                           | delete consultations                                          | free up slots for other students                                         |
+| `* *`    | TA                           | add custom tags to students (e.g., "struggling", "excellent") | quickly identify students who need special attention                     |
+| `* *`    | TA                           | add special notes/remarks for each student                    | record qualitative feedback for future reference                         |
+| `* * *`  | busy TA for multiple modules | search for a student by typing partial names                  | quickly find their information during consultations                      |
+| `* *`    | TA                           | filter students by tags or modules                            | view specific subsets of students efficiently                            |
+| `* *`    | TA with many modules         | view all my modules that I teach                              | easily track all modules from one glance                                 |
+| `*`      | TA with many classes         | view my timetable schedule                                    | view my schedule from one location                                       |
+| `*`      | TA                           | randomly select students for class participation              | ensure fair distribution of participation opportunities                  |
+| `*`      | TA                           | group students for class projects                             | keep track of group work allocations                                     |
+| `*`      | TA                           | add reminders to follow up with students                      | ensure their questions are addressed after class                         |
 
 
 ### Use cases
