@@ -205,7 +205,7 @@ add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t
 * `NAME` should only contain alphanumeric characters and spaces, and should not be blank
 * `STUDENT_ID` must be in the format A followed by exactly 7 digits and 1 uppercase letter (e.g., A0123456X)
 * `EMAIL` should be of the format local-part@domain (see detailed constraints below)
-* `MODULE_CODE` must be in NUS format: 2-3 uppercase letters, followed by 4 digits, optionally ending with 1 uppercase letter (e.g., CS2103T, CS2101)
+* `MODULE_CODE` must be in NUS format: 2-4 uppercase letters, followed by exactly 4 digits, optionally ending with 0-2 uppercase letters (e.g., CS2103T, ACC1701XA, GESS1000). Module codes must be entered in uppercase as the validation is case-sensitive.
 * `TAG` should be alphanumeric (no spaces)
 * At least one module code is required
 * Tags are optional
@@ -264,6 +264,13 @@ list
 ```
 list m/CS2103T
 ```
+
+<box type="info" seamless>
+
+**Note about module code filtering:**
+* Module code filtering is case-sensitive. You must enter the module code in the exact case as stored (e.g., `CS2103T` not `cs2103t`).
+* Module codes follow the NUS format and are typically in uppercase (e.g., `CS2103T`, `ACC1701XA`, `GESS1000`).
+</box>
 
 ### Viewing a student : `view`
 
@@ -477,6 +484,7 @@ edit 2 w/5:present
 * At least one of the optional fields must be provided
 * Existing values will be overwritten by the input values
 * When editing module codes, the existing module codes will be removed and replaced (not cumulative)
+* Module codes must be entered in uppercase as the validation is case-sensitive (e.g., `CS2103T` not `cs2103t`)
 * When editing tags, the existing tags will be removed and replaced (not cumulative)
 * Editing consultations should still follow the same format as in the `add` command
 * **Editing grades:** Use `g/ASSIGNMENT_NAME:SCORE` to update an existing grade. The assignment must already exist for the student, otherwise an error will be shown.
