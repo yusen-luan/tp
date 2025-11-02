@@ -484,14 +484,13 @@ edit 2 w/5:present
 * The index refers to the index number shown in the displayed student list
 * The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided
-* Existing values will be overwritten by the input values
-* When editing module codes, the existing module codes will be removed and replaced (not cumulative)
+* When editing a field, you must provide a valid value for that field. Empty prefixes (e.g., `m/`, `t/`, `r/`) are not supported
+* Existing values will be overwritten by the input values (not cumulative) for most fields
+* **Exception - Grades and Attendance:** These fields can update specific items without affecting others:
+  * **Grades:** Use `g/ASSIGNMENT_NAME:SCORE` to update an existing grade. The assignment must already exist for the student, otherwise an error will be shown. This only updates that specific assignment's grade, leaving other grades unchanged.
+  * **Attendance:** Use `w/WEEK_NUMBER:STATUS` to update attendance for a specific week (1-13). Status can be `present`, `absent`, or `unmark` (to remove the attendance record). This only updates that specific week's attendance, leaving other weeks unchanged.
 * Module codes must be entered in uppercase as the validation is case-sensitive (e.g., `CS2103T` not `cs2103t`)
-* When editing tags, the existing tags will be removed and replaced (not cumulative)
 * Editing consultations should still follow the same format as in the `add` command
-* **Editing grades:** Use `g/ASSIGNMENT_NAME:SCORE` to update an existing grade. The assignment must already exist for the student, otherwise an error will be shown.
-* **Editing attendance:** Use `w/WEEK_NUMBER:STATUS` to update attendance for a specific week (1-13). Status can be `present`, `absent`, or `unmark` (to remove the attendance record).
-* **Editing remarks:** Use `r/REMARK` to update the remark for a student.
 </box>
 
 <box type="warning" seamless>
