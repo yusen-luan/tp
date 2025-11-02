@@ -120,10 +120,11 @@ TeachMate uses a simple command-based system. Think of it like typing instructio
 * Commands are followed by parameters that provide the details
 * Each parameter has a prefix (like `n/` for name, `s/` for student ID) followed by the value
 
-**Example:** `add n/John Doe s/A0123456X`
+**Example:** `add n/John Doe s/A0123456X e/e123413@u.nus.edu` 
 * `add` is the command
 * `n/John Doe` means name is "John Doe"
 * `s/A0123456X` means student ID is "A0123456X"
+* `e123413@u.nus.edu means the student's email is "e123413@u.nus.edu"
 
 **2. Understanding the Format Notation**
 
