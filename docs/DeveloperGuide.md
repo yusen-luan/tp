@@ -1275,11 +1275,10 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 3. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
 4. The system should be intuitive enough for new TAs with basic command-line familiarity to perform core operations (add, view, list students) within 15 minutes of first use.
 5. The system should not lose data during normal operations. All changes should be persisted to storage within 1 second of command execution.
-6. Student IDs must remain unique across the system. The application should validate all NUS-specific formats (student IDs, module codes) to prevent invalid data entry.
-7. All commands should execute and provide feedback within 2 seconds under normal load conditions.
-8. Should support TAs managing up to 10 different modules simultaneously without performance degradation.
-9. Error messages should be clear, specific, and actionable, guiding users to correct their input without needing to reference documentation.
-10. Code should follow standard software engineering practices to allow for incremental feature additions and modifications.
+6. All commands should execute and provide feedback within 2 seconds under normal load conditions.
+7. Should support TAs managing up to 10 different modules simultaneously without performance degradation.
+8. Error messages should be clear, specific, and actionable, guiding users to correct their input without needing to reference documentation.
+9. Code should follow standard software engineering practices to allow for incremental feature additions and modifications.
 
 ### Glossary
 
