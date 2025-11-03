@@ -67,14 +67,16 @@ public class DeleteGradeCommand extends Command {
             throw new CommandException(MESSAGE_NOT_STUDENT);
         }
 
-        // Check if all grades exist
-        Set<String> existingAssignments = new HashSet<>();
-        for (Grade grade : personToEdit.getGrades()) {
-            existingAssignments.add(grade.assignmentName);
-        }
-
+        // Check if all grades exist (case-insensitive)
         for (String assignmentName : assignmentNamesToDelete) {
-            if (!existingAssignments.contains(assignmentName)) {
+            boolean found = false;
+            for (Grade grade : personToEdit.getGrades()) {
+                if (grade.assignmentName.equalsIgnoreCase(assignmentName)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
                 throw new CommandException(String.format(MESSAGE_GRADE_NOT_FOUND, assignmentName));
             }
         }
@@ -87,14 +89,21 @@ public class DeleteGradeCommand extends Command {
     }
 
     /**
-     * Creates and returns a {@code Person} with the specified grades removed.
+     * Creates and returns a {@code Person} with the specified grades removed (case-insensitive matching).
      */
     private static Person createPersonWithDeletedGrades(Person person, Set<String> assignmentNamesToDelete) {
         assert person != null;
 
         Set<Grade> updatedGrades = new HashSet<>();
         for (Grade grade : person.getGrades()) {
-            if (!assignmentNamesToDelete.contains(grade.assignmentName)) {
+            boolean shouldDelete = false;
+            for (String assignmentName : assignmentNamesToDelete) {
+                if (grade.assignmentName.equalsIgnoreCase(assignmentName)) {
+                    shouldDelete = true;
+                    break;
+                }
+            }
+            if (!shouldDelete) {
                 updatedGrades.add(grade);
             }
         }
