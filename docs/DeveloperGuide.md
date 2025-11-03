@@ -1563,8 +1563,7 @@ Team size: 5
 
 7. **Add validation for duplicate module codes in add/edit commands**: Currently, users can add the same module code multiple times (e.g., `m/CS2103T m/CS2103T`). We plan to detect and prevent duplicate module codes with an error message: "Duplicate module code detected: [code]. Each module should only be listed once."
 
-8. **Allow for special characters in student name**: Currently, student names can only contain alphanumeric characters, and special
-characters e.g. `Arul Prakāś` is not allowed. We plan to add parsing support for such characters in student names.
+8. **Allow for special characters in student name**: Currently, student names can only contain alphanumeric characters and spaces. Special characters (e.g., accented letters such as `ā` in `Prakāś`), punctuation (including apostrophes `'` and slashes `/`), symbols, and non-alphabet scripts (e.g., Chinese, Japanese, or any other non-Latin characters) are not allowed. We plan to add parsing support for a broader set of characters in student names in the future.
 
 9. **Enhance attendance system to be mapped to modules**: Currently, each student has one attendance list that does not take into account of multiple modules, making attendance tracking difficult for such students. We plan to change attendance such that a student will have a separate attendance record for each module taking.
 

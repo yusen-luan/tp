@@ -203,7 +203,7 @@ add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t
 
 **Requirements:**
 * All 4 fields (`n/NAME`, `s/STUDENT_ID`, `e/EMAIL`, and `m/MODULE_CODE`) are **required**, in any order. The command will fail if any of these fields are missing.
-* `NAME` should only contain alphanumeric characters and spaces, and should not be blank
+* `NAME` must contain only alphanumeric characters and spaces, and must not be blank. Special characters (e.g., accented letters), punctuation (including apostrophes `'` and slashes `/`), symbols, and non‑Latin scripts (e.g., Chinese/Japanese) are not allowed.
 * `STUDENT_ID` must be in the format A followed by exactly 7 digits and 1 uppercase letter (e.g., A0123456X)
 * `EMAIL` should be of the format local-part@domain (see detailed constraints below)
 * `MODULE_CODE` must be in NUS format: 2-4 uppercase letters, followed by exactly 4 digits, optionally ending with 0-2 uppercase letters (e.g., CS2103T, ACC1701XA, GESS1000). Module codes must be entered in uppercase as the validation is case-sensitive.
