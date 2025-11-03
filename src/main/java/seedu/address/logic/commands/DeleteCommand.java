@@ -72,8 +72,8 @@ public class DeleteCommand extends Command {
         }
 
         model.deletePerson(personToDelete);
-        return new CommandResult(Messages.successMessage(String.format(MESSAGE_DELETE_PERSON_SUCCESS,
-                Messages.formatStudentId(personToDelete))));
+        return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS,
+                Messages.formatStudentId(personToDelete)));
     }
 
     @Override

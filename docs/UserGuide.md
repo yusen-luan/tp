@@ -22,7 +22,6 @@ As an NUS TA juggling multiple modules, you face unique challenges:
 | **Managing grades** for various assignments and assessments | Centralized grade tracking on student cards |
 | **Scheduling consultations** while keeping track of who needs extra help | Built-in consultation records |
 | **Remembering student details** - who's struggling with OOP concepts | Personalized remarks system |
-| **Switching between modules** like CS2103T and CS2101 | Multi-module filtering and organization |
 
 ### What TeachMate Does for You
 

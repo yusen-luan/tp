@@ -152,7 +152,7 @@ public class AttendanceCommand extends Command {
                     updatedStudent.getName(), week.value, previousStatus, status);
         } else {
             // Attendance was newly marked
-            message = String.format("✓ " + MESSAGE_MARK_ATTENDANCE_SUCCESS,
+            message = String.format(MESSAGE_MARK_ATTENDANCE_SUCCESS,
                     updatedStudent.getName(), week.value, status);
         }
 
@@ -196,7 +196,7 @@ public class AttendanceCommand extends Command {
         String message = status == AttendanceStatus.UNMARK
                 ? String.format("✓ Unmarked attendance for all students: Week %s (%d students)",
                         week.value, markedCount)
-                : String.format("✓ " + MESSAGE_MARK_ALL_SUCCESS, week.value, status, markedCount);
+                : String.format(MESSAGE_MARK_ALL_SUCCESS, week.value, status, markedCount);
 
         return new CommandResult(message);
     }
