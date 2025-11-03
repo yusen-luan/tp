@@ -23,7 +23,7 @@
 
       <!-- Name and Student ID stacked -->
       <VBox spacing="1" HBox.hgrow="ALWAYS">
-        <Label fx:id="name" text="\$first" styleClass="name-label-compact" />
+        <Label fx:id="name" text="\$first" styleClass="name-label-compact" wrapText="true" minWidth="0" prefWidth="0" maxWidth="Infinity" />
         <Label fx:id="studentId" text="\$studentId" styleClass="student-id-label" />
       </VBox>
     </HBox>
