@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.person.Email;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.StudentId;
 
@@ -67,6 +68,12 @@ public interface Model {
      * Returns an empty Optional if no person with the given student ID exists.
      */
     Optional<Person> getPersonByStudentId(StudentId studentId);
+
+    /**
+     * Returns the person with the specified email, if present.
+     * Returns an empty Optional if no person with the given email exists.
+     */
+    Optional<Person> getPersonByEmail(Email email);
 
     /**
      * Deletes the given person.

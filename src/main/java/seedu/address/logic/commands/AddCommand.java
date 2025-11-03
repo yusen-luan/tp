@@ -43,6 +43,8 @@ public class AddCommand extends Command {
     public static final String MESSAGE_SUCCESS = "✓ Added student: %1$s";
     public static final String MESSAGE_DUPLICATE_STUDENT_ID =
             "Cannot add student: A student with ID %1$s already exists in TeachMate.";
+    public static final String MESSAGE_DUPLICATE_EMAIL =
+            "Cannot add student: A student with email %1$s already exists in TeachMate.";
 
     private final Person toAdd;
 
@@ -63,6 +65,14 @@ public class AddCommand extends Command {
             var existingPerson = model.getPersonByStudentId(toAdd.getStudentId());
             if (existingPerson.isPresent()) {
                 throw new CommandException(String.format(MESSAGE_DUPLICATE_STUDENT_ID, toAdd.getStudentId()));
+            }
+        }
+
+        // Check for duplicate email
+        if (toAdd.getEmail() != null) {
+            var existingPerson = model.getPersonByEmail(toAdd.getEmail());
+            if (existingPerson.isPresent()) {
+                throw new CommandException(String.format(MESSAGE_DUPLICATE_EMAIL, toAdd.getEmail()));
             }
         }
 

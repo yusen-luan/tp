@@ -52,4 +52,18 @@ public class AddCommandIntegrationTest {
         assertCommandFailure(new AddCommand(personWithDuplicateId), model, expectedMessage);
     }
 
+    @Test
+    public void execute_duplicateEmail_throwsCommandException() {
+        Person personInList = model.getAddressBook().getPersonList().get(0);
+        // Create a new person with the same email but different student ID
+        Person personWithDuplicateEmail = new PersonBuilder()
+                .withName("Different Name")
+                .withStudentId("A9999999Z")
+                .withEmail(personInList.getEmail().value)
+                .build();
+        String expectedMessage = String.format(AddCommand.MESSAGE_DUPLICATE_EMAIL,
+                personInList.getEmail());
+        assertCommandFailure(new AddCommand(personWithDuplicateEmail), model, expectedMessage);
+    }
+
 }
