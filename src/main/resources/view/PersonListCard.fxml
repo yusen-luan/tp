@@ -15,7 +15,7 @@
     <!-- HEADER: Badge, Name, and Student ID on single row -->
     <HBox alignment="CENTER_LEFT" spacing="10">
       <!-- Index badge -->
-      <Label fx:id="id" styleClass="id-badge-compact" style="-fx-min-width: 32; -fx-pref-width: 32; -fx-alignment: center;">
+      <Label fx:id="id" styleClass="id-badge-compact" style="-fx-min-width: 60; -fx-pref-width: 60; -fx-alignment: center;">
         <padding>
           <Insets top="4" right="6" bottom="4" left="6" />
         </padding>
