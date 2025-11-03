@@ -860,13 +860,6 @@ Furthermore, certain edits can cause TeachMate to behave in unexpected ways (e.g
 
 <box type="tip" seamless>
 
-**Q: How do I transfer my data to another Computer?**
-
-Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous TeachMate home folder.
-</box>
-
-<box type="tip" seamless>
-
 **Q: What is the student ID format?**
 
 Student IDs must follow the NUS format: A followed by exactly 7 digits and 1 uppercase letter (e.g., A0123456X, A1234567B).
@@ -895,23 +888,9 @@ No, tags must be alphanumeric without spaces. Use camelCase or single words (e.g
 
 <box type="tip" seamless>
 
-**Q: Can I edit or delete grades after adding them?**
-
-Yes! You can update grades by using the `grade` command with the same assignment name (case-insensitive). For example, if a student has "Midterm: 85", running `grade 1 g/Midterm:90` will update it to 90. To delete grades, use the `deletegrade` command. For example, `deletegrade 1 g/Midterm` will remove the Midterm grade from student 1.
-</box>
-
-<box type="tip" seamless>
-
 **Q: Why can't I add grades to a person without a student ID?**
 
 Grades are only applicable to students. The system requires students to have a student ID to ensure grades are tracked for the right individuals.
-</box>
-
-<box type="tip" seamless>
-
-**Q: What happens to grades when I edit or delete a student?**
-
-When you edit a student's information (name, email, etc.), their grades are preserved. If you delete a student, all their associated grades are permanently deleted as well.
 </box>
 
 --------------------------------------------------------------------------------------------------------------------
