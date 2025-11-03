@@ -55,8 +55,8 @@ public class TagCommandTest {
 
         String tagCount = Messages.formatCount(tagsToAdd.size(), "tag");
         String tagsFormatted = Messages.formatTags(tagsToAdd);
-        String expectedMessage = Messages.successMessage(String.format(TagCommand.MESSAGE_TAG_PERSON_SUCCESS,
-                tagCount, Messages.formatStudentId(expectedPerson), tagsFormatted));
+        String expectedMessage = String.format(TagCommand.MESSAGE_TAG_PERSON_SUCCESS,
+                tagCount, Messages.formatStudentId(expectedPerson), tagsFormatted);
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.setPerson(personToTag, expectedPerson);
@@ -90,8 +90,8 @@ public class TagCommandTest {
 
         String tagCount = Messages.formatCount(tagsToAdd.size(), "tag");
         String tagsFormatted = Messages.formatTags(tagsToAdd);
-        String expectedMessage = Messages.successMessage(String.format(TagCommand.MESSAGE_TAG_PERSON_SUCCESS,
-                tagCount, Messages.formatStudentId(expectedPerson), tagsFormatted));
+        String expectedMessage = String.format(TagCommand.MESSAGE_TAG_PERSON_SUCCESS,
+                tagCount, Messages.formatStudentId(expectedPerson), tagsFormatted);
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.setPerson(personToTag, expectedPerson);
@@ -141,8 +141,8 @@ public class TagCommandTest {
 
         String tagCount = Messages.formatCount(tagsToAdd.size(), "tag");
         String tagsFormatted = Messages.formatTags(tagsToAdd);
-        String expectedMessage = Messages.successMessage(String.format(TagCommand.MESSAGE_TAG_PERSON_SUCCESS,
-                tagCount, Messages.formatStudentId(expectedPerson), tagsFormatted));
+        String expectedMessage = String.format(TagCommand.MESSAGE_TAG_PERSON_SUCCESS,
+                tagCount, Messages.formatStudentId(expectedPerson), tagsFormatted);
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.setPerson(studentToTag, expectedPerson);

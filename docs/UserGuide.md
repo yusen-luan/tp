@@ -22,7 +22,6 @@ As an NUS TA juggling multiple modules, you face unique challenges:
 | **Managing grades** for various assignments and assessments | Centralized grade tracking on student cards |
 | **Scheduling consultations** while keeping track of who needs extra help | Built-in consultation records |
 | **Remembering student details** - who's struggling with OOP concepts | Personalized remarks system |
-| **Switching between modules** like CS2103T and CS2101 | Multi-module filtering and organization |
 
 ### What TeachMate Does for You
 
@@ -895,13 +894,6 @@ Furthermore, certain edits can cause TeachMate to behave in unexpected ways (e.g
 
 <box type="tip" seamless>
 
-**Q: How do I transfer my data to another Computer?**
-
-Install the app in the other computer and overwrite the empty data file it creates with the file that contains the data of your previous TeachMate home folder.
-</box>
-
-<box type="tip" seamless>
-
 **Q: What is the student ID format?**
 
 Student IDs must follow the NUS format: A followed by exactly 7 digits and 1 uppercase letter (e.g., A0123456X, A1234567B).
@@ -930,23 +922,9 @@ No, tags must be alphanumeric without spaces. Use camelCase or single words (e.g
 
 <box type="tip" seamless>
 
-**Q: Can I edit or delete grades after adding them?**
-
-Yes! You can update grades by using the `grade` command with the same assignment name (case-insensitive). For example, if a student has "Midterm: 85", running `grade 1 g/Midterm:90` will update it to 90. To delete grades, use the `deletegrade` command. For example, `deletegrade 1 g/Midterm` will remove the Midterm grade from student 1.
-</box>
-
-<box type="tip" seamless>
-
 **Q: Why can't I add grades to a person without a student ID?**
 
 Grades are only applicable to students. The system requires students to have a student ID to ensure grades are tracked for the right individuals.
-</box>
-
-<box type="tip" seamless>
-
-**Q: What happens to grades when I edit or delete a student?**
-
-When you edit a student's information (name, email, etc.), their grades are preserved. If you delete a student, all their associated grades are permanently deleted as well.
 </box>
 
 --------------------------------------------------------------------------------------------------------------------
@@ -955,16 +933,7 @@ When you edit a student's information (name, email, etc.), their grades are pres
 
 <box type="warning" seamless>
 
-**1. Multiple Screen Issue**
-
-If you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen.
-
-**Solution:** Delete the `preferences.json` file created by the application before running the application again.
-</box>
-
-<box type="warning" seamless>
-
-**2. Minimized Help Window Issue**
+**1. Minimized Help Window Issue**
 
 If you minimize the Help Window and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear.
 
@@ -977,10 +946,10 @@ If you minimize the Help Window and then run the `help` command (or use the `Hel
 
 | Action     | Format, Examples                                                                                                                                                          |
 |------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Add**    | `add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/TAG]…​` <br> e.g., `add n/John Doe s/A0123456X e/johnd@u.nus.edu m/CS2103T m/CS2101 t/struggling`  |
+| **Add**    | `add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/TAG]…​ [c/CONSULTATIONS]…​​` <br> e.g., `add n/John Doe s/A0123456X e/johnd@u.nus.edu m/CS2103T m/CS2101 t/struggling`  |
 | **Clear**  | `clear`                                                                                                                                                                   |
 | **Delete** | `delete INDEX`<br> e.g., `delete 3`                                                                                                                                       |
-| **Edit**   | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]…​ [t/TAG]…​`<br> e.g., `edit 2 n/Jane Lee s/A9999999Z`                              |
+| **Edit**   | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]…​ [t/TAG]…​ [c/CONSULTATIONS]…​ [g/ASSIGNMENT_NAME:SCORE] [w/WEEK_NUMBER:STATUS] [r/REMARK]​`<br> e.g., `edit 2 n/Jane Lee s/A9999999Z`                              |
 | **Filter** | `filter t/TAG [t/MORE_TAGS]…​`<br> e.g., `filter t/struggling t/needsHelp`                                                                                               |
 | **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find John Jane`                                                                                                                |
 | **Grade**  | `grade INDEX g/ASSIGNMENT_NAME:SCORE [g/ASSIGNMENT_NAME:SCORE]…​`<br> e.g., `grade 1 g/Midterm:85 g/Quiz1:90`                                                            |

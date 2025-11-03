@@ -104,8 +104,8 @@ public class TagCommand extends Command {
 
         String tagCount = Messages.formatCount(tagsToAdd.size(), "tag");
         String tagsFormatted = Messages.formatTags(tagsToAdd);
-        return new CommandResult(Messages.successMessage(String.format(MESSAGE_TAG_PERSON_SUCCESS,
-                tagCount, Messages.formatStudentId(taggedPerson), tagsFormatted)));
+        return new CommandResult(String.format(MESSAGE_TAG_PERSON_SUCCESS,
+                tagCount, Messages.formatStudentId(taggedPerson), tagsFormatted));
     }
 
     /**

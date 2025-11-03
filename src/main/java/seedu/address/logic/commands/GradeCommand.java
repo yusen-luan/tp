@@ -99,16 +99,16 @@ public class GradeCommand extends Command {
         if (!toAdd.isEmpty() && !toUpdate.isEmpty()) {
             String addCount = Messages.formatCount(toAdd.size(), "grade");
             String updateCount = Messages.formatCount(toUpdate.size(), "grade");
-            return new CommandResult(Messages.successMessage(String.format(MESSAGE_MIXED_GRADE_SUCCESS,
-                    addCount, updateCount, Messages.formatStudentId(gradedPerson), gradesFormatted)));
+            return new CommandResult(String.format(MESSAGE_MIXED_GRADE_SUCCESS,
+                    addCount, updateCount, Messages.formatStudentId(gradedPerson), gradesFormatted));
         } else if (!toUpdate.isEmpty()) {
             String updateCount = Messages.formatCount(toUpdate.size(), "grade");
-            return new CommandResult(Messages.successMessage(String.format(MESSAGE_UPDATE_GRADE_SUCCESS,
-                    updateCount, Messages.formatStudentId(gradedPerson), gradesFormatted)));
+            return new CommandResult(String.format(MESSAGE_UPDATE_GRADE_SUCCESS,
+                    updateCount, Messages.formatStudentId(gradedPerson), gradesFormatted));
         } else {
             String addCount = Messages.formatCount(toAdd.size(), "grade");
-            return new CommandResult(Messages.successMessage(String.format(MESSAGE_ADD_GRADE_SUCCESS,
-                    addCount, Messages.formatStudentId(gradedPerson), gradesFormatted)));
+            return new CommandResult(String.format(MESSAGE_ADD_GRADE_SUCCESS,
+                    addCount, Messages.formatStudentId(gradedPerson), gradesFormatted));
         }
     }
 

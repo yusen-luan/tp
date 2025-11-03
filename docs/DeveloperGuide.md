@@ -1192,11 +1192,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 3a. TeachMate detects an error in the entered details.
-      3a1. TeachMate requests for the correct details.
-      3a2. User enters new detail.
-      Steps 3a1-3a2 are repeated until the data entered are correct.
-      Use case resumes from step 4.
+- 3a. TeachMate detects an error in the entered details.
+  - 3a1. TeachMate requests for the correct details.
+  - 3a2. User enters new detail.
+  - Steps 3a1-3a2 are repeated until the data entered are correct.
+  - Use case resumes from step 4.
 
 **Use case: UC2 - Add consultations for a student**
 
@@ -1211,16 +1211,16 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 3a. Entered date/time format is invalid.
-    * 3a1. TeachMate displays error with supported date/time formats.
-    * 3a2. User enters a valid date/time in one of the supported formats.
-    * Steps 3a1-3a2 are repeated until valid format is used.
-    * Use case resumes from step 4.
+- 3a. Entered date/time format is invalid.
+  - 3a1. TeachMate displays error with supported date/time formats.
+  - 3a2. User enters a valid date/time in one of the supported formats.
+  - Steps 3a1-3a2 are repeated until valid format is used.
+  - Use case resumes from step 4.
 
-* 3b. User is editing an existing student.
-    * 3b1. User provides the student index and new consultation details.
-    * 3b2. TeachMate replaces existing consultations with the new ones.
-    * Use case resumes from step 5.
+- 3b. User is editing an existing student.
+  - 3b1. User provides the student index and new consultation details.
+  - 3b2. TeachMate replaces existing consultations with the new ones.
+  - Use case resumes from step 5.
 
 **Use case: UC3 - Mark a student's attendance**
 
@@ -1234,25 +1234,25 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 3a. The student index is invalid.
-      3a1. TeachMate displays 'The student index provided is invalid'.
-      3a2. User enters a valid index from the displayed list.
-      Use case resumes from step 4.
+- 3a. The student index is invalid.
+  - 3a1. TeachMate displays 'The student index provided is invalid'.
+  - 3a2. User enters a valid index from the displayed list.
+  - Use case resumes from step 4.
 
-* 3b. The student ID is not found.
-      3b1. TeachMate displays 'No student found with ID: [ID]'.
-      3b2. User enters a valid student ID.
-      Use case resumes from step 4.
+- 3b. The student ID is not found.
+  - 3b1. TeachMate displays 'No student found with ID: [ID]'.
+  - 3b2. User enters a valid student ID.
+  - Use case resumes from step 4.
 
-* 3c. The week number is invalid.
-      3c1. TeachMate displays 'Week should be a number between 1 and 13 (inclusive)'.
-      3c2. User enters a valid week number.
-      Use case resumes from step 4.
+- 3c. The week number is invalid.
+  - 3c1. TeachMate displays 'Week should be a number between 1 and 13 (inclusive)'.
+  - 3c2. User enters a valid week number.
+  - Use case resumes from step 4.
 
-* 3d. User wants to unmark attendance.
-      3d1. User specifies 'unmark' as the status.
-      3d2. TeachMate removes the attendance record for that week.
-      Use case ends.
+- 3d. User wants to unmark attendance.
+  - 3d1. User specifies 'unmark' as the status.
+  - 3d2. TeachMate removes the attendance record for that week.
+  - Use case ends.
 
 **Use case: UC4 - Add a remark to a student**
 
@@ -1266,29 +1266,28 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **Extensions**
 
-* 3a. Student ID does not exist in the system.
-      3a1. TeachMate displays 'No student found with ID: [ID]'.
-      3a2. User enters a valid student ID.
-      Use case resumes from step 4.
+- 3a. Student ID does not exist in the system.
+  - 3a1. TeachMate displays 'No student found with ID: [ID]'.
+  - 3a2. User enters a valid student ID.
+  - Use case resumes from step 4.
 
-* 3b. Remark text is empty or contains only whitespace.
-      3b1. TeachMate displays 'Remarks should not be blank'.
-      3b2. User enters valid remark text.
-      Use case resumes from step 4.
+- 3b. Remark text is empty or contains only whitespace.
+  - 3b1. TeachMate displays 'Remarks should not be blank'.
+  - 3b2. User enters valid remark text.
+  - Use case resumes from step 4.
 
 *{More to be added}*
 
 ### Non-Functional Requirements
 
 1. Should work on any _mainstream OS_ as long as it has Java `17` or above installed.
-2. Should be able to hold up to 1000 students without a noticeable sluggishness in performance for typical usage.
-3. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
-4. The system should be intuitive enough for new TAs with basic command-line familiarity to perform core operations (add, view, list students) within 15 minutes of first use.
-5. The system should not lose data during normal operations. All changes should be persisted to storage within 1 second of command execution.
-6. All commands should execute and provide feedback within 2 seconds under normal load conditions.
-7. Should support TAs managing up to 10 different modules simultaneously without performance degradation.
-8. Error messages should be clear, specific, and actionable, guiding users to correct their input without needing to reference documentation.
-9. Code should follow standard software engineering practices to allow for incremental feature additions and modifications.
+2. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
+3. The system should be intuitive enough for new TAs with basic command-line familiarity to perform core operations (add, view, list students) within 15 minutes of first use.
+4. The system should not lose data during normal operations. All changes should be persisted to storage within 1 second of command execution.
+5. All commands should execute and provide feedback within 2 seconds under normal load conditions.
+6. Should support TAs managing up to 10 different modules simultaneously without performance degradation.
+7. Error messages should be clear, specific, and actionable, guiding users to correct their input without needing to reference documentation.
+8. Code should follow standard software engineering practices to allow for incremental feature additions and modifications.
 
 ### Glossary
 
