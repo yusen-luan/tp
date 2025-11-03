@@ -83,6 +83,42 @@ public class ViewCommandTest {
     }
 
     @Test
+    public void execute_personUpdatedAfterView_filteredListStillShowsPerson() throws Exception {
+        // Add a person with a student ID
+        Person originalPerson = new PersonBuilder().withName("Test Student")
+                .withPhone("91234567")
+                .withEmail("test@example.com")
+                .withAddress("test address")
+                .withStudentId("A1234567X")
+                .withModuleCode("CS2103T")
+                .build();
+        model.addPerson(originalPerson);
+
+        // View the person (this sets up the predicate)
+        ViewCommand viewCommand = new ViewCommand(new StudentId("A1234567X"));
+        viewCommand.execute(model);
+
+        // Verify person is in filtered list
+        assertEquals(1, model.getFilteredPersonList().size());
+        assertEquals(originalPerson, model.getFilteredPersonList().get(0));
+
+        // Update the person (simulating what AttendanceCommand does - creates new instance)
+        Person updatedPerson = new PersonBuilder().withName("Test Student")
+                .withPhone("91234567")
+                .withEmail("test@example.com")
+                .withAddress("test address")
+                .withStudentId("A1234567X")
+                .withModuleCode("CS2103T")
+                .withRemark("Updated remark") // Different field to create a different instance
+                .build();
+        model.setPerson(originalPerson, updatedPerson);
+
+        // Verify filtered list still shows the updated person (because predicate compares by StudentId)
+        assertEquals(1, model.getFilteredPersonList().size());
+        assertEquals(updatedPerson, model.getFilteredPersonList().get(0));
+    }
+
+    @Test
     public void equals() {
         ViewCommand viewFirstCommand = new ViewCommand(INDEX_FIRST_PERSON);
         ViewCommand viewSecondCommand = new ViewCommand(INDEX_SECOND_PERSON);
