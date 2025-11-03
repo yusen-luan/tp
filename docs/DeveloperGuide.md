@@ -1562,6 +1562,8 @@ characters e.g. `Arul Prakāś` is not allowed. We plan to add parsing support f
 
 11. **Enhance attendance system to be mapped to modules**: Currently, each student has one attendance list that does not take into account of multiple modules, making attendance tracking difficult for such students. We plan to change attendance such that a student will have a separate attendance record for each module taking.
 
+12. **Add index-based lookup support for remark command**: Currently, the `remark` command only accepts student ID (e.g., `remark s/A0123456X r/...`) and does not support index-based lookup like other commands. Users who try `remark 1 r/Needs help with work` will encounter an error. We plan to add support for both index and student ID, matching the behavior of other commands like `tag`, `untag`, and `view`. The format will be: `remark INDEX r/REMARK` or `remark s/STUDENT_ID r/REMARK`, allowing users to choose the most convenient method based on their workflow.
+
 1. _{ more test cases …​ }_
 
 --------------------------------------------------------------------------------------------------------------------

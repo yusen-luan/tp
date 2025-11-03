@@ -697,6 +697,14 @@ remark s/A0345678Z r/Struggling with time management. Recommended office hours o
 * The student must exist in TeachMate
 </box>
 
+<box type="warning" seamless>
+
+**Limitation:**
+* The `remark` command currently **only accepts student ID** (not index). Using an index like `remark 1 r/...` will result in an error.
+* To add a remark, you must use the student's ID: `remark s/A0123456X r/...`
+* This is a known limitation and index support is planned for future versions.
+</box>
+
 <box type="tip" seamless>
 
 **Tips:**
