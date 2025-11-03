@@ -680,7 +680,8 @@ remark s/A0345678Z r/Struggling with time management. Recommended office hours o
 
 **Requirements:**
 * Student ID must match the format A followed by 7 digits and 1 uppercase letter
-* `REMARK` can contain any text including spaces and special characters
+* `REMARK` must **not** contain existing prefixes e.g. `s/`, `e/` etc.
+* `REMARK` can contain any text including spaces and special characters (except for prefixes with `/`)
 * `REMARK` supports multi-line text for longer notes
 * The remark must not be blank (must contain at least one non-whitespace character)
 * Existing remarks will be overwritten by the new remark (not cumulative)
