@@ -1558,6 +1558,8 @@ Team size: 5
 
 9. **Add validation for duplicate module codes in add/edit commands**: Currently, users can add the same module code multiple times (e.g., `m/CS2103T m/CS2103T`). We plan to detect and prevent duplicate module codes with an error message: "Duplicate module code detected: [code]. Each module should only be listed once."
 
+10. **Allow for special charaters in student name**: Currently, student names can only contain alphanumeric characters, and special
+characters e.g. `Arul Prakāś` is not allowed. We plan to add parsing support for such characters in student names.
 
 1. _{ more test cases …​ }_
 
