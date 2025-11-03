@@ -27,8 +27,17 @@ public class AttendanceCommandParser implements Parser<AttendanceCommand> {
         // Check the preamble to determine the format
         String preamble = argMultimap.getPreamble().trim().toLowerCase();
 
+        boolean hasStudentId = argMultimap.getValue(PREFIX_STUDENT_ID).isPresent();
+        boolean hasPreamble = !argMultimap.getPreamble().isEmpty();
+
+        // Check if both index and student ID are provided (excluding "all" keyword)
+        if (hasStudentId && hasPreamble && !"all".equals(preamble)) {
+            throw new ParseException("Conflicting parameters detected. "
+                    + "Please use either index or student ID — not both.");
+        }
+
         // Check if student ID prefix is present
-        if (argMultimap.getValue(PREFIX_STUDENT_ID).isPresent()) {
+        if (hasStudentId) {
             return parseByStudentId(argMultimap);
         } else if ("all".equals(preamble)) {
             return parseMarkAll(argMultimap);

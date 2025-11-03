@@ -360,6 +360,11 @@ The view command displays comprehensive information in three sections:
 
 <box type="warning" seamless>
 
+**Note:** You cannot provide both an index and a student ID in the same command. If both are provided (e.g., `view 1 s/A0123456X`), the command will fail with an error message asking you to use either index or student ID — not both.
+</box>
+
+<box type="warning" seamless>
+
 **Possible Error Messages:**
 * If the index is invalid: `The student index provided is invalid`
 * If the student ID is not found: `No student found with ID: [ID]`
@@ -429,6 +434,11 @@ attendance all w/1 present
 **Success Messages:**
 * Individual: `Marked attendance for [name]: Week [week] - [status]` or `Unmarked attendance for [name]: Week [week]`
 * All students: `Marked attendance for all students: Week [week] - [status] ([count] students)` or `Unmarked attendance for all students: Week [week] ([count] students)`
+</box>
+
+<box type="warning" seamless>
+
+**Note:** You cannot provide both an index and a student ID in the same command. If both are provided (e.g., `attendance 1 s/A0123456X w/1 present`), the command will fail with an error message asking you to use either index or student ID — not both.
 </box>
 
 <box type="warning" seamless>
@@ -545,6 +555,11 @@ tag 2 t/needsHelp
 * `TAG` should be alphanumeric (no spaces)
 </box>
 
+<box type="warning" seamless>
+
+**Note:** You cannot provide both an index and a student ID in the same command. If both are provided (e.g., `tag 1 s/A0123456X t/struggling`), the command will fail with an error message asking you to use either index or student ID — not both.
+</box>
+
 ### Removing tags from a student : `untag`
 
 Removes one or more tags from an existing student in TeachMate.
@@ -580,6 +595,11 @@ untag 2 t/needsHelp
 * At least one tag must be provided
 * All specified tags must exist on the student, otherwise an error will be shown
 * `TAG` should be alphanumeric (no spaces)
+</box>
+
+<box type="warning" seamless>
+
+**Note:** You cannot provide both an index and a student ID in the same command. If both are provided (e.g., `untag 1 s/A0123456X t/struggling`), the command will fail with an error message asking you to use either index or student ID — not both.
 </box>
 
 <box type="warning" seamless>

@@ -559,6 +559,7 @@ The `ViewCommand` class:
 The `ViewCommandParser`:
 - Parses user input to determine whether the user is searching by index or student ID
 - Uses the presence of `s/` prefix to differentiate between index-based and ID-based lookup
+- Validates that both index and student ID are not provided simultaneously (throws error if both detected)
 - Creates appropriate `ViewCommand` objects with either an `Index` or `StudentId` parameter
 
 **Execution Flow:**
@@ -570,6 +571,8 @@ Given below is an example usage scenario and how the view mechanism behaves.
 **Step 2.** The command is parsed by `AddressBookParser`, which identifies it as a view command and creates a `ViewCommandParser`.
 
 **Step 3.** `ViewCommandParser` parses the arguments:
+- Validates that both preamble (index) and student ID prefix are not present simultaneously
+- If both are present: Throws `ParseException` with message "Conflicting parameters detected. Please use either index or student ID — not both."
 - If `s/` prefix is present: Extracts and validates the student ID, creates a `ViewCommand(StudentId)`
 - If no prefix: Parses the argument as an index, creates a `ViewCommand(Index)`
 
@@ -675,6 +678,8 @@ Given below is an example usage scenario and how the attendance marking mechanis
 
 **Step 3.** `AttendanceCommandParser` parses the arguments:
 - Checks the preamble to determine the format (index, `all` keyword, or student ID with prefix)
+- Validates that both preamble (index or "all") and student ID prefix are not present simultaneously (excluding "all" keyword)
+- If both are present: Throws `ParseException` with message "Conflicting parameters detected. Please use either index or student ID — not both."
 - For index format: Extracts index (`1`) from preamble
 - For `all` format: Detects `all` keyword in preamble
 - For student ID format: Extracts student ID (`A0123456X`) from `s/` prefix
