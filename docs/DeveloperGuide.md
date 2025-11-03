@@ -1545,40 +1545,33 @@ testers are expected to do more *exploratory* testing.
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Appendix: Planned Enhancements**
+## Appendix: Planned Enhancements
 
 Team size: 5
 
 1. **Make grade assignment name matching consistent between grade and deletegrade commands**: Currently, the `grade` command uses case-insensitive matching (e.g., "midterm" matches "Midterm"), while `deletegrade` uses case-sensitive matching. We plan to make both commands use case-insensitive matching for consistency. This will allow users to delete grades without remembering the exact capitalization, matching the update behavior.
 
-2. **Add validation for past consultation dates**: Currently, the system accepts any valid date/time format for consultations, including dates in the past. We plan to add a warning message when users add consultations with past dates to help prevent data entry errors. The format will be: "Warning: The consultation date [date] is in the past. Do you want to continue? (y/n)".
+2. **Enhance find command to support partial matching**: Currently, `find` only matches complete words. We plan to support more flexible, token-based matching so any full word in a name can be matched (case-insensitive). This is still word-by-word (complete-word) matching — not character-level substrings. For example, searching `John` will match names containing the complete word "John" (e.g., "John Tan", "John Lim"); searching `chae` will NOT match names where `chae` is only a partial word (e.g., "Chaewon", "Chaeyoung").
 
-3. **Improve duplicate consultation handling**: Currently, duplicate consultations are silently removed using `.distinct()`. We plan to show a warning message when duplicate consultations are detected in the input: "Duplicate consultation detected: [date/time]. Only one instance will be added."
+3. **Add confirmation prompt for bulk attendance operations**: Currently, `attendance all w/1 present` marks attendance for all students without confirmation. We plan to add a confirmation prompt showing the number of students affected: "This will mark attendance for [N] students. Confirm? (y/n)".
 
-4. **Enhance find command to support partial matching**: Currently, `find` only matches complete words (e.g., "find alex" won't match "Alexander"). We plan to support partial matching so that "find alex" will also match "Alexander" and "Alexandria", making the search more user-friendly.
+4. **Improve error message specificity for invalid module codes**: Currently, invalid module codes show a generic "Module codes should be in NUS format (e.g. CS2103T, ACC1701XA, GESS1000, BMA5001)" message. We plan to make this more specific by showing the exact format requirements: "Module code must be 2-4 uppercase letters followed by exactly 4 digits and an optional suffix of 0-2 uppercase letters (e.g., CS2103T, ACC1701XA, GESS1000, BMA5001)".
 
-5. **Add confirmation prompt for bulk attendance operations**: Currently, `attendance all w/1 present` marks attendance for all students without confirmation. We plan to add a confirmation prompt showing the number of students affected: "This will mark attendance for [N] students. Confirm? (y/n)".
+5. **Add ability to clear all consultations for a student**: Currently, there's no direct way to remove all consultations from a student without using the edit command and omitting the `c/` prefix. We plan to add support for `edit INDEX c/` (empty consultation prefix) to explicitly clear all consultations.
 
-6. **Improve error message specificity for invalid module codes**: Currently, invalid module codes show a generic "Module codes should be alphanumeric" message. We plan to make this more specific by showing the exact format requirements: "Module code must be 2-4 uppercase letters followed by exactly 4 digits and an optional suffix of 0-2 uppercase letters (e.g., CS2103T, ACC1701XA, GESS1000, BMA5001)".
+6. **Enhance grade display sorting**: Currently, grades are displayed sorted alphabetically by assignment name. We plan to add an optional sort order preference (alphabetical or by date added) that users can set, allowing TAs to see the most recent grades first if preferred.
 
-7. **Add ability to clear all consultations for a student**: Currently, there's no direct way to remove all consultations from a student without using the edit command and omitting the `c/` prefix. We plan to add support for `edit INDEX c/` (empty consultation prefix) to explicitly clear all consultations.
+7. **Add validation for duplicate module codes in add/edit commands**: Currently, users can add the same module code multiple times (e.g., `m/CS2103T m/CS2103T`). We plan to detect and prevent duplicate module codes with an error message: "Duplicate module code detected: [code]. Each module should only be listed once."
 
-8. **Enhance grade display sorting**: Currently, grades are displayed sorted alphabetically by assignment name. We plan to add an optional sort order preference (alphabetical or by date added) that users can set, allowing TAs to see the most recent grades first if preferred.
+8. **Allow for special characters in student name**: Currently, student names can only contain alphanumeric characters and spaces. Special characters (e.g., accented letters such as `ā` in `Prakāś`), punctuation (including apostrophes `'` and slashes `/`), symbols, and non-alphabet scripts (e.g., Chinese, Japanese, or any other non-Latin characters) are not allowed. We plan to add parsing support for a broader set of characters in student names in the future.
 
-9. **Add validation for duplicate module codes in add/edit commands**: Currently, users can add the same module code multiple times (e.g., `m/CS2103T m/CS2103T`). We plan to detect and prevent duplicate module codes with an error message: "Duplicate module code detected: [code]. Each module should only be listed once."
+9. **Enhance attendance system to be mapped to modules**: Currently, each student has one attendance list that does not take into account of multiple modules, making attendance tracking difficult for such students. We plan to change attendance such that a student will have a separate attendance record for each module taking.
 
-10. **Allow for special charaters in student name**: Currently, student names can only contain alphanumeric characters, and special
-characters e.g. `Arul Prakāś` is not allowed. We plan to add parsing support for such characters in student names.
-
-11. **Enhance attendance system to be mapped to modules**: Currently, each student has one attendance list that does not take into account of multiple modules, making attendance tracking difficult for such students. We plan to change attendance such that a student will have a separate attendance record for each module taking.
-
-12. **Add index-based lookup support for remark command**: Currently, the `remark` command only accepts student ID (e.g., `remark s/A0123456X r/...`) and does not support index-based lookup like other commands. Users who try `remark 1 r/Needs help with work` will encounter an error. We plan to add support for both index and student ID, matching the behavior of other commands like `tag`, `untag`, and `view`. The format will be: `remark INDEX r/REMARK` or `remark s/STUDENT_ID r/REMARK`, allowing users to choose the most convenient method based on their workflow.
-
-1. _{ more test cases …​ }_
+10. **Add index-based lookup support for remark command**: Currently, the `remark` command only accepts student ID (e.g., `remark s/A0123456X r/...`) and does not support index-based lookup like other commands. Users who try `remark 1 r/Needs help with work` will encounter an error. We plan to add support for both index and student ID, matching the behavior of `tag`, `untag`, and `view`. The format will be: `remark INDEX r/REMARK` or `remark s/STUDENT_ID r/REMARK`, allowing users to choose the most convenient method based on their workflow.
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Appendix: Effort**
+## Appendix: Effort
 
 ### Difficulty Level and Challenges
 

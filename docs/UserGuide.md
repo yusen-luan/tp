@@ -203,14 +203,14 @@ add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t
 
 **Requirements:**
 * All 4 fields (`n/NAME`, `s/STUDENT_ID`, `e/EMAIL`, and `m/MODULE_CODE`) are **required**, in any order. The command will fail if any of these fields are missing.
-* `NAME` should only contain alphanumeric characters and spaces, and should not be blank
+* `NAME` must contain only alphanumeric characters and spaces, and must not be blank. Special characters (e.g., accented letters), punctuation (including apostrophes `'` and slashes `/`), symbols, and non‑Latin scripts (e.g., Chinese/Japanese) are not allowed.
 * `STUDENT_ID` must be in the format A followed by exactly 7 digits and 1 uppercase letter (e.g., A0123456X)
 * `EMAIL` should be of the format local-part@domain (see detailed constraints below)
 * `MODULE_CODE` must be in NUS format: 2-4 uppercase letters, followed by exactly 4 digits, optionally ending with 0-2 uppercase letters (e.g., CS2103T, ACC1701XA, GESS1000). Module codes must be entered in uppercase as the validation is case-sensitive.
 * `TAG` should be alphanumeric (no spaces)
 * At least one module code is required
 * Tags are optional
-* Consultations are optional, if provided it should follow one of the supported formats listed below
+* Consultations are optional; if provided, they must follow one of the supported datetime formats below and must not contain duplicate entries in the same command. Duplicate entries will result in: `Duplicate consultation detected: [date time]. Please remove duplicates and try again.`
 </box>
 
 <box type="tip" seamless>
@@ -241,6 +241,7 @@ add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t
 - The time must be entered in **24-hour format** (e.g., `14:00` for 2 PM).
 - All formats require both a **date** and a **time** — partial inputs like `22/10/2025` or `15:30` alone are not accepted.
 - Invalid inputs (e.g., `2025-13-45 25:99`) will result in an error message showing the supported formats.
+- Duplicate consultations in a single command are not allowed. If duplicates are detected, the command fails with: `Duplicate consultation detected: [date time]. Please remove duplicates and try again.`
 </box>
 
 ### Listing students : `list`
@@ -508,7 +509,7 @@ edit 3 p/98765432 a/456 University Avenue
   * **Grades:** Use `g/ASSIGNMENT_NAME:SCORE` to update an existing grade. The assignment must already exist for the student, otherwise an error will be shown. This only updates that specific assignment's grade, leaving other grades unchanged.
   * **Attendance:** Use `w/WEEK_NUMBER:STATUS` to update attendance for a specific week (1-13). Status can be `present`, `absent`, or `unmark` (to remove the attendance record). This only updates that specific week's attendance, leaving other weeks unchanged.
 * Module codes must be entered in uppercase as the validation is case-sensitive (e.g., `CS2103T` not `cs2103t`)
-* Editing consultations should still follow the same format as in the `add` command
+* Editing consultations should follow the same format as in the `add` command, and must not contain duplicate consultation entries in the same command. Duplicate entries will result in: `Duplicate consultation detected: [date time]. Please remove duplicates and try again.`
 </box>
 
 <box type="warning" seamless>
