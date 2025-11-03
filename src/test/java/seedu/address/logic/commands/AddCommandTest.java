@@ -42,8 +42,8 @@ public class AddCommandTest {
 
         CommandResult commandResult = new AddCommand(validPerson).execute(modelStub);
 
-        String expectedMessage = Messages.successMessage(String.format(AddCommand.MESSAGE_SUCCESS,
-                Messages.formatStudentId(validPerson)));
+        String expectedMessage = String.format(AddCommand.MESSAGE_SUCCESS,
+                Messages.formatStudentId(validPerson));
         assertEquals(expectedMessage, commandResult.getFeedbackToUser());
         assertEquals(Arrays.asList(validPerson), modelStub.personsAdded);
     }
@@ -59,10 +59,10 @@ public class AddCommandTest {
         CommandResult commandResult1 = new AddCommand(person1).execute(modelStub);
         CommandResult commandResult2 = new AddCommand(person2).execute(modelStub);
 
-        String expectedMessage1 = Messages.successMessage(String.format(AddCommand.MESSAGE_SUCCESS,
-                Messages.formatStudentId(person1)));
-        String expectedMessage2 = Messages.successMessage(String.format(AddCommand.MESSAGE_SUCCESS,
-                Messages.formatStudentId(person2)));
+        String expectedMessage1 = String.format(AddCommand.MESSAGE_SUCCESS,
+                Messages.formatStudentId(person1));
+        String expectedMessage2 = String.format(AddCommand.MESSAGE_SUCCESS,
+                Messages.formatStudentId(person2));
         assertEquals(expectedMessage1, commandResult1.getFeedbackToUser());
         assertEquals(expectedMessage2, commandResult2.getFeedbackToUser());
         assertEquals(Arrays.asList(person1, person2), modelStub.personsAdded);

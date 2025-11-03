@@ -64,7 +64,7 @@ public class AttendanceCommandTest {
 
         CommandResult result = command.execute(model);
 
-        assertEquals(String.format("✓ " + AttendanceCommand.MESSAGE_MARK_ATTENDANCE_SUCCESS,
+        assertEquals(String.format(AttendanceCommand.MESSAGE_MARK_ATTENDANCE_SUCCESS,
                 student.getName(), week.value, status), result.getFeedbackToUser());
 
         // Verify attendance was marked
@@ -97,7 +97,7 @@ public class AttendanceCommandTest {
 
         CommandResult result = command.execute(model);
 
-        assertEquals(String.format("✓ " + AttendanceCommand.MESSAGE_MARK_ALL_SUCCESS,
+        assertEquals(String.format(AttendanceCommand.MESSAGE_MARK_ALL_SUCCESS,
                 week.value, status, 2), result.getFeedbackToUser());
 
         // Verify attendance was marked for both students
@@ -173,7 +173,7 @@ public class AttendanceCommandTest {
 
         CommandResult result = command.execute(model);
 
-        assertEquals(String.format("✓ " + AttendanceCommand.MESSAGE_MARK_ATTENDANCE_SUCCESS,
+        assertEquals(String.format(AttendanceCommand.MESSAGE_MARK_ATTENDANCE_SUCCESS,
                 student.getName(), week.value, status), result.getFeedbackToUser());
 
         // Verify attendance was marked

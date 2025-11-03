@@ -43,8 +43,8 @@ public class GradeCommandTest {
 
         String gradeCount = Messages.formatCount(gradesToAdd.size(), "grade");
         String gradesFormatted = Messages.formatGrades(gradesToAdd);
-        String expectedMessage = Messages.successMessage(String.format(GradeCommand.MESSAGE_ADD_GRADE_SUCCESS,
-                gradeCount, Messages.formatStudentId(gradedPerson), gradesFormatted));
+        String expectedMessage = String.format(GradeCommand.MESSAGE_ADD_GRADE_SUCCESS,
+                gradeCount, Messages.formatStudentId(gradedPerson), gradesFormatted);
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(firstPerson, gradedPerson);
@@ -65,8 +65,8 @@ public class GradeCommandTest {
 
         String gradeCount = Messages.formatCount(gradesToAdd.size(), "grade");
         String gradesFormatted = Messages.formatGrades(gradesToAdd);
-        String expectedMessage = Messages.successMessage(String.format(GradeCommand.MESSAGE_ADD_GRADE_SUCCESS,
-                gradeCount, Messages.formatStudentId(gradedPerson), gradesFormatted));
+        String expectedMessage = String.format(GradeCommand.MESSAGE_ADD_GRADE_SUCCESS,
+                gradeCount, Messages.formatStudentId(gradedPerson), gradesFormatted);
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
         expectedModel.setPerson(firstPerson, gradedPerson);
