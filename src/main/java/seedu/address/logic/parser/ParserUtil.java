@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -33,10 +34,10 @@ public class ParserUtil {
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
 
     private static final List<DateTimeFormatter> DATE_FORMATS = List.of(
-            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"), //22/10/2025 15:30
-            DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"), //22-10-2025 15:30
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"), //2025-10-22 15:30
-            DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm") //2025/10/22 15:30
+            DateTimeFormatter.ofPattern("dd/MM/uuuu HH:mm"), //22/10/2025 15:30
+            DateTimeFormatter.ofPattern("dd-MM-uuuu HH:mm"), //22-10-2025 15:30
+            DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm"), //2025-10-22 15:30
+            DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm") //2025/10/22 15:30
     );
 
 
@@ -206,18 +207,39 @@ public class ParserUtil {
      * @throws ParseException
      */
     public static LocalDateTime parseDateTime(String dateTimeStr) throws ParseException {
+        LocalDateTime dateTime = null;
+        DateTimeFormatter matchedFormatter = null;
+
         for (DateTimeFormatter formatter : DATE_FORMATS) {
             try {
-                return LocalDateTime.parse(dateTimeStr, formatter);
+                dateTime = LocalDateTime.parse(dateTimeStr, formatter);
+                matchedFormatter = formatter;
+                break;
             } catch (DateTimeParseException ignored) {
-                // try next format
+                //try next format
             }
         }
-        throw new ParseException("Invalid datetime format. Please use one of the following supported formats:\n"
-                + "  • dd/MM/yyyy HH:mm  (e.g. 22/10/2025 15:30)\n"
-                + "  • dd-MM-yyyy HH:mm  (e.g. 22-10-2025 15:30)\n"
-                + "  • yyyy-MM-dd HH:mm  (e.g. 2025-10-22 15:30)\n"
-                + "  • yyyy/MM/dd HH:mm  (e.g. 2025/10/22 15:30)");
+
+        if (matchedFormatter == null) {
+            throw new ParseException("Invalid datetime format. Please use one of the following supported formats:\n"
+                    + "  • dd/MM/yyyy HH:mm  (e.g. 22/10/2025 15:30)\n"
+                    + "  • dd-MM-yyyy HH:mm  (e.g. 22-10-2025 15:30)\n"
+                    + "  • yyyy-MM-dd HH:mm  (e.g. 2025-10-22 15:30)\n"
+                    + "  • yyyy/MM/dd HH:mm  (e.g. 2025/10/22 15:30)");
+        }
+
+        try {
+            matchedFormatter.withResolverStyle(ResolverStyle.STRICT).parse(dateTimeStr);
+        } catch (DateTimeParseException e) {
+            throw new ParseException(
+                    "Invalid date value. Please ensure the date exists (e.g. 29 Feb only in leap years).");
+        }
+
+        if (dateTime.isBefore(LocalDateTime.now())) {
+            throw new ParseException("Consultation time cannot be before the current date and time.");
+        }
+
+        return dateTime;
     }
 
     /**

@@ -188,7 +188,7 @@ Adds a student to TeachMate.
 
 **Format:**
 ```
-add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/TAG]…​ [c/CONSULTATIONS]
+add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/TAG]…​ [c/CONSULTATIONS]…​
 ```
 *Creates a new student record with the specified details.*
 
@@ -228,8 +228,8 @@ add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t
 
 **Consultations Constraints**
 
-- Consultations are optional — a student can be added without any consultations.
-- If included, each consultation's date and time must follow **one of the supported formats** below:
+- Consultation's date and time cannot be before the current date and time
+- Each consultation's date and time must follow **one of the supported formats** below:
 
 | Accepted Format        | Example Input       |
 |------------------------|---------------------|
@@ -457,7 +457,7 @@ Edits an existing student in TeachMate. You can edit students whether they have 
 
 **Format:**
 ```
-edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]​ [t/TAG] [c/CONSULTATIONS] [g/ASSIGNMENT_NAME:SCORE] [w/WEEK_NUMBER:STATUS] [r/REMARK]
+edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]…​ [t/TAG]…​ [c/CONSULTATIONS]…​ [g/ASSIGNMENT_NAME:SCORE] [w/WEEK_NUMBER:STATUS] [r/REMARK]
 ```
 *Updates student information with the specified fields.*
 
