@@ -78,7 +78,9 @@ public class ViewCommand extends Command {
         }
 
         // Filter the list to show only the selected student
-        model.updateFilteredPersonList(person -> person.equals(personToView));
+        model.updateFilteredPersonList(person ->
+                person.getStudentId() != null
+                && person.getStudentId().equals(personToView.getStudentId()));
 
         // Create detailed view message with attendance information
         String detailedMessage = createDetailedViewMessage(personToView);
