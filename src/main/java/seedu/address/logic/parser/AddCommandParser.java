@@ -8,10 +8,12 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENT_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import seedu.address.logic.commands.AddCommand;
@@ -59,8 +61,29 @@ public class AddCommandParser implements Parser<AddCommand> {
             for (String consultationString : argMultimap.getAllValues(PREFIX_CONSULTATION)) {
                 consultationList.add(new Consultation(ParserUtil.parseDateTime(consultationString)));
             }
-            // Remove duplicate consultations
-            consultationList = consultationList.stream().distinct().collect(java.util.stream.Collectors.toList());
+            // --- Detect duplicate consultations before removing ---
+            List<Consultation> distinctList = consultationList.stream()
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            if (distinctList.size() < consultationList.size()) {
+                // Identify duplicates for clearer message
+                Set<Consultation> seen = new HashSet<>();
+                Set<Consultation> duplicates = consultationList.stream()
+                        .filter(c -> !seen.add(c))
+                        .collect(Collectors.toSet());
+
+                String duplicateTimes = duplicates.stream()
+                        .map(Consultation::getDateTime)
+                        .map(dt -> dt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")))
+                        .collect(Collectors.joining(", "));
+
+                throw new ParseException("Duplicate consultation detected: " + duplicateTimes
+                        + ". Please remove duplicates and try again.");
+            }
+
+            // --- Only reach here if no duplicates found ---
+            consultationList = distinctList;
         }
 
         Person person;

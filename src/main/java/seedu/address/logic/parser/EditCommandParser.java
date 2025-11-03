@@ -14,11 +14,14 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_STUDENT_ID;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_WEEK;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.EditCommand;
@@ -85,8 +88,27 @@ public class EditCommandParser implements Parser<EditCommand> {
             for (String consultationString : argMultimap.getAllValues(PREFIX_CONSULTATION)) {
                 consultations.add(new Consultation(ParserUtil.parseDateTime(consultationString)));
             }
-            // Remove duplicate consultations
-            consultations = consultations.stream().distinct().collect(java.util.stream.Collectors.toList());
+            // --- Detect duplicate consultations and throws exception ---
+            List<Consultation> originalList = new ArrayList<>(consultations);
+            List<Consultation> distinctList = consultations.stream()
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            if (distinctList.size() < originalList.size()) {
+                // Identify which consultations were duplicates
+                Set<Consultation> seen = new HashSet<>();
+                Set<Consultation> duplicates = originalList.stream()
+                        .filter(c -> !seen.add(c))
+                        .collect(Collectors.toSet());
+
+                String duplicateTimes = duplicates.stream()
+                        .map(Consultation::getDateTime) // assumes getDateTime() exists
+                        .map(dt -> dt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")))
+                        .collect(Collectors.joining(", "));
+
+                throw new ParseException("Duplicate consultation detected: " + duplicateTimes
+                        + ". Please remove duplicates and try again.");
+            }
             editPersonDescriptor.setConsultations(consultations);
         }
         if (argMultimap.getValue(PREFIX_GRADE).isPresent()) {
