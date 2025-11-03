@@ -1561,9 +1561,7 @@ Team size: 5
 10. **Allow for special charaters in student name**: Currently, student names can only contain alphanumeric characters, and special
 characters e.g. `Arul Prakāś` is not allowed. We plan to add parsing support for such characters in student names.
 
-11. **Add restriction for unique student emails**: Currently, 2 students are allowed to have the same email which should not be possible. We plan to add a restriction to enforce all students to have a unique email.
-
-12. **Enhance attendance system to be mapped to modules**: Currently, each student has one attendance list that does not take into account of multiple modules, making attendance tracking difficult for such students. We plan to change attendance such that a student will have a separate attendance record for each module taking.
+11. **Enhance attendance system to be mapped to modules**: Currently, each student has one attendance list that does not take into account of multiple modules, making attendance tracking difficult for such students. We plan to change attendance such that a student will have a separate attendance record for each module taking.
 
 1. _{ more test cases …​ }_
 
