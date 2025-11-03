@@ -1201,15 +1201,15 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 3a. Entered date/time format is invalid.
-      3a1. TeachMate displays error with supported date/time formats.
-      3a2. User enters a valid date/time in one of the supported formats.
-      Steps 3a1-3a2 are repeated until valid format is used.
-      Use case resumes from step 4.
+    * 3a1. TeachMate displays error with supported date/time formats.
+    * 3a2. User enters a valid date/time in one of the supported formats.
+    * Steps 3a1-3a2 are repeated until valid format is used.
+    * Use case resumes from step 4.
 
 * 3b. User is editing an existing student.
-      3b1. User provides the student index and new consultation details.
-      3b2. TeachMate replaces existing consultations with the new ones.
-      Use case resumes from step 5.
+    * 3b1. User provides the student index and new consultation details.
+    * 3b2. TeachMate replaces existing consultations with the new ones.
+    * Use case resumes from step 5.
 
 **Use case: UC3 - Mark a student's attendance**
 
