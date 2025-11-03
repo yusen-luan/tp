@@ -24,8 +24,18 @@ public class RemarkCommandParser implements Parser<RemarkCommand> {
     public RemarkCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_STUDENT_ID, PREFIX_REMARK);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_STUDENT_ID, PREFIX_REMARK)
-                || !argMultimap.getPreamble().isEmpty()) {
+        boolean hasStudentId = argMultimap.getValue(PREFIX_STUDENT_ID).isPresent();
+        boolean hasRemark = argMultimap.getValue(PREFIX_REMARK).isPresent();
+        boolean hasPreamble = !argMultimap.getPreamble().isEmpty();
+
+        // Check if both index and student ID are provided
+        if (hasStudentId && hasPreamble) {
+            throw new ParseException("Conflicting parameters detected. "
+                    + "Please use either index or student ID — not both.");
+        }
+
+        // Check if required prefixes are present
+        if (!hasStudentId || !hasRemark) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, RemarkCommand.MESSAGE_USAGE));
         }
 

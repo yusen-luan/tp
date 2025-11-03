@@ -484,6 +484,7 @@ The `DeleteCommand` class:
 The `DeleteCommandParser`:
 - Parses user input to determine whether the user is deleting by index or student ID
 - Uses the presence of `s/` prefix to differentiate between index-based and ID-based deletion
+- Validates that both index and student ID are not provided simultaneously (throws error if both detected)
 - If `s/` prefix is present: extracts and validates the student ID, creates a `DeleteCommand(StudentId)`
 - If no prefix: parses the argument as an index, creates a `DeleteCommand(Index)`
 - Validates the format of the parsed index or student ID
@@ -498,6 +499,8 @@ Given below is an example usage scenario and how the delete mechanism behaves.
 
 **Step 3.** `DeleteCommandParser` parses the arguments:
 - Checks if `s/` prefix is present in the input
+- Validates that both preamble (index) and student ID prefix are not present simultaneously
+- If both are present: Throws `ParseException` with message "Conflicting parameters detected. Please use either index or student ID — not both."
 - If prefix present: Extracts student ID using `ParserUtil#parseStudentId()`, creates `DeleteCommand(studentId)`
 - If no prefix: Parses argument as index using `ParserUtil#parseIndex()`, creates `DeleteCommand(index)`
 
@@ -556,6 +559,7 @@ The `ViewCommand` class:
 The `ViewCommandParser`:
 - Parses user input to determine whether the user is searching by index or student ID
 - Uses the presence of `s/` prefix to differentiate between index-based and ID-based lookup
+- Validates that both index and student ID are not provided simultaneously (throws error if both detected)
 - Creates appropriate `ViewCommand` objects with either an `Index` or `StudentId` parameter
 
 **Execution Flow:**
@@ -567,6 +571,8 @@ Given below is an example usage scenario and how the view mechanism behaves.
 **Step 2.** The command is parsed by `AddressBookParser`, which identifies it as a view command and creates a `ViewCommandParser`.
 
 **Step 3.** `ViewCommandParser` parses the arguments:
+- Validates that both preamble (index) and student ID prefix are not present simultaneously
+- If both are present: Throws `ParseException` with message "Conflicting parameters detected. Please use either index or student ID — not both."
 - If `s/` prefix is present: Extracts and validates the student ID, creates a `ViewCommand(StudentId)`
 - If no prefix: Parses the argument as an index, creates a `ViewCommand(Index)`
 
@@ -672,6 +678,8 @@ Given below is an example usage scenario and how the attendance marking mechanis
 
 **Step 3.** `AttendanceCommandParser` parses the arguments:
 - Checks the preamble to determine the format (index, `all` keyword, or student ID with prefix)
+- Validates that both preamble (index or "all") and student ID prefix are not present simultaneously (excluding "all" keyword)
+- If both are present: Throws `ParseException` with message "Conflicting parameters detected. Please use either index or student ID — not both."
 - For index format: Extracts index (`1`) from preamble
 - For `all` format: Detects `all` keyword in preamble
 - For student ID format: Extracts student ID (`A0123456X`) from `s/` prefix
@@ -1007,6 +1015,7 @@ The `RemarkCommandParser`:
 - Parses user input in the format `remark s/STUDENT_ID r/REMARK`
 - Extracts and validates both the student ID and remark text
 - Uses `PREFIX_STUDENT_ID` (s/) and `PREFIX_REMARK` (r/) for parameter identification
+- Validates that both index and student ID are not provided simultaneously (throws error if both detected)
 - Validates that both required prefixes are present and not duplicated
 - Trims whitespace from the remark text before validation
 
@@ -1020,7 +1029,9 @@ Given below is an example usage scenario and how the remark mechanism behaves.
 
 **Step 3.** `RemarkCommandParser` parses the arguments:
 - Tokenizes the input using `ArgumentTokenizer` with `PREFIX_STUDENT_ID` and `PREFIX_REMARK`
-- Verifies both required prefixes are present and the preamble is empty
+- Validates that both preamble (index) and student ID prefix are not present simultaneously
+- If both are present: Throws `ParseException` with message "Conflicting parameters detected. Please use either index or student ID — not both."
+- Verifies both required prefixes are present
 - Verifies no duplicate prefixes using `ArgumentMultimap#verifyNoDuplicatePrefixesFor()`
 - Extracts student ID value and parses it using `ParserUtil#parseStudentId()`
 - Extracts remark value and parses it using `ParserUtil#parseRemark()`
@@ -1201,15 +1212,15 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 **Extensions**
 
 * 3a. Entered date/time format is invalid.
-      3a1. TeachMate displays error with supported date/time formats.
-      3a2. User enters a valid date/time in one of the supported formats.
-      Steps 3a1-3a2 are repeated until valid format is used.
-      Use case resumes from step 4.
+    * 3a1. TeachMate displays error with supported date/time formats.
+    * 3a2. User enters a valid date/time in one of the supported formats.
+    * Steps 3a1-3a2 are repeated until valid format is used.
+    * Use case resumes from step 4.
 
 * 3b. User is editing an existing student.
-      3b1. User provides the student index and new consultation details.
-      3b2. TeachMate replaces existing consultations with the new ones.
-      Use case resumes from step 5.
+    * 3b1. User provides the student index and new consultation details.
+    * 3b2. TeachMate replaces existing consultations with the new ones.
+    * Use case resumes from step 5.
 
 **Use case: UC3 - Mark a student's attendance**
 
@@ -1561,6 +1572,8 @@ Team size: 5
 characters e.g. `Arul Prakāś` is not allowed. We plan to add parsing support for such characters in student names.
 
 11. **Enhance attendance system to be mapped to modules**: Currently, each student has one attendance list that does not take into account of multiple modules, making attendance tracking difficult for such students. We plan to change attendance such that a student will have a separate attendance record for each module taking.
+
+12. **Add index-based lookup support for remark command**: Currently, the `remark` command only accepts student ID (e.g., `remark s/A0123456X r/...`) and does not support index-based lookup like other commands. Users who try `remark 1 r/Needs help with work` will encounter an error. We plan to add support for both index and student ID, matching the behavior of other commands like `tag`, `untag`, and `view`. The format will be: `remark INDEX r/REMARK` or `remark s/STUDENT_ID r/REMARK`, allowing users to choose the most convenient method based on their workflow.
 
 1. _{ more test cases …​ }_
 

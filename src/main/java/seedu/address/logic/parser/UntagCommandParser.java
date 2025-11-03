@@ -27,8 +27,17 @@ public class UntagCommandParser implements Parser<UntagCommand> {
         requireNonNull(args);
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_STUDENT_ID, PREFIX_TAG);
 
+        boolean hasStudentId = argMultimap.getValue(PREFIX_STUDENT_ID).isPresent();
+        boolean hasPreamble = !argMultimap.getPreamble().isEmpty();
+
+        // Check if both index and student ID are provided
+        if (hasStudentId && hasPreamble) {
+            throw new ParseException("Conflicting parameters detected. "
+                    + "Please use either index or student ID — not both.");
+        }
+
         // Check if student ID prefix is present
-        if (argMultimap.getValue(PREFIX_STUDENT_ID).isPresent()) {
+        if (hasStudentId) {
             // Parse as student ID
             StudentId studentId;
             try {

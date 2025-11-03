@@ -360,6 +360,11 @@ The view command displays comprehensive information in three sections:
 
 <box type="warning" seamless>
 
+**Note:** You cannot provide both an index and a student ID in the same command. If both are provided (e.g., `view 1 s/A0123456X`), the command will fail with an error message asking you to use either index or student ID — not both.
+</box>
+
+<box type="warning" seamless>
+
 **Possible Error Messages:**
 * If the index is invalid: `The student index provided is invalid`
 * If the student ID is not found: `No student found with ID: [ID]`
@@ -429,6 +434,11 @@ attendance all w/1 present
 **Success Messages:**
 * Individual: `Marked attendance for [name]: Week [week] - [status]` or `Unmarked attendance for [name]: Week [week]`
 * All students: `Marked attendance for all students: Week [week] - [status] ([count] students)` or `Unmarked attendance for all students: Week [week] ([count] students)`
+</box>
+
+<box type="warning" seamless>
+
+**Note:** You cannot provide both an index and a student ID in the same command. If both are provided (e.g., `attendance 1 s/A0123456X w/1 present`), the command will fail with an error message asking you to use either index or student ID — not both.
 </box>
 
 <box type="warning" seamless>
@@ -545,6 +555,11 @@ tag 2 t/needsHelp
 * `TAG` should be alphanumeric (no spaces)
 </box>
 
+<box type="warning" seamless>
+
+**Note:** You cannot provide both an index and a student ID in the same command. If both are provided (e.g., `tag 1 s/A0123456X t/struggling`), the command will fail with an error message asking you to use either index or student ID — not both.
+</box>
+
 ### Removing tags from a student : `untag`
 
 Removes one or more tags from an existing student in TeachMate.
@@ -580,6 +595,11 @@ untag 2 t/needsHelp
 * At least one tag must be provided
 * All specified tags must exist on the student, otherwise an error will be shown
 * `TAG` should be alphanumeric (no spaces)
+</box>
+
+<box type="warning" seamless>
+
+**Note:** You cannot provide both an index and a student ID in the same command. If both are provided (e.g., `untag 1 s/A0123456X t/struggling`), the command will fail with an error message asking you to use either index or student ID — not both.
 </box>
 
 <box type="warning" seamless>
@@ -697,6 +717,15 @@ remark s/A0345678Z r/Struggling with time management. Recommended office hours o
 * The student must exist in TeachMate
 </box>
 
+<box type="warning" seamless>
+
+**Limitations:**
+* The `remark` command currently **only accepts student ID** (not index). Using an index like `remark 1 r/...` will result in an error.
+* To add a remark, you must use the student's ID: `remark s/A0123456X r/...`
+* You cannot provide both an index and a student ID in the same command. If both are provided (e.g., `remark 1 s/A0123456X r/...`), the command will fail with an error message asking you to use either index or student ID — not both.
+* Index support is planned for future versions.
+</box>
+
 <box type="tip" seamless>
 
 **Tips:**
@@ -798,6 +827,11 @@ delete 2
 ```
 delete s/A0123456X
 ```
+
+<box type="warning" seamless>
+
+**Note:** You cannot provide both an index and a student ID in the same command. If both are provided (e.g., `delete 1 s/A0123456X`), the command will fail with an error message asking you to use either index or student ID — not both.
+</box>
 
 ### Clearing all entries : `clear`
 
@@ -956,6 +990,6 @@ If you minimize the Help Window and then run the `help` command (or use the `Hel
 | **Tag**    | `tag INDEX t/TAG [t/TAG]…​` or `tag s/STUDENT_ID t/TAG [t/TAG]…​`<br> e.g., `tag 1 t/Struggling t/Inactive` or `tag s/A0291772W t/Excelling`                            |
 | **Untag**  | `untag INDEX t/TAG [t/TAG]…​` or `untag s/STUDENT_ID t/TAG [t/TAG]…​`<br> e.g., `untag 1 t/Struggling` or `untag s/A0291772W t/Inactive`                                |
 | **View**   | `view INDEX` or `view s/STUDENT_ID`<br> e.g., `view 1` or `view s/A0123456X`                                                                                             |
-| **Attendance** | `attendance INDEX w/WEEK present|absent|unmark` or `attendance s/STUDENT_ID w/WEEK present|absent|unmark` or `attendance all w/WEEK present|absent|unmark`<br> e.g., `attendance 1 w/1 present` or `attendance s/A0123456X w/1 unmark` or `attendance all w/1 absent` |
+| **Attendance** | `attendance INDEX w/WEEK present\|absent\|unmark` or `attendance s/STUDENT_ID w/WEEK present\|absent\|unmark` or `attendance all w/WEEK present\|absent\|unmark`<br> e.g., `attendance 1 w/1 present` or `attendance s/A0123456X w/1 unmark` or `attendance all w/1 absent` |
 | **Help**   | `help`                                                                                                                                                                    |
 | **Exit**   | `exit`                                                                                                                                                                    |
