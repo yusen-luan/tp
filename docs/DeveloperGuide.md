@@ -484,6 +484,7 @@ The `DeleteCommand` class:
 The `DeleteCommandParser`:
 - Parses user input to determine whether the user is deleting by index or student ID
 - Uses the presence of `s/` prefix to differentiate between index-based and ID-based deletion
+- Validates that both index and student ID are not provided simultaneously (throws error if both detected)
 - If `s/` prefix is present: extracts and validates the student ID, creates a `DeleteCommand(StudentId)`
 - If no prefix: parses the argument as an index, creates a `DeleteCommand(Index)`
 - Validates the format of the parsed index or student ID
@@ -498,6 +499,8 @@ Given below is an example usage scenario and how the delete mechanism behaves.
 
 **Step 3.** `DeleteCommandParser` parses the arguments:
 - Checks if `s/` prefix is present in the input
+- Validates that both preamble (index) and student ID prefix are not present simultaneously
+- If both are present: Throws `ParseException` with message "Conflicting parameters detected. Please use either index or student ID — not both."
 - If prefix present: Extracts student ID using `ParserUtil#parseStudentId()`, creates `DeleteCommand(studentId)`
 - If no prefix: Parses argument as index using `ParserUtil#parseIndex()`, creates `DeleteCommand(index)`
 
@@ -1007,6 +1010,7 @@ The `RemarkCommandParser`:
 - Parses user input in the format `remark s/STUDENT_ID r/REMARK`
 - Extracts and validates both the student ID and remark text
 - Uses `PREFIX_STUDENT_ID` (s/) and `PREFIX_REMARK` (r/) for parameter identification
+- Validates that both index and student ID are not provided simultaneously (throws error if both detected)
 - Validates that both required prefixes are present and not duplicated
 - Trims whitespace from the remark text before validation
 
@@ -1020,7 +1024,9 @@ Given below is an example usage scenario and how the remark mechanism behaves.
 
 **Step 3.** `RemarkCommandParser` parses the arguments:
 - Tokenizes the input using `ArgumentTokenizer` with `PREFIX_STUDENT_ID` and `PREFIX_REMARK`
-- Verifies both required prefixes are present and the preamble is empty
+- Validates that both preamble (index) and student ID prefix are not present simultaneously
+- If both are present: Throws `ParseException` with message "Conflicting parameters detected. Please use either index or student ID — not both."
+- Verifies both required prefixes are present
 - Verifies no duplicate prefixes using `ArgumentMultimap#verifyNoDuplicatePrefixesFor()`
 - Extracts student ID value and parses it using `ParserUtil#parseStudentId()`
 - Extracts remark value and parses it using `ParserUtil#parseRemark()`

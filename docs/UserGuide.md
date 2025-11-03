@@ -699,10 +699,11 @@ remark s/A0345678Z r/Struggling with time management. Recommended office hours o
 
 <box type="warning" seamless>
 
-**Limitation:**
+**Limitations:**
 * The `remark` command currently **only accepts student ID** (not index). Using an index like `remark 1 r/...` will result in an error.
 * To add a remark, you must use the student's ID: `remark s/A0123456X r/...`
-* This is a known limitation and index support is planned for future versions.
+* You cannot provide both an index and a student ID in the same command. If both are provided (e.g., `remark 1 s/A0123456X r/...`), the command will fail with an error message asking you to use either index or student ID — not both.
+* Index support is planned for future versions.
 </box>
 
 <box type="tip" seamless>
@@ -806,6 +807,11 @@ delete 2
 ```
 delete s/A0123456X
 ```
+
+<box type="warning" seamless>
+
+**Note:** You cannot provide both an index and a student ID in the same command. If both are provided (e.g., `delete 1 s/A0123456X`), the command will fail with an error message asking you to use either index or student ID — not both.
+</box>
 
 ### Clearing all entries : `clear`
 

@@ -21,8 +21,17 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
     public DeleteCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_STUDENT_ID);
 
+        boolean hasStudentId = argMultimap.getValue(PREFIX_STUDENT_ID).isPresent();
+        boolean hasPreamble = !argMultimap.getPreamble().isEmpty();
+
+        // Check if both index and student ID are provided
+        if (hasStudentId && hasPreamble) {
+            throw new ParseException("Conflicting parameters detected. "
+                    + "Please use either index or student ID — not both.");
+        }
+
         // Check if student ID prefix is present
-        if (argMultimap.getValue(PREFIX_STUDENT_ID).isPresent()) {
+        if (hasStudentId) {
             // Parse as student ID
             StudentId studentId = ParserUtil.parseStudentId(argMultimap.getValue(PREFIX_STUDENT_ID).get());
             return new DeleteCommand(studentId);
