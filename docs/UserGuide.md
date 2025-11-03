@@ -477,6 +477,15 @@ edit 1 g/Midterm:90
 ```
 edit 2 w/5:present
 ```
+```
+edit 1 p/12345678
+```
+```
+edit 2 a/123 Main Street
+```
+```
+edit 3 p/98765432 a/456 University Avenue
+```
 
 <box type="info" seamless>
 
@@ -495,8 +504,8 @@ edit 2 w/5:present
 
 <box type="warning" seamless>
 
-**Note about legacy fields:**
-The edit command still supports `p/PHONE` and `a/ADDRESS` prefixes for backward compatibility with older data. However, new students added via the `add` command will not have phone or address fields.
+**Note about phone and address fields:**
+The edit command supports `p/PHONE` and `a/ADDRESS` prefixes for backward compatibility with older data and to allow adding phone/address information to students as needed. New students added via the `add` command will not have phone or address fields initially, but you can add them using the edit command. Do note that phone and address are legacy fields and are not displayed in the person card.
 </box>
 
 ### Adding tags to a student : `tag`
@@ -875,7 +884,7 @@ No, every student must have at least one module code when using the `add` comman
 
 **Q: Why does the edit command still accept phone (p/) and address (a/) prefixes?**
 
-For backward compatibility with older data that may contain phone and address information. New students added via the `add` command will only have student-specific fields (student ID, module codes).
+For backward compatibility with older data that may contain phone and address information. The implementation has been explained above under "Note about phone and address fields"
 </box>
 
 <box type="tip" seamless>

@@ -248,13 +248,29 @@ public class EditCommand extends Command {
 
         // Check if this is a student (has studentId but no phone/address)
         if (updatedStudentId != null && updatedPhone == null && updatedAddress == null) {
-            // Use student constructor
+            // Use student constructor (student with no phone/address)
             return new Person(updatedName, updatedStudentId,
                     updatedEmail, updatedModuleCodes, updatedTags, updatedAttendanceRecord, updatedGrades,
                     updatedConsultations, updatedRemark);
         } else {
-            // Use regular person constructor
-            return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags,
+            // Use regular person constructor (requires both phone and address to be non-null)
+            // If only one is provided (student adding phone or address), provide default for the other
+            Phone finalPhone = updatedPhone;
+            Address finalAddress = updatedAddress;
+
+            if (finalPhone == null && finalAddress != null) {
+                // Address provided but phone missing - provide default phone
+                finalPhone = new Phone("000");
+            } else if (finalPhone != null && finalAddress == null) {
+                // Phone provided but address missing - provide default address
+                finalAddress = new Address("N/A");
+            } else if (finalPhone == null && finalAddress == null) {
+                // Both missing (shouldn't happen for regular persons, but handle gracefully)
+                finalPhone = new Phone("000");
+                finalAddress = new Address("N/A");
+            }
+
+            return new Person(updatedName, finalPhone, updatedEmail, finalAddress, updatedTags,
                     updatedStudentId, updatedModuleCodes, updatedGrades);
         }
     }
