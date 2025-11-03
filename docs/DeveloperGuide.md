@@ -1545,7 +1545,7 @@ testers are expected to do more *exploratory* testing.
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Appendix: Planned Enhancements**
+## Appendix: Planned Enhancements
 
 Team size: 5
 
@@ -1571,7 +1571,7 @@ Team size: 5
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Appendix: Effort**
+## Appendix: Effort
 
 ### Difficulty Level and Challenges
 
