@@ -899,16 +899,7 @@ Grades are only applicable to students. The system requires students to have a s
 
 <box type="warning" seamless>
 
-**1. Multiple Screen Issue**
-
-If you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen.
-
-**Solution:** Delete the `preferences.json` file created by the application before running the application again.
-</box>
-
-<box type="warning" seamless>
-
-**2. Minimized Help Window Issue**
+**1. Minimized Help Window Issue**
 
 If you minimize the Help Window and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear.
 
@@ -921,10 +912,10 @@ If you minimize the Help Window and then run the `help` command (or use the `Hel
 
 | Action     | Format, Examples                                                                                                                                                          |
 |------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Add**    | `add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/TAG]…​` <br> e.g., `add n/John Doe s/A0123456X e/johnd@u.nus.edu m/CS2103T m/CS2101 t/struggling`  |
+| **Add**    | `add n/NAME s/STUDENT_ID e/EMAIL m/MODULE_CODE [m/MODULE_CODE]…​ [t/TAG]…​ [c/CONSULTATIONS]…​​` <br> e.g., `add n/John Doe s/A0123456X e/johnd@u.nus.edu m/CS2103T m/CS2101 t/struggling`  |
 | **Clear**  | `clear`                                                                                                                                                                   |
 | **Delete** | `delete INDEX`<br> e.g., `delete 3`                                                                                                                                       |
-| **Edit**   | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]…​ [t/TAG]…​`<br> e.g., `edit 2 n/Jane Lee s/A9999999Z`                              |
+| **Edit**   | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [s/STUDENT_ID] [m/MODULE_CODE]…​ [t/TAG]…​ [c/CONSULTATIONS]…​ [g/ASSIGNMENT_NAME:SCORE] [w/WEEK_NUMBER:STATUS] [r/REMARK]​`<br> e.g., `edit 2 n/Jane Lee s/A9999999Z`                              |
 | **Filter** | `filter t/TAG [t/MORE_TAGS]…​`<br> e.g., `filter t/struggling t/needsHelp`                                                                                               |
 | **Find**   | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find John Jane`                                                                                                                |
 | **Grade**  | `grade INDEX g/ASSIGNMENT_NAME:SCORE [g/ASSIGNMENT_NAME:SCORE]…​`<br> e.g., `grade 1 g/Midterm:85 g/Quiz1:90`                                                            |
