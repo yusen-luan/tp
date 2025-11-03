@@ -210,7 +210,7 @@ add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t
 * `TAG` should be alphanumeric (no spaces)
 * At least one module code is required
 * Tags are optional
-* Consultations are optional, if provided it should follow one of the supported formats listed below
+* Consultations are optional; if provided, they must follow one of the supported datetime formats below and must not contain duplicate entries in the same command. Duplicate entries will result in: `Duplicate consultation detected: [date time]. Please remove duplicates and try again.`
 </box>
 
 <box type="tip" seamless>
@@ -241,6 +241,7 @@ add n/Jane Smith s/A0234567Y e/janes@u.nus.edu m/CS2103T m/CS2101 t/struggling t
 - The time must be entered in **24-hour format** (e.g., `14:00` for 2 PM).
 - All formats require both a **date** and a **time** — partial inputs like `22/10/2025` or `15:30` alone are not accepted.
 - Invalid inputs (e.g., `2025-13-45 25:99`) will result in an error message showing the supported formats.
+- Duplicate consultations in a single command are not allowed. If duplicates are detected, the command fails with: `Duplicate consultation detected: [date time]. Please remove duplicates and try again.`
 </box>
 
 ### Listing students : `list`
