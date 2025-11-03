@@ -509,7 +509,7 @@ edit 3 p/98765432 a/456 University Avenue
   * **Grades:** Use `g/ASSIGNMENT_NAME:SCORE` to update an existing grade. The assignment must already exist for the student, otherwise an error will be shown. This only updates that specific assignment's grade, leaving other grades unchanged.
   * **Attendance:** Use `w/WEEK_NUMBER:STATUS` to update attendance for a specific week (1-13). Status can be `present`, `absent`, or `unmark` (to remove the attendance record). This only updates that specific week's attendance, leaving other weeks unchanged.
 * Module codes must be entered in uppercase as the validation is case-sensitive (e.g., `CS2103T` not `cs2103t`)
-* Editing consultations should still follow the same format as in the `add` command
+* Editing consultations should follow the same format as in the `add` command, and must not contain duplicate consultation entries in the same command. Duplicate entries will result in: `Duplicate consultation detected: [date time]. Please remove duplicates and try again.`
 </box>
 
 <box type="warning" seamless>
